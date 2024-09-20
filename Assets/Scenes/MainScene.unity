@@ -133,6 +133,7 @@ GameObject:
   - component: {fileID: 514903493}
   - component: {fileID: 514903492}
   - component: {fileID: 514903491}
+  - component: {fileID: 514903494}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -185,7 +186,7 @@ MonoBehaviour:
     PlayerPrefab: {fileID: 4657337878885597230, guid: 51ceec9ee0311d440bcdfbc95460ef28, type: 3}
     Prefabs:
       NetworkPrefabsLists:
-      - {fileID: 11400000, guid: 9681086a0d154e649a4ccc973ffbccdf, type: 2}
+      - {fileID: 11400000, guid: 95b438fef47bb5846a8b13b9aabe3c14, type: 2}
     TickRate: 30
     ClientConnectionBufferTimeout: 10
     ConnectionApproval: 0
@@ -219,6 +220,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &514903494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 514903490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9aacad9c0f062274fa985561a4638705, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0

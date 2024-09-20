@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class PlayerCameraController : MonoBehaviour
+public class PlayerCameraController : NetworkBehaviour
 {
     [InspectorLabel("Mouse Sensitivity")]
     [SerializeField] private float mouseSensitivity = 100f;
@@ -18,11 +19,16 @@ public class PlayerCameraController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         orientation = transform.parent;
-
+        if (!IsLocalPlayer)
+        {
+            GetComponent<Camera>().enabled = false;
+            return;
+        }
     }
 
     private void Update()
     {
+        
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 

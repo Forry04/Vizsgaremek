@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
 [RequireComponent(typeof(CharacterController))]
 
-public class PlayerMovementController : MonoBehaviour
+public class PlayerMovementController : NetworkBehaviour
 {
     [SerializeField]
     private float walkingSpeed = 7.5f;
@@ -32,7 +33,10 @@ public class PlayerMovementController : MonoBehaviour
 
     void Update()
     {
-        
+
+        if (!IsOwner) return;
+
+
         Vector3 forward = transform.TransformDirection(Vector3.forward);
         Vector3 right = transform.TransformDirection(Vector3.right);
        
