@@ -1,0 +1,24 @@
+.code-input > .unity-base-text-field__label {
+    display: none;
+}
+
+.code-input {
+    width: 50%;
+    margin: 1%;
+    text-align: center;
+    -unity-text-spacing: 2px;
+    font-size: 30px;
+    -unity-text-align: middle-center;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.input-box {
+    flex-grow: 1;
+    display: flex;
+}
+
+.input-label-text {
+    font-size: 40px;
+    -unity-text-align: upper-center;
+}
