@@ -132,6 +132,7 @@ GameObject:
   m_Component:
   - component: {fileID: 41360921}
   - component: {fileID: 41360920}
+  - component: {fileID: 41360922}
   m_Layer: 5
   m_Name: MainMenu
   m_TagString: Untagged
@@ -170,6 +171,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 588799987}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &41360922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 41360919}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2099905de9ae39048a8c4eb16e4318b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainMenuUiObject: {fileID: 41360919}
+  joinMenuUiObject: {fileID: 1577576121}
 --- !u!1 &588799986
 GameObject:
   m_ObjectHideFlags: 0
@@ -179,7 +194,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 588799987}
-  - component: {fileID: 588799988}
   m_Layer: 0
   m_Name: Ui
   m_TagString: Untagged
@@ -204,20 +218,6 @@ Transform:
   - {fileID: 1577576122}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &588799988
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 588799986}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2099905de9ae39048a8c4eb16e4318b2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mainMenuUiDoc: {fileID: 41360920}
-  joinMenuUiDoc: {fileID: 1577576123}
 --- !u!1 &942060383
 GameObject:
   m_ObjectHideFlags: 0
@@ -365,13 +365,14 @@ GameObject:
   m_Component:
   - component: {fileID: 1577576122}
   - component: {fileID: 1577576123}
+  - component: {fileID: 1577576124}
   m_Layer: 5
-  m_Name: Join
+  m_Name: JoinMenu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1577576122
 Transform:
   m_ObjectHideFlags: 0
@@ -394,7 +395,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1577576121}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: 
@@ -403,6 +404,20 @@ MonoBehaviour:
   m_ParentUI: {fileID: 0}
   sourceAsset: {fileID: 9197481963319205126, guid: 53ef6ea9e7a29d640b069db3a1dfb25e, type: 3}
   m_SortingOrder: 0
+--- !u!114 &1577576124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1577576121}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7346a5da67e85d549b610bdadebd4503, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainMenuUiObject: {fileID: 41360919}
+  joinMenuUiObject: {fileID: 1577576121}
 --- !u!1001 &1851735870
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -451,6 +466,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7377171879305378105, guid: 81a4e12fee662564b8df4491e066d373, type: 3}
+      propertyPath: NetworkConfig.PlayerPrefab
+      value: 
+      objectReference: {fileID: 4657337878885597230, guid: 51ceec9ee0311d440bcdfbc95460ef28, type: 3}
     - target: {fileID: 8635592926934374062, guid: 81a4e12fee662564b8df4491e066d373, type: 3}
       propertyPath: m_Name
       value: NetworkManager

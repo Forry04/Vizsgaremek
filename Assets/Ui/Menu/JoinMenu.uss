@@ -3,12 +3,10 @@
 }
 
 .code-input {
+    -unity-text-align: middle-center;
     width: 50%;
     margin: 1%;
-    text-align: center;
-    -unity-text-spacing: 2px;
     font-size: 30px;
-    -unity-text-align: middle-center;
     align-items: center;
     white-space: nowrap;
 }
@@ -19,6 +17,6 @@
 }
 
 .input-label-text {
-    font-size: 40px;
     -unity-text-align: upper-center;
+    font-size: 40px;
 }

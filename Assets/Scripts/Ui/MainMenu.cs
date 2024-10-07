@@ -7,21 +7,20 @@ using UnityEngine.VFX;
 
 public class MainMenu : MonoBehaviour
 {
-    [SerializeField] private UIDocument mainMenuUiDoc;
-    [SerializeField] private UIDocument joinMenuUiDoc;
+    [SerializeField] private GameObject mainMenuUiObject;
+    [SerializeField] private GameObject joinMenuUiObject;
 
     private VisualElement mainMenuUi;
-    private VisualElement joinMenuUi;
     private Button hosttButton;
     private Button joinButton;
     private Button setingstButton;
     private Button exitButton;
 
-   
-    private void Awake()
+
+    private void OnEnable()
     {
-       
-        mainMenuUi = mainMenuUiDoc.rootVisualElement;
+
+        mainMenuUi = mainMenuUiObject.GetComponent<UIDocument>().rootVisualElement;
 
         hosttButton = mainMenuUi.Q<Button>("host-button");
         joinButton = mainMenuUi.Q<Button>("join-button");
@@ -33,12 +32,10 @@ public class MainMenu : MonoBehaviour
         setingstButton.clicked += OnSettingsClicked;
         exitButton.clicked += OnExitClicked;
 
-        joinMenuUi = joinMenuUiDoc.rootVisualElement;
-        
 
     }
 
-   
+
     private void OnHostClicked()
     {
         Relay.Singleton.CreateRelay();
@@ -46,8 +43,9 @@ public class MainMenu : MonoBehaviour
 
     private void OnJoinClicked()
     {
-        mainMenuUiDoc.enabled = false;
-        joinMenuUiDoc.enabled = true;
+        mainMenuUiObject.SetActive(false);
+        joinMenuUiObject.SetActive(true);
+
     }
 
     private void OnSettingsClicked()
@@ -59,4 +57,5 @@ public class MainMenu : MonoBehaviour
     {
         Application.Quit();
     }
+
 }
