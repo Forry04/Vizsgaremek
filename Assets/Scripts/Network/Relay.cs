@@ -44,7 +44,7 @@ public class Relay : MonoBehaviour
                                                   connectionType: "dtls");
 
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
-            SceneManager.LoadScene("MainScene");
+            NetworkManager.Singleton.StartHost();
 
 
         }
@@ -55,16 +55,17 @@ public class Relay : MonoBehaviour
 
     }
 
-    public async void JointRelay(string joiconde)
+    public async void JoinRelay(string joiconde)
     {
         try
         {
-           JoinAllocation joinAllocation =  await RelayService.Instance.JoinAllocationAsync(joiconde);
+            JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(joiconde);
 
             RelayServerData relayServerData = new(allocation: joinAllocation,
                                                   connectionType: "dtls");
 
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
+            NetworkManager.Singleton.StartClient();
         }
         catch (RelayServiceException e)
         {
