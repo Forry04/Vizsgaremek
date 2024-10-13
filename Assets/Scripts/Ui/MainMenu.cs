@@ -36,9 +36,17 @@ public class MainMenu : MonoBehaviour
     }
 
 
-    private void OnHostClicked()
+    private async void OnHostClicked()
     {
-        Relay.Singleton.CreateRelay();
+        if (await Relay.Singleton.CreateRelay())
+        {
+            
+        }
+        else
+        {
+            
+        }
+
     }
 
     private void OnJoinClicked()

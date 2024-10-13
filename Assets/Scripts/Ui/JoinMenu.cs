@@ -33,9 +33,17 @@ public class JoinMenu : MonoBehaviour
 
     }
 
-    private void OnJoinClicked()
+    private async void OnJoinClicked()
     {
-        Relay.Singleton.JoinRelay(joinCodeField.text);
+        if (await Relay.Singleton.JoinRelay(joinCodeField.text))
+        {
+            
+        }
+        else
+        {
+
+        }
+        
     }
 
 }
