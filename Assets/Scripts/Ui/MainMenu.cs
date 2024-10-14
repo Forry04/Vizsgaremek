@@ -1,9 +1,7 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UIElements;
-using UnityEngine.VFX;
 
 public class MainMenu : MonoBehaviour
 {
@@ -38,13 +36,14 @@ public class MainMenu : MonoBehaviour
 
     private async void OnHostClicked()
     {
+        mainMenuUiObject.SetActive(false);
         if (await Relay.Singleton.CreateRelay())
         {
-            
+            Debug.Log("Hosted");
         }
         else
         {
-            
+            mainMenuUiObject.SetActive(true);
         }
 
     }

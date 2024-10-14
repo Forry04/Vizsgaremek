@@ -8,6 +8,7 @@
             <ui:TextField picking-mode="Ignore" label="Text Field" name="join-code-field" class="code-input" />
             <ui:Button text="Join&#10;" parse-escape-sequences="true" display-tooltip-when-elided="true" name="join-button" class="button" />
             <ui:Button text="Back&#10;" parse-escape-sequences="true" display-tooltip-when-elided="true" name="back-button" class="button" />
+            
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
