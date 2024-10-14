@@ -35,13 +35,14 @@ public class JoinMenu : MonoBehaviour
 
     private async void OnJoinClicked()
     {
+        joinMenuUiObject.SetActive(false);
         if (await Relay.Singleton.JoinRelay(joinCodeField.text))
         {
-            
+            Debug.Log("Joined");
         }
         else
         {
-
+            joinMenuUiObject.SetActive(true);
         }
         
     }
