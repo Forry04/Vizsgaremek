@@ -36,14 +36,16 @@ public class MainMenu : MonoBehaviour
 
     private async void OnHostClicked()
     {
-        mainMenuUiObject.SetActive(false);
+        
         if (await Relay.Singleton.CreateRelay())
         {
             Debug.Log("Hosted");
+
+            NetworkManager.Singleton.SceneManager.LoadScene("Lobby",default);
         }
         else
         {
-            mainMenuUiObject.SetActive(true);
+           
         }
 
     }

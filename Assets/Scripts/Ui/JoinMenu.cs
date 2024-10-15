@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Tutorials.Core.Editor;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -35,16 +37,25 @@ public class JoinMenu : MonoBehaviour
 
     private async void OnJoinClicked()
     {
-        joinMenuUiObject.SetActive(false);
+
+        if (joinCodeField.text.IsNullOrWhiteSpace())
+        {
+            Debug.Log("Joicode invalid");
+            return;
+        }
+
+
         if (await Relay.Singleton.JoinRelay(joinCodeField.text))
         {
             Debug.Log("Joined");
         }
         else
         {
-            joinMenuUiObject.SetActive(true);
+
+            Debug.Log("Failed to join");
+
         }
-        
     }
+
 
 }
