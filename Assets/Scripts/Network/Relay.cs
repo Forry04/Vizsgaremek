@@ -9,16 +9,16 @@ using Unity.Networking.Transport.Relay;
 using System;
 using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
+
 public class Relay : MonoBehaviour
 {
-
     public static Relay Singleton { get; private set; }
 
     public string JoinCode;
 
     private async void Awake()
     {
-        if (Singleton!=null&& Singleton!=this)
+        if (Singleton != null && Singleton != this)
         {
             Destroy(this);
         }
@@ -26,7 +26,6 @@ public class Relay : MonoBehaviour
         {
             Singleton = this;
             DontDestroyOnLoad(gameObject);
-
         }
 
         await UnityServices.InitializeAsync();
@@ -51,10 +50,10 @@ public class Relay : MonoBehaviour
         }
         catch (RelayServiceException e)
         {
-            Debug.Log(e.Message);
+            NetworkManager.Singleton.Shutdown();
+            Debug.LogError(e.Message);
             return false;
         }
-
     }
 
     public async Task<bool> JoinRelay(string joinCode)
@@ -72,10 +71,9 @@ public class Relay : MonoBehaviour
         }
         catch (RelayServiceException e)
         {
-
-            Debug.Log(e.Message);
+            NetworkManager.Singleton.Shutdown();
+            Debug.LogError(e.Message);
             return false;
         }
-
     }
 }

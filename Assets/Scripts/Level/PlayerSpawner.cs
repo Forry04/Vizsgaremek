@@ -5,22 +5,47 @@ using UnityEngine;
 
 public class PlayerSpawner : NetworkBehaviour
 {
-    public GameObject playerPrefab;
+    [SerializeField] private GameObject playerPrefab;
 
-    // if lobby is loadead spawn players
-    public override void OnNetworkSpawn()
+    private void Start()
     {
         if (IsServer)
         {
-            SpawnPlayer();
+            NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
         }
     }
 
-    private void SpawnPlayer()
+    public override void OnDestroy()
+    {
+        if (NetworkManager.Singleton != null && IsServer)
+        {
+            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+        }
+        base.OnDestroy();
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        if (IsServer && IsHost)
+        {
+            SpawnPlayerServerRpc(NetworkManager.Singleton.LocalClientId);
+        }
+    }
+
+    private void OnClientConnected(ulong clientId)
+    {
+        if (IsServer)
+        {
+            SpawnPlayerServerRpc(clientId);
+        }
+    }
+
+    [ServerRpc]
+    private void SpawnPlayerServerRpc(ulong clientId)
     {
         GameObject player = Instantiate(playerPrefab);
-        player.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId);
+        NetworkObject playerNetworkObject = player.GetComponent<NetworkObject>();
+        playerNetworkObject.SpawnAsPlayerObject(clientId);
     }
 }
 
-    

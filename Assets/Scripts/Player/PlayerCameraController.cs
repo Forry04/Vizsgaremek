@@ -9,13 +9,13 @@ public class PlayerCameraController : NetworkBehaviour
     [InspectorLabel("Mouse Sensitivity")]
     [SerializeField] private float mouseSensitivity = 100f;
 
-   
     private float xRotation = 0f;
     private float yRotation = 0f;
     private Transform orientation;
 
-    private void Start()
+    public override void OnNetworkSpawn()
     {
+        Debug.Log("Spawned");
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         orientation = transform.parent;
@@ -28,7 +28,6 @@ public class PlayerCameraController : NetworkBehaviour
 
     private void Update()
     {
-        
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 
@@ -40,5 +39,4 @@ public class PlayerCameraController : NetworkBehaviour
         transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         orientation.localRotation = Quaternion.Euler(0f, yRotation, 0f);
     }
-
 }

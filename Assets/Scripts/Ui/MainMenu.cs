@@ -9,6 +9,7 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private GameObject joinMenuUiObject;
 
     private VisualElement mainMenuUi;
+    private VisualElement mainContainer;
     private Button hosttButton;
     private Button joinButton;
     private Button setingstButton;
@@ -20,6 +21,8 @@ public class MainMenu : MonoBehaviour
 
         mainMenuUi = mainMenuUiObject.GetComponent<UIDocument>().rootVisualElement;
 
+
+        mainContainer = mainMenuUi.Q<VisualElement>("main-container");
         hosttButton = mainMenuUi.Q<Button>("host-button");
         joinButton = mainMenuUi.Q<Button>("join-button");
         setingstButton = mainMenuUi.Q<Button>("settings-button");
@@ -37,15 +40,16 @@ public class MainMenu : MonoBehaviour
     private async void OnHostClicked()
     {
         
+       mainContainer.visible = false;
         if (await Relay.Singleton.CreateRelay())
         {
             Debug.Log("Hosted");
-
             NetworkManager.Singleton.SceneManager.LoadScene("Lobby",default);
         }
         else
         {
-           
+            Debug.LogError("Failed to host");
+            mainContainer.visible = true;
         }
 
     }
