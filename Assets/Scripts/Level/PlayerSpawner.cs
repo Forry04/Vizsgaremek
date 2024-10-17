@@ -7,40 +7,45 @@ public class PlayerSpawner : NetworkBehaviour
 {
     [SerializeField] private GameObject playerPrefab;
 
-    public override void OnNetworkSpawn()
+    private void Start()
     {
         if (IsServer)
         {
-            SpawnPlayerServerRpc();
+            NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
+        }
+    }
+
+    public override void OnDestroy()
+    {
+        if (NetworkManager.Singleton != null && IsServer)
+        {
+            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+        }
+        base.OnDestroy();
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        if (IsServer && IsHost)
+        {
+            SpawnPlayerServerRpc(NetworkManager.Singleton.LocalClientId);
+        }
+    }
+
+    private void OnClientConnected(ulong clientId)
+    {
+        if (IsServer)
+        {
+            SpawnPlayerServerRpc(clientId);
         }
     }
 
     [ServerRpc]
-    private void SpawnPlayerServerRpc()
+    private void SpawnPlayerServerRpc(ulong clientId)
     {
         GameObject player = Instantiate(playerPrefab);
         NetworkObject playerNetworkObject = player.GetComponent<NetworkObject>();
-        playerNetworkObject.SpawnWithOwnership(OwnerClientId);
-        SetupPlayerCameraClientRpc(playerNetworkObject.OwnerClientId);
-    }
-
-    [ClientRpc]
-    private void SetupPlayerCameraClientRpc(ulong clientId)
-    {
-        if (NetworkManager.Singleton.LocalClientId == clientId)
-        {
-            var player = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject;
-            Debug.Log("!Player!");
-            Debug.Log(player);
-
-
-
-            //Camera playerCamera = player.GetComponentInChildren<Camera>();
-            //if (playerCamera != null)
-            //{
-            //    playerCamera.enabled = true;
-            //    playerCamera.tag = "MainCamera";
-            //}
-        }
+        playerNetworkObject.SpawnAsPlayerObject(clientId);
     }
 }
+
