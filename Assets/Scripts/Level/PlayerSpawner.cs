@@ -40,7 +40,7 @@ public class PlayerSpawner : NetworkBehaviour
         }
     }
 
-    [ServerRpc]
+    [Rpc(SendTo.Server)]
     private void SpawnPlayerServerRpc(ulong clientId)
     {
         GameObject player = Instantiate(playerPrefab);
