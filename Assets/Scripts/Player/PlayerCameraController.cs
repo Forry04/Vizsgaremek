@@ -15,7 +15,6 @@ public class PlayerCameraController : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        Debug.Log("Spawned");
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         orientation = transform.parent;

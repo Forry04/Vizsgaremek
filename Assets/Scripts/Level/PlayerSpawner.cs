@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
@@ -9,43 +10,31 @@ public class PlayerSpawner : NetworkBehaviour
 
     private void Start()
     {
-        if (IsServer)
-        {
-            NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
-        }
+        if (IsServer) NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
     }
 
     public override void OnDestroy()
     {
-        if (NetworkManager.Singleton != null && IsServer)
-        {
-            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
-        }
+        if (NetworkManager.Singleton != null && IsServer) NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
         base.OnDestroy();
     }
 
     public override void OnNetworkSpawn()
     {
-        if (IsServer && IsHost)
-        {
-            SpawnPlayerServerRpc(NetworkManager.Singleton.LocalClientId);
-        }
+        if (IsServer && IsHost) SpawnPlayerServer(NetworkManager.Singleton.LocalClientId);
     }
 
     private void OnClientConnected(ulong clientId)
     {
-        if (IsServer)
-        {
-            SpawnPlayerServerRpc(clientId);
-        }
+        if (IsServer) SpawnPlayerServer(clientId);
+        
+        
     }
 
-    [Rpc(SendTo.Server)]
-    private void SpawnPlayerServerRpc(ulong clientId)
+    private void SpawnPlayerServer(ulong clientId)
     {
         GameObject player = Instantiate(playerPrefab);
         NetworkObject playerNetworkObject = player.GetComponent<NetworkObject>();
         playerNetworkObject.SpawnAsPlayerObject(clientId);
     }
 }
-
