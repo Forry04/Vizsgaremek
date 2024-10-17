@@ -5,22 +5,42 @@ using UnityEngine;
 
 public class PlayerSpawner : NetworkBehaviour
 {
-    public GameObject playerPrefab;
+    [SerializeField] private GameObject playerPrefab;
 
-    // if lobby is loadead spawn players
     public override void OnNetworkSpawn()
     {
         if (IsServer)
         {
-            SpawnPlayer();
+            SpawnPlayerServerRpc();
         }
     }
 
-    private void SpawnPlayer()
+    [ServerRpc]
+    private void SpawnPlayerServerRpc()
     {
         GameObject player = Instantiate(playerPrefab);
-        player.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId);
+        NetworkObject playerNetworkObject = player.GetComponent<NetworkObject>();
+        playerNetworkObject.SpawnWithOwnership(OwnerClientId);
+        SetupPlayerCameraClientRpc(playerNetworkObject.OwnerClientId);
+    }
+
+    [ClientRpc]
+    private void SetupPlayerCameraClientRpc(ulong clientId)
+    {
+        if (NetworkManager.Singleton.LocalClientId == clientId)
+        {
+            var player = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject;
+            Debug.Log("!Player!");
+            Debug.Log(player);
+
+
+
+            //Camera playerCamera = player.GetComponentInChildren<Camera>();
+            //if (playerCamera != null)
+            //{
+            //    playerCamera.enabled = true;
+            //    playerCamera.tag = "MainCamera";
+            //}
+        }
     }
 }
-
-    

@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Tutorials.Core.Editor;
-using Unity.VisualScripting;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -11,6 +10,7 @@ public class JoinMenu : MonoBehaviour
     [SerializeField] private GameObject joinMenuUiObject;
 
     private VisualElement joinMenuUi;
+    private VisualElement mainContainer;
     private Button backButton;
     private Button joinButton;
     private TextField joinCodeField;
@@ -18,7 +18,7 @@ public class JoinMenu : MonoBehaviour
     {
         joinMenuUi = joinMenuUiObject.GetComponent<UIDocument>().rootVisualElement;
 
-
+        mainContainer = joinMenuUi.Q<VisualElement>("main-container");
         joinButton = joinMenuUi.Q<Button>("join-button");
         backButton = joinMenuUi.Q<Button>("back-button");
         joinCodeField = joinMenuUi.Q<TextField>("join-code-field");
@@ -32,15 +32,15 @@ public class JoinMenu : MonoBehaviour
     {
         mainMenuUiObject.SetActive(true);
         joinMenuUiObject.SetActive(false);
-
     }
 
     private async void OnJoinClicked()
     {
-
-        if (joinCodeField.text.IsNullOrWhiteSpace())
+        mainContainer.visible = false;
+        if (joinCodeField.text is null || joinCodeField.text.Equals(string.Empty))
         {
-            Debug.Log("Joicode invalid");
+            Debug.LogError("Joicode invalid");
+            mainContainer.visible = true;
             return;
         }
 
@@ -48,12 +48,12 @@ public class JoinMenu : MonoBehaviour
         if (await Relay.Singleton.JoinRelay(joinCodeField.text))
         {
             Debug.Log("Joined");
+            NetworkManager.Singleton.SceneManager.LoadScene("Lobby", default);
         }
         else
-        {
-
-            Debug.Log("Failed to join");
-
+        { 
+            Debug.LogError("Failed to join");
+            mainContainer.visible = true;
         }
     }
 
