@@ -7,6 +7,7 @@ using UnityEngine;
 public class PlayerSpawner : NetworkBehaviour
 {
     [SerializeField] private GameObject playerPrefab;
+    [SerializeField] private  Transform[] playerSpawnPoint;
 
     private void Start()
     {
@@ -33,7 +34,7 @@ public class PlayerSpawner : NetworkBehaviour
 
     private void SpawnPlayerServer(ulong clientId)
     {
-        GameObject player = Instantiate(playerPrefab);
+        GameObject player = Instantiate(playerPrefab, playerSpawnPoint[0].position, playerSpawnPoint[0].rotation);
         NetworkObject playerNetworkObject = player.GetComponent<NetworkObject>();
         playerNetworkObject.SpawnAsPlayerObject(clientId);
     }
