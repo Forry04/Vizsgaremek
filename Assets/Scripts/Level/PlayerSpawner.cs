@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -8,10 +9,13 @@ public class PlayerSpawner : NetworkBehaviour
 {
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private  Transform[] playerSpawnPoint;
+    [SerializeField] private TextMeshProUGUI joinCodeText;
 
     private void Start()
     {
         if (IsServer) NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
+        if (IsHost) joinCodeText.text = Relay.Singleton.JoinCode;
+
     }
 
     public override void OnDestroy()
