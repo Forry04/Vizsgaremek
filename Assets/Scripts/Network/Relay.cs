@@ -6,8 +6,9 @@ using Unity.Services.Relay.Models;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using Unity.Networking.Transport.Relay;
+using System;
+using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
-
 
 public class Relay : MonoBehaviour
 {
@@ -44,8 +45,6 @@ public class Relay : MonoBehaviour
 
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
             NetworkManager.Singleton.StartHost();
-            
-            GUIUtility.systemCopyBuffer = JoinCode;
 
             return true;
         }
