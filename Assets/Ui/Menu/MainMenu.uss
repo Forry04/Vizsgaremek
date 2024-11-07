@@ -8,13 +8,17 @@
     flex-shrink: 1;
     height: auto;
     margin: 1%;
+    transition-property: scale;
+    transition-timing-function: ease-out;
+    transition-duration: 0.3s;
 }
 
 .button:hover {
-    scale: 1.2 1.2;
+    scale: 1.1;
 }
 
 .button:active {
+    opacity: 0.99;
 }
 
 .title {
@@ -26,6 +30,7 @@
 
 .main {
     flex-grow: 1;
+    background-color: rgb(56, 56, 56);
 }
 
 .buttons {
