@@ -7,6 +7,8 @@ using Unity.Netcode;
 
 public class PlayerMovementController : NetworkBehaviour
 {
+    private Animator animator;
+
     [SerializeField]
     private float walkingSpeed = 7.5f;
     [SerializeField]
@@ -18,14 +20,15 @@ public class PlayerMovementController : NetworkBehaviour
 
     CharacterController characterController;
     Vector3 moveDirection = Vector3.zero;
+    
 
     [HideInInspector]
     public bool canMove = true;
-
+    public bool IsCrouching = false;
     void Start()
     {
         characterController = GetComponent<CharacterController>();
-
+        animator = transform.GetChild(0).GetComponent<Animator>();
         // Lock cursor
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -41,8 +44,15 @@ public class PlayerMovementController : NetworkBehaviour
         Vector3 right = transform.TransformDirection(Vector3.right);
        
         bool isRunning = Input.GetKey(KeyCode.LeftShift);
-        float curSpeedX = canMove ? (isRunning ? runningSpeed : walkingSpeed) * Input.GetAxis("Vertical") : 0;
-        float curSpeedY = canMove ? (isRunning ? runningSpeed : walkingSpeed) * Input.GetAxis("Horizontal") : 0;
+        if (Input.GetKeyDown(KeyCode.LeftControl) && !characterController.isGrounded)
+        {
+            IsCrouching = !IsCrouching;
+        }
+        bool forwardD = Input.GetKey(KeyCode.W);
+        bool rightD = Input.GetKey(KeyCode.D);
+        float curSpeedX = canMove ? ((IsCrouching? walkingSpeed: (isRunning ? runningSpeed : walkingSpeed)) * Input.GetAxis("Vertical")) : 0;
+        float curSpeedY = canMove ? ((IsCrouching? walkingSpeed: (isRunning ? runningSpeed : walkingSpeed)) * Input.GetAxis("Horizontal")) : 0;
+        //float curSpeedY = canMove ? (isRunning ? runningSpeed : walkingSpeed) * Input.GetAxis("Horizontal") : 0;
         float movementDirectionY = moveDirection.y;
         moveDirection = (forward * curSpeedX) + (right * curSpeedY);
 
@@ -62,5 +72,13 @@ public class PlayerMovementController : NetworkBehaviour
         }
 
         characterController.Move(moveDirection * Time.deltaTime);
+
+        //Animations
+        animator.SetBool("IsRunning", canMove && isRunning && Input.GetAxisRaw("Vertical") != 0);
+        animator.SetBool("IsWalking", canMove && !isRunning && Input.GetAxisRaw("Vertical") != 0);
+        animator.SetBool("IsJumping", canMove && Input.GetButton("Jump"));
+        animator.SetBool("IsCrouching", IsCrouching && Input.GetAxisRaw("Vertical") == 0);
+        animator.SetBool("IsSneaking", IsCrouching && Input.GetAxisRaw("Vertical") != 0);
+
     }
 }
