@@ -1,31 +1,17 @@
+
 .button {
-    -unity-text-align: upper-center;
-    -unity-font-style: bold;
+    color: black;
     font-size: 30px;
     width: 25%;
     align-self: center;
-    border-radius: 5px;
     flex-shrink: 1;
     height: auto;
     margin: 1%;
+
 }
 
-.button:hover {
-    scale: 1.2 1.2;
-}
-
-.button:active {
-}
-
-.title {
-    -unity-text-align: upper-center;
-    font-size: 20px;
-    -unity-font-style: bold;
-    font-size: 40px;
-}
-
-.main {
-    flex-grow: 1;
+#main-title{
+    top:10%;
 }
 
 .buttons {

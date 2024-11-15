@@ -20,3 +20,16 @@
     -unity-text-align: upper-center;
     font-size: 40px;
 }
+
+.button{
+     color: black;
+    font-size: 30px;
+    width: 25%;
+    align-self: center;
+    flex-shrink: 1;
+    height: auto;
+    margin: 1%;
+}
+#join-title{
+    top: 2%;
+}
