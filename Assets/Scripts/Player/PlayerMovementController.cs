@@ -7,20 +7,20 @@ using Unity.Netcode;
 
 public class PlayerMovementController : NetworkBehaviour
 {
-    private Animator animator;
-
     [SerializeField]
     private float walkingSpeed = 7.5f;
     [SerializeField]
     private float runningSpeed = 11.5f;
     [SerializeField]
+    private float sneakingSpeed = 11.5f;
+    [SerializeField]
     private float jumpSpeed = 8.0f;
     [SerializeField]
     private float gravity = 20.0f;
 
+
     CharacterController characterController;
     Vector3 moveDirection = Vector3.zero;
-    
 
     [HideInInspector]
     public bool canMove = true;
@@ -28,7 +28,6 @@ public class PlayerMovementController : NetworkBehaviour
     void Start()
     {
         characterController = GetComponent<CharacterController>();
-        animator = transform.GetChild(0).GetComponent<Animator>();
         // Lock cursor
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -48,11 +47,9 @@ public class PlayerMovementController : NetworkBehaviour
         {
             IsCrouching = !IsCrouching;
         }
-        bool forwardD = Input.GetKey(KeyCode.W);
-        bool rightD = Input.GetKey(KeyCode.D);
-        float curSpeedX = canMove ? ((IsCrouching? walkingSpeed: (isRunning ? runningSpeed : walkingSpeed)) * Input.GetAxis("Vertical")) : 0;
-        float curSpeedY = canMove ? ((IsCrouching? walkingSpeed: (isRunning ? runningSpeed : walkingSpeed)) * Input.GetAxis("Horizontal")) : 0;
-        //float curSpeedY = canMove ? (isRunning ? runningSpeed : walkingSpeed) * Input.GetAxis("Horizontal") : 0;
+
+        float curSpeedX = canMove ? ((IsCrouching? sneakingSpeed: (isRunning ? runningSpeed : walkingSpeed)) * Input.GetAxis("Vertical")) : 0;
+        float curSpeedY = canMove ? ((IsCrouching? sneakingSpeed: (isRunning ? runningSpeed : walkingSpeed)) * Input.GetAxis("Horizontal")) : 0;
         float movementDirectionY = moveDirection.y;
         moveDirection = (forward * curSpeedX) + (right * curSpeedY);
 
@@ -65,20 +62,12 @@ public class PlayerMovementController : NetworkBehaviour
             moveDirection.y = movementDirectionY;
         }
 
-        
         if (!characterController.isGrounded)
         {
             moveDirection.y -= gravity * Time.deltaTime;
         }
-
         characterController.Move(moveDirection * Time.deltaTime);
 
-        //Animations
-        animator.SetBool("IsRunning", canMove && isRunning && Input.GetAxisRaw("Vertical") != 0);
-        animator.SetBool("IsWalking", canMove && !isRunning && Input.GetAxisRaw("Vertical") != 0);
-        animator.SetBool("IsJumping", canMove && Input.GetButton("Jump"));
-        animator.SetBool("IsCrouching", IsCrouching && Input.GetAxisRaw("Vertical") == 0);
-        animator.SetBool("IsSneaking", IsCrouching && Input.GetAxisRaw("Vertical") != 0);
-
     }
+   
 }
