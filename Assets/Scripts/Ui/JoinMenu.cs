@@ -8,6 +8,7 @@ public class JoinMenu : MonoBehaviour
 {
     [SerializeField] private GameObject mainMenuUiObject;
     [SerializeField] private GameObject joinMenuUiObject;
+    [SerializeField] private GameObject loadingMenUiObject;
 
     private VisualElement joinMenuUi;
     private VisualElement mainContainer;
@@ -36,7 +37,9 @@ public class JoinMenu : MonoBehaviour
 
     private async void OnJoinClicked()
     {
+       
         mainContainer.visible = false;
+
         if (joinCodeField.text is null || joinCodeField.text.Equals(string.Empty))
         {
             Debug.LogError("Joicode invalid");
@@ -44,7 +47,7 @@ public class JoinMenu : MonoBehaviour
             return;
         }
 
-
+        loadingMenUiObject.SetActive(true);
         if (await Relay.Singleton.JoinRelay(joinCodeField.text))
         {
             Debug.Log("Joined");
@@ -54,6 +57,7 @@ public class JoinMenu : MonoBehaviour
         { 
             Debug.LogError("Failed to join");
             mainContainer.visible = true;
+            loadingMenUiObject.SetActive(false);
         }
     }
 
