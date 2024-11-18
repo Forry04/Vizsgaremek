@@ -1,0 +1,6 @@
+.loading-icon {
+    flex-grow: 1;
+    align-items: auto;
+    justify-content: flex-end;
+    flex-shrink: 1;
+}
