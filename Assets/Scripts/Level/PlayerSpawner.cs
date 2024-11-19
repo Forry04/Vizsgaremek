@@ -32,8 +32,6 @@ public class PlayerSpawner : NetworkBehaviour
     private void OnClientConnected(ulong clientId)
     {
         if (IsServer) SpawnPlayerServer(clientId);
-        
-        
     }
 
     private void SpawnPlayerServer(ulong clientId)
