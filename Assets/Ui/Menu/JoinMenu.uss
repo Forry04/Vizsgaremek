@@ -10,6 +10,10 @@
     align-items: center;
     white-space: nowrap;
 }
+.code-input .unity-text-element--inner-input-field-component
+{
+    color:black
+}
 
 .input-box {
     flex-grow: 1;

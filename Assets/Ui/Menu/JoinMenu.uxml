@@ -1,6 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Assets/Ui/Menu/JoinMenu.uss?fileID=7433441132597879392&amp;guid=973aeec51a0264d4da3d1e5357fa0e5a&amp;type=3#JoinMenu" />
     <Style src="project://database/Assets/Ui/Menu/General.uss?fileID=7433441132597879392&amp;guid=f89a2678f5e910b4f9cb48d2186c123a&amp;type=3#General" />
+    <Style src="project://database/Assets/Ui/Menu/JoinMenu.uss?fileID=7433441132597879392&amp;guid=973aeec51a0264d4da3d1e5357fa0e5a&amp;type=3#JoinMenu" />
     <ui:VisualElement name="main-container" class="main" style="flex-grow: 1; display: flex;">
         <ui:Label tabindex="-1" text="Join Game&#10;" parse-escape-sequences="true" display-tooltip-when-elided="true" name="join-title" class="title" />
         <ui:Label tabindex="-1" text="Join code: " parse-escape-sequences="true" display-tooltip-when-elided="true" class="input-label-text" />
