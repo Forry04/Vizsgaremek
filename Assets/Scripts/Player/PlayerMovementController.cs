@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(CharacterController))]
 
@@ -21,10 +22,12 @@ public class PlayerMovementController : NetworkBehaviour
 
     CharacterController characterController;
     Vector3 moveDirection = Vector3.zero;
-
+    //PlayerInput input;
     [HideInInspector]
     public bool canMove = true;
     public bool IsCrouching = false;
+    public bool StandUp = false;
+    public bool Jump = false;
     void Start()
     {
         characterController = GetComponent<CharacterController>();
@@ -35,16 +38,15 @@ public class PlayerMovementController : NetworkBehaviour
 
     void Update()
     {
-
         if (!IsOwner) return;
-
-
+      
         Vector3 forward = transform.TransformDirection(Vector3.forward);
-        Vector3 right = transform.TransformDirection(Vector3.right);
-       
+        Vector3 right = transform.TransformDirection(Vector3.right);      
         bool isRunning = Input.GetKey(KeyCode.LeftShift);
-        if (Input.GetKeyDown(KeyCode.LeftControl) && !characterController.isGrounded)
+
+        if (((Input.GetKeyDown(KeyCode.LeftControl) || (Input.GetButton("Jump") && IsCrouching))) && characterController.isGrounded)
         {
+            StandUp = true;
             IsCrouching = !IsCrouching;
         }
 
@@ -53,8 +55,10 @@ public class PlayerMovementController : NetworkBehaviour
         float movementDirectionY = moveDirection.y;
         moveDirection = (forward * curSpeedX) + (right * curSpeedY);
 
-        if (Input.GetButton("Jump") && canMove && characterController.isGrounded)
+
+        if (Input.GetButton("Jump") && canMove && characterController.isGrounded && !IsCrouching & !StandUp)
         {
+            Jump = true;
             moveDirection.y = jumpSpeed;
         }
         else
@@ -66,8 +70,12 @@ public class PlayerMovementController : NetworkBehaviour
         {
             moveDirection.y -= gravity * Time.deltaTime;
         }
-        characterController.Move(moveDirection * Time.deltaTime);
 
+        if (StandUp && Input.GetButtonUp("Jump"))
+        {
+            StandUp = false;
+        }
+        characterController.Move(moveDirection * Time.deltaTime);
     }
    
 }

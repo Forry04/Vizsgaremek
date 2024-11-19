@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -20,24 +21,25 @@ public class PlayerAnimator : MonoBehaviour
 
     CharacterController characterController;
     Animator animator;
-    float velocitZ = 0.0f;
-    float velocitX = 0.0f;
-    float blendx = 0.0f;
-    float blendy = 1.0f;
+    PlayerMovementController pmc;
+    (float, float) velocityZX = (0.0f, 0.0f);
+    (float, float) blendXY = (0.0f,1.0f);
+    (float, float) blendJumpXY = (1.0f,0.0f);
+    (float, float) blendCrouchXY = (-1.0f,0.0f);
+    (float, float) blendStandXY = (0.0f,1.0f);
+    //(float, float) blendBaseXY = (0.0f,0.0f);
+
+    float currentMaxVelocity;
     bool isRunning;
     bool forwardPressed;
     bool backwardPressed;
     bool rightPressed;
     bool leftPressed;
-    bool jumping;
-    bool isCrouching = false;
-    float currentMaxVelocity;
-
     void Start()
     {
-        animator = transform.GetChild(0).GetComponent<Animator>();
+        animator = transform.GetComponentInChildren<Animator>();
         characterController = transform.GetComponent<CharacterController>();
-
+        pmc = gameObject.GetComponent<PlayerMovementController>();
     }
 
     void Update()
@@ -47,83 +49,71 @@ public class PlayerAnimator : MonoBehaviour
         backwardPressed = Input.GetKey(KeyCode.S);
         rightPressed = Input.GetKey(KeyCode.D);
         leftPressed = Input.GetKey(KeyCode.A);
-        jumping = Input.GetButtonDown("Jump");
-        currentMaxVelocity = isRunning ? maximumRunVelocity : maximumWalk_CrouchVelocity;
-
-        if (Input.GetKeyDown(KeyCode.LeftControl) && characterController.isGrounded)
-        {
-            isCrouching = !isCrouching;
-        }
-        if (isCrouching)
-        {
-            currentMaxVelocity = maximumWalk_CrouchVelocity;
-        }
-        else
-        {
-            currentMaxVelocity = isRunning ? maximumRunVelocity : maximumWalk_CrouchVelocity;
-        }    
-        if (Input.GetButton("Jump"))
-        {
-            jumping = true;
-        }
-        else
-        {
-            jumping = false;
-        }
+        if (pmc.IsCrouching) currentMaxVelocity = maximumWalk_CrouchVelocity;
+        else currentMaxVelocity = isRunning ? maximumRunVelocity : maximumWalk_CrouchVelocity;
 
         //Animation
         //Velocity acceleration
-        if (forwardPressed && velocitZ < currentMaxVelocity)
+        if (forwardPressed && velocityZX.Item1 < currentMaxVelocity)
         {
-            velocitZ += Time.deltaTime * acceleration;
+            velocityZX.Item1 += Time.deltaTime * acceleration;
         }
-        if (backwardPressed && velocitZ > -currentMaxVelocity)
+        if (backwardPressed && velocityZX.Item1 > -currentMaxVelocity)
         {
-            velocitZ -= Time.deltaTime * acceleration;
+            velocityZX.Item1 -= Time.deltaTime * acceleration;
         }
-        if (rightPressed && velocitX < currentMaxVelocity)
+        if (rightPressed && velocityZX.Item2 < currentMaxVelocity)
         {
-            velocitX += Time.deltaTime * acceleration;
+            velocityZX.Item2 += Time.deltaTime * acceleration;
         }
-        if (leftPressed && velocitX > -currentMaxVelocity)
+        if (leftPressed && velocityZX.Item2 > -currentMaxVelocity)
         {
-            velocitX -= Time.deltaTime * acceleration;
+            velocityZX.Item2 -= Time.deltaTime * acceleration;
         }
 
         //Lock
-        Lock(forwardPressed, true, velocity: ref velocitZ);
-        Lock(backwardPressed, false, velocity: ref velocitZ);
-        Lock(leftPressed, false, velocity: ref velocitX);
-        Lock(rightPressed, true, velocity: ref velocitX);
+        Lock(forwardPressed, true, velocity: ref velocityZX.Item1);
+        Lock(backwardPressed, false, velocity: ref velocityZX.Item1);
+        Lock(leftPressed, false, velocity: ref velocityZX.Item2);
+        Lock(rightPressed, true, velocity: ref velocityZX.Item2);
 
         ////Velocity deceleration
-        if (velocitZ != 0.0f && !forwardPressed && !backwardPressed)
+        if (velocityZX.Item1 != 0.0f && !forwardPressed && !backwardPressed)
         {
-            Deceleration(velocity: ref velocitZ, true);
-            Deceleration(velocity: ref velocitZ, false);
+            Deceleration(velocity: ref velocityZX.Item1, true);
+            Deceleration(velocity: ref velocityZX.Item1, false);
         }
-        if (velocitX != 0.0f && !leftPressed && !rightPressed)
+        if (velocityZX.Item2 != 0.0f && !leftPressed && !rightPressed)
         {
-            Deceleration(velocity: ref velocitX, true);
-            Deceleration(velocity: ref velocitX, false);
+            Deceleration(velocity: ref velocityZX.Item2, true);
+            Deceleration(velocity: ref velocityZX.Item2, false);
         }
 
         //Blend crouch
-        if (isCrouching)
+        if (pmc.IsCrouching && blendXY != blendCrouchXY)
         {
-            Blend(-1,0,false,false);
+            Blend(blendCrouchXY, false, false);
         }
-        else
+        else if (!pmc.IsCrouching && !pmc.Jump && (blendXY != blendStandXY))
         {
-            Blend(0,1,true,true);
+            Blend(blendStandXY, true, true);
         }
 
+        //Blend jump
+        if (pmc.Jump && (blendXY != blendJumpXY))
+        {
+            Blend(blendJumpXY, true, false);
+        }
+        else if (characterController.isGrounded && !pmc.IsCrouching && (blendXY != blendStandXY))
+        {
+            pmc.Jump = false;
+            Blend(blendStandXY, false, true);
+        }
 
-        animator.SetFloat("VelocityZ", velocitZ);
-        animator.SetFloat("VelocityX", velocitX);
-        animator.SetFloat("BlendX", blendx);
-        animator.SetFloat("BlendY", blendy);
-        Debug.Log(animator.GetFloat("BlendX"));
+        animator.SetFloat("VelocityZ", velocityZX.Item1);
+        animator.SetFloat("VelocityX", velocityZX.Item2);
+        animator.SetFloat("BlendX", blendXY.Item1);
+        animator.SetFloat("BlendY", blendXY.Item2);
     }
     private void Deceleration(ref float velocity, bool incrase)
     {
@@ -131,8 +121,7 @@ public class PlayerAnimator : MonoBehaviour
         {
 
             velocity = incrase ? velocity + Time.deltaTime * deceleration : velocity - Time.deltaTime * deceleration;
-            //Reseting velocity if overshoots 0.0f
-            if (incrase ? velocity > 0.0f : velocity < 0.0f) //0.05!?
+            if (incrase ? velocity > 0.0f : velocity < 0.0f) 
             {
                 velocity = 0.0f;
             }
@@ -154,15 +143,14 @@ public class PlayerAnimator : MonoBehaviour
         }
     }
 
-    private void Blend(int x, int y, bool incrasex, bool incrasey)
+    private void Blend((float,float) blendTo, bool incrasex, bool incrasey)
     {
-        blendx = incrasex ? blendx += Time.deltaTime * blendSpeed : blendx -= Time.deltaTime * blendSpeed;
-        blendy = incrasex ? blendy += Time.deltaTime * blendSpeed : blendy -= Time.deltaTime * blendSpeed;
-        if ((incrasex ?  blendx > x : blendx < x) &&  (incrasey ? blendy > y : blendy < y))
+        if (blendXY.Item1 != blendTo.Item1) blendXY.Item1 = incrasex ? blendXY.Item1 += Time.deltaTime * blendSpeed : blendXY.Item1 -= Time.deltaTime * blendSpeed;
+        if (blendXY.Item2 != blendTo.Item2) blendXY.Item2 = incrasey ? blendXY.Item2 += Time.deltaTime * blendSpeed : blendXY.Item2 -= Time.deltaTime * blendSpeed;
+        if ( ((incrasex ?  blendXY.Item1 > blendTo.Item1 : blendXY.Item1 < blendTo.Item1) || (blendXY.Item1 == blendTo.Item1)) &&
+             ((incrasey ? blendXY.Item2 > blendTo.Item2 : blendXY.Item2 < blendTo.Item2) ||(blendXY.Item2 == blendTo.Item2)) )
         {
-            blendx = x;
-            blendy = y;
+            blendXY = blendTo;
         }
     }
-
 }
