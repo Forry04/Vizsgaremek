@@ -8,6 +8,7 @@ using UnityEngine.InputSystem;
 public class PlayerCameraController : NetworkBehaviour
 {
     [InspectorLabel("Mouse Sensitivity")]
+    [Range(1,200)]
     [SerializeField] private float mouseSensitivity = 100f;
 
     private float xRotation = 0f;
@@ -22,6 +23,7 @@ public class PlayerCameraController : NetworkBehaviour
         if (!IsLocalPlayer)
         {
             GetComponent<Camera>().enabled = false;
+            GetComponent<AudioListener>().enabled = false;
             return;
         }
     }
