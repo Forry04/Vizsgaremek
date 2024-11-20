@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 8044244931356511620}
   - component: {fileID: 3398035911502431709}
   - component: {fileID: 3214117639331186276}
+  - component: {fileID: -2499835459869256277}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -185,6 +186,20 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &-2499835459869256277
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4657337878885597230}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad8deae8091111f4eb30a56c1f4e0d3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TransitionStateInfoList: []
+  m_Animator: {fileID: 4168741442069780963}
 --- !u!1 &6617967557542111509
 GameObject:
   m_ObjectHideFlags: 0
@@ -356,6 +371,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bfd7e2afbf9216d4abc8e0ebd026e7e9, type: 3}
+--- !u!95 &4168741442069780963 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: bfd7e2afbf9216d4abc8e0ebd026e7e9, type: 3}
+  m_PrefabInstance: {fileID: 7543755775731328114}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8014846673018225561 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: bfd7e2afbf9216d4abc8e0ebd026e7e9, type: 3}
