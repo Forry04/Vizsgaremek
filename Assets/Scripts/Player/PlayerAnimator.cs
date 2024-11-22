@@ -86,33 +86,6 @@ public class PlayerAnimator : NetworkBehaviour
         animator.SetFloat("BlendX", blendX);
         animator.SetFloat("BlendY", blendY);
 
-        // Send RPC to update parameters on the server and other clients
-        UpdateAnimatorParametersServerRpc(speedZ, speedX, blendX, blendY);
-    }
-
-    [ServerRpc]
-    private void UpdateAnimatorParametersServerRpc(float speedZ, float speedX, float blendX, float blendY)
-    {
-        // Update parameters on the server
-        animator.SetFloat("VelocityZ", speedZ);
-        animator.SetFloat("VelocityX", speedX);
-        animator.SetFloat("BlendX", blendX);
-        animator.SetFloat("BlendY", blendY);
-
-        // Broadcast to other clients
-        UpdateAnimatorParametersClientRpc(speedZ, speedX, blendX, blendY);
-    }
-
-    [ClientRpc]
-    private void UpdateAnimatorParametersClientRpc(float speedZ, float speedX, float blendX, float blendY)
-    {
-        if (IsOwner) return; // Skip the owner client
-
-        // Update parameters on other clients
-        animator.SetFloat("VelocityZ", speedZ);
-        animator.SetFloat("VelocityX", speedX);
-        animator.SetFloat("BlendX", blendX);
-        animator.SetFloat("BlendY", blendY);
     }
 
     private void Deceleration(ref float velocity)
