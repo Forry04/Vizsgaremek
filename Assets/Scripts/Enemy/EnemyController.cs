@@ -1,10 +1,13 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class EnemyController : MonoBehaviour
 {
+    [SerializeField] List<Transform> patrolPoints;
     [SerializeField] private Transform detectionOriginPoint;
     [SerializeField] private float proxyDetectionRange = 5f;
     [SerializeField] private float normalDetectionRange = 10f;
@@ -22,6 +25,7 @@ public class EnemyController : MonoBehaviour
     private float targetSwitchLockoutTimer = 0f;
     private bool isChasing = false;
 
+  
     private void Start()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -91,6 +95,15 @@ public class EnemyController : MonoBehaviour
         }
 
 
+    }
+    private void Searching()
+    {
+        throw new NotImplementedException();
+    }
+
+    private void Patroling()
+    {
+        throw new NotImplementedException();
     }
 
     private void Chase()
