@@ -7,12 +7,13 @@ using UnityEngine.AI;
 
 public class EnemyController : MonoBehaviour
 {
-    [SerializeField] List<Transform> patrolPoints;
+    [SerializeField] private List<Transform> patrolPoints;
     [SerializeField] private Transform detectionOriginPoint;
-    [SerializeField] private float proxyDetectionRange = 5f;
+    [SerializeField] private float proxyDetectionRange = 2f;
     [SerializeField] private float normalDetectionRange = 10f;
     [SerializeField] private float detectedDetectionRangeModifier = 1.5f;
-    [SerializeField] private float detectionAngle = 45f;
+    [Range(0, 360)]
+    [SerializeField] private float detectionAngle = 80f;
     [SerializeField] private float speed = 3.5f;
     [SerializeField] private float turnSpeed = 120f;
     [SerializeField] private float detectedSpeedModifier = 1.2f;
@@ -25,7 +26,6 @@ public class EnemyController : MonoBehaviour
     private float targetSwitchLockoutTimer = 0f;
     private bool isChasing = false;
 
-  
     private void Start()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -35,6 +35,7 @@ public class EnemyController : MonoBehaviour
     private void Update()
     {
         DetectPlayer();
+        ProxyDetection();
 
         if (detected)
         {
@@ -48,7 +49,6 @@ public class EnemyController : MonoBehaviour
 
     private void DetectPlayer()
     {
-       
         Collider[] hits = Physics.OverlapSphere(detectionOriginPoint.position, detectionRange);
         foreach (var hit in hits)
         {
@@ -79,23 +79,31 @@ public class EnemyController : MonoBehaviour
 
     private void ProxyDetection()
     {
-        Collider[] hits = Physics.OverlapSphere(detectionOriginPoint.position, proxyDetectionRange);
+        
+        Collider[] hits = Physics.OverlapSphere(transform.position, proxyDetectionRange);
         foreach (var hit in hits)
         {
+   
             if (hit.CompareTag("Player"))
             {
-                Vector3 directionToPlayer = (hit.transform.position - detectionOriginPoint.position).normalized;
-                float angleToPlayer = Vector3.Angle(detectionOriginPoint.forward, directionToPlayer);
+                Vector3 directionToPlayer = (hit.transform.position - transform.position).normalized;
 
-                if (angleToPlayer < detectionAngle / 2)
+                
+                if (Physics.Raycast(transform.position, directionToPlayer, out RaycastHit raycastHit, proxyDetectionRange))
                 {
-                    transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(directionToPlayer), turnSpeed * Time.deltaTime);
+                    
+                    if (raycastHit.collider.CompareTag("Player") && raycastHit.collider.gameObject != gameObject)
+                    {
+                        transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(directionToPlayer), turnSpeed * Time.deltaTime);
+                        Debug.Log("Player detected by proxy");
+                    }
                 }
             }
         }
-
-
     }
+
+
+
     private void Searching()
     {
         throw new NotImplementedException();
@@ -122,25 +130,31 @@ public class EnemyController : MonoBehaviour
         agent.speed = speed;
         detectionRange = normalDetectionRange;
         agent.ResetPath();
-
     }
 
-    //Debug
+    public void TriggerEnemyRemotly()
+    {
+        throw new NotImplementedException();
+    }
+
+    // Debug
     private void OnDrawGizmos()
     {
-
         if (detectionOriginPoint != null)
         {
+            // Draw the normal detection range
             UnityEditor.Handles.color = Color.red;
             UnityEditor.Handles.DrawWireDisc(detectionOriginPoint.position, Vector3.up, detectionRange);
 
-            
+            // Draw the proxy detection range
+            UnityEditor.Handles.color = Color.yellow;
+            UnityEditor.Handles.DrawWireDisc(transform.position, Vector3.up, proxyDetectionRange);
+
             Vector3 startAngle = Quaternion.AngleAxis(detectionAngle / 2, Vector3.up) * detectionOriginPoint.forward;
             Vector3 endAngle = Quaternion.AngleAxis(-detectionAngle / 2, Vector3.up) * detectionOriginPoint.forward;
             Gizmos.color = Color.blue;
             Gizmos.DrawRay(detectionOriginPoint.position, startAngle * detectionRange);
             Gizmos.DrawRay(detectionOriginPoint.position, endAngle * detectionRange);
-
 
             Collider[] hits = Physics.OverlapSphere(detectionOriginPoint.position, detectionRange);
             foreach (var hit in hits)
@@ -171,5 +185,3 @@ public class EnemyController : MonoBehaviour
         }
     }
 }
-
-

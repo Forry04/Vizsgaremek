@@ -612,6 +612,14 @@ PrefabInstance:
       value: -1372625422
       objectReference: {fileID: 0}
     - target: {fileID: 4773630953244909992, guid: 1c862c3d18b6c0e49b2740d130a90434, type: 3}
+      propertyPath: detectionAngle
+      value: 80
+      objectReference: {fileID: 0}
+    - target: {fileID: 4773630953244909992, guid: 1c862c3d18b6c0e49b2740d130a90434, type: 3}
+      propertyPath: proxyDetectionRange
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4773630953244909992, guid: 1c862c3d18b6c0e49b2740d130a90434, type: 3}
       propertyPath: detectionOriginPoint
       value: 
       objectReference: {fileID: 2558876448461872144}
