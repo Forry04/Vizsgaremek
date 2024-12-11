@@ -15,6 +15,11 @@ public class JoinMenu : MonoBehaviour
     private Button backButton;
     private Button joinButton;
     private TextField joinCodeField;
+
+    private void Update()
+    {
+        
+    }
     private void OnEnable()
     {
         joinMenuUi = joinMenuUiObject.GetComponent<UIDocument>().rootVisualElement;

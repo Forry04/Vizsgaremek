@@ -20,6 +20,10 @@
     opacity: 0.99;
 }
 
+.button:focus {
+    scale: 1.1;
+}
+
 .main {
     flex-grow: 1;
     background-color: rgb(56, 56, 56);
