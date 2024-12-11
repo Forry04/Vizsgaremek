@@ -1,5 +1,9 @@
 using UnityEngine;
 using Unity.Netcode;
+using UnityEngine.InputSystem;
+using UnityEngine.ProBuilder;
+using Unity.Mathematics;
+using UnityEngine.Rendering;
 
 [RequireComponent(typeof(NetworkObject))]
 [RequireComponent(typeof(CharacterController))]
@@ -19,100 +23,65 @@ public class PlayerAnimator : NetworkBehaviour
     private CharacterController characterController;
     private Animator animator;
     private PlayerMovementController pmc;
+    private PlayerInputHandler inputhandler;
     private (float Z, float X) velocityZX = (0.0f, 0.0f);
-    private (float X, float Y) blendXY = (0.0f, 1.0f);
-    private readonly (float X, float Y) blendJumpXY = (1.0f, 0.0f);
-    private readonly (float X, float Y) blendCrouchXY = (-1.0f, 0.0f);
-    private readonly (float X, float Y) blendStandXY = (0.0f, 1.0f);
-
-    private float currentMaxVelocity;
-    private bool isRunning => Input.GetKey(KeyCode.LeftShift);
-    private bool forwardPressed => Input.GetKey(KeyCode.W);
-    private bool backwardPressed => Input.GetKey(KeyCode.S);
-    private bool rightPressed => Input.GetKey(KeyCode.D);
-    private bool leftPressed => Input.GetKey(KeyCode.A);
+    private readonly float BlendStand = 0;
+    private readonly float BlendCrouch = 1;
+    private float BlendState;
+    public bool Jump;
 
     void Start()
     {
         animator = GetComponentInChildren<Animator>();
         characterController = GetComponent<CharacterController>();
         pmc = GetComponent<PlayerMovementController>();
+        inputhandler = GetComponent<PlayerInputHandler>();
         Time.fixedDeltaTime = 0.01f;
-
     }
 
     void FixedUpdate()
     {
         if (!IsOwner) return;
 
-        currentMaxVelocity = pmc.IsCrouching ? maximumWalk_CrouchVelocity : (isRunning ? maximumRunVelocity : maximumWalk_CrouchVelocity);
+        // Velocity change
+        ChangeVelocity();
+      
+        // Blend to/from crouch
+        Crouch();
 
-        // Velocity acceleration
-        if (forwardPressed) velocityZX.Z = Mathf.Min(velocityZX.Z + Time.deltaTime * acceleration, currentMaxVelocity);
-        if (backwardPressed) velocityZX.Z = Mathf.Max(velocityZX.Z - Time.deltaTime * acceleration, -currentMaxVelocity);
-        if (rightPressed) velocityZX.X = Mathf.Min(velocityZX.X + Time.deltaTime * acceleration, currentMaxVelocity);
-        if (leftPressed) velocityZX.X = Mathf.Max(velocityZX.X - Time.deltaTime * acceleration, -currentMaxVelocity);
+        // Jump transition
+        JumpTransition();
 
-        // Lock
-        Lock(forwardPressed, true, ref velocityZX.Z);
-        Lock(backwardPressed, false, ref velocityZX.Z);
-        Lock(leftPressed, false, ref velocityZX.X);
-        Lock(rightPressed, true, ref velocityZX.X);
-
-        // Velocity deceleration
-        if (!forwardPressed && !backwardPressed) Deceleration(ref velocityZX.Z);
-        if (!leftPressed && !rightPressed) Deceleration(ref velocityZX.X);
-
-        // Blend crouch
-        if (pmc.IsCrouching && blendXY != blendCrouchXY) Blend(blendCrouchXY);
-        else if (!pmc.IsCrouching && !pmc.Jump && blendXY != blendStandXY) Blend(blendStandXY);
-
-        // Blend jump
-        if (pmc.Jump && blendXY != blendJumpXY) Blend(blendJumpXY);
-        else if (characterController.isGrounded && !pmc.IsCrouching && blendXY != blendStandXY)
-        {
-            pmc.Jump = false;
-            Blend(blendStandXY);
-        }
-
-        // Update animator parameters locally
-        float speedZ = velocityZX.Z;
-        float speedX = velocityZX.X;
-        float blendX = blendXY.X;
-        float blendY = blendXY.Y;
-
-        animator.SetFloat("VelocityZ", speedZ);
-        animator.SetFloat("VelocityX", speedX);
-        animator.SetFloat("BlendX", blendX);
-        animator.SetFloat("BlendY", blendY);
-
+        //Setting animator parameters
+        SetAnimator();
     }
 
-    private void Deceleration(ref float velocity)
+    private void ChangeVelocity()
     {
-        if (velocity != 0.0f)
-        {
-            float decelerationAmount = Time.deltaTime * deceleration;
-            if (velocity > 0.0f) velocity = Mathf.Max(velocity - decelerationAmount, 0.0f);
-            else velocity = Mathf.Min(velocity + decelerationAmount, 0.0f);
-        }
+        velocityZX.Z = Mathf.MoveTowards(velocityZX.Z,
+            inputhandler.SprintTriggered ? inputhandler.MoveInput.y * maximumRunVelocity : inputhandler.MoveInput.y * maximumWalk_CrouchVelocity,
+            Mathf.Abs(inputhandler.MoveInput.y) > Mathf.Abs(velocityZX.Z) ? Time.deltaTime * acceleration : Time.deltaTime * deceleration);
+
+        velocityZX.X = Mathf.MoveTowards(velocityZX.X,
+            inputhandler.SprintTriggered ? inputhandler.MoveInput.x * maximumRunVelocity : inputhandler.MoveInput.x * maximumWalk_CrouchVelocity,
+            Mathf.Abs(inputhandler.MoveInput.x) > Mathf.Abs(velocityZX.X) ? Time.deltaTime * acceleration : Time.deltaTime * deceleration);
+    }
+    private void Crouch()
+    {
+        if (pmc.IsCrouching && (BlendState != BlendCrouch)) BlendState = Mathf.MoveTowards(BlendState, BlendCrouch, Time.deltaTime * blendSpeed);
+        else if ((!pmc.IsCrouching || inputhandler.JumpTriggered) && (BlendState != BlendStand)) BlendState = Mathf.MoveTowards(BlendState, BlendStand, Time.deltaTime * blendSpeed);
+    }
+    private void JumpTransition()
+    {
+        if (pmc.Jump) Jump = true;
+        else if (characterController.isGrounded && !pmc.Jump && animator.GetCurrentAnimatorStateInfo(0).IsName("Jump")) Jump = false;
     }
 
-    private void Lock(bool directionPressed, bool increase, ref float velocity)
+    private void SetAnimator()
     {
-        if (!directionPressed) return;
-
-        float maxVelocity = increase ? currentMaxVelocity : -currentMaxVelocity;
-        if (isRunning || Mathf.Abs(velocity) > Mathf.Abs(maxVelocity))
-        {
-            velocity = Mathf.MoveTowards(velocity, maxVelocity, Time.deltaTime * deceleration);
-        }
-    }
-
-    private void Blend((float X, float Y) blendTo)
-    {
-        blendXY.X = Mathf.MoveTowards(blendXY.X, blendTo.X, Time.deltaTime * blendSpeed);
-        blendXY.Y = Mathf.MoveTowards(blendXY.Y, blendTo.Y, Time.deltaTime * blendSpeed);
-        Debug.Log($"BlendX: {blendXY.X}, BlendY: {blendXY.Y}");
+        animator.SetFloat("VelocityZ", velocityZX.Z);
+        animator.SetFloat("VelocityX", velocityZX.X);
+        animator.SetFloat("Blend", BlendState);
+        animator.SetBool("Jump", Jump);
     }
 }
