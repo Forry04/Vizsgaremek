@@ -2,7 +2,7 @@
     <Style src="project://database/Assets/Ui/Menu/MainMenu.uss?fileID=7433441132597879392&amp;guid=77be7fb5b4caae240865ed8fb9858640&amp;type=3#MainMenu" />
     <Style src="project://database/Assets/Ui/Menu/General.uss?fileID=7433441132597879392&amp;guid=f89a2678f5e910b4f9cb48d2186c123a&amp;type=3#General" />
     <ui:VisualElement name="main-container" class="main">
-        <ui:Label tabindex="-1" text="Place Holder Name" parse-escape-sequences="true" display-tooltip-when-elided="true" name="main-title" class="title" />
+        <ui:Label tabindex="-1" text="Arachnid Descent" parse-escape-sequences="true" display-tooltip-when-elided="true" name="main-title" class="title" />
         <ui:VisualElement name="button-container" class="buttons">
             <ui:Button text="Host" parse-escape-sequences="true" display-tooltip-when-elided="true" enable-rich-text="true" name="host-button" class="button" style="flex-basis: auto;" />
             <ui:Button text="Join" parse-escape-sequences="true" display-tooltip-when-elided="true" name="join-button" class="button" />

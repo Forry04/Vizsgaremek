@@ -11,6 +11,8 @@ public class PlayerSpawner : NetworkBehaviour
     [SerializeField] private  Transform[] playerSpawnPoint;
     [SerializeField] private TextMeshProUGUI joinCodeText;
 
+    private int spawnPostionIndex = 0;
+
     private void Start()
     {
         if (IsServer) NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
@@ -36,8 +38,9 @@ public class PlayerSpawner : NetworkBehaviour
 
     private void SpawnPlayerServer(ulong clientId)
     {
-        GameObject player = Instantiate(playerPrefab, playerSpawnPoint[0].position, playerSpawnPoint[0].rotation);
+        GameObject player = Instantiate(playerPrefab, playerSpawnPoint[spawnPostionIndex].position, playerSpawnPoint[spawnPostionIndex].rotation);
         NetworkObject playerNetworkObject = player.GetComponent<NetworkObject>();
         playerNetworkObject.SpawnAsPlayerObject(clientId);
+        spawnPostionIndex++;
     }
 }
