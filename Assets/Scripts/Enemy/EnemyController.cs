@@ -25,11 +25,13 @@ public class EnemyController : MonoBehaviour
     private bool detected = false;
     private float targetSwitchLockoutTimer = 0f;
     private bool isChasing = false;
+    private Transform lastKnownLocation;
 
     private void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         detectionRange = normalDetectionRange;
+       
     }
 
     private void Update()
@@ -66,6 +68,7 @@ public class EnemyController : MonoBehaviour
                             targetSwitchLockoutTimer = Time.time + targetSwitchLockoutTime;
                             player = raycastHit.collider.gameObject;
                             detected = true;
+                            lastKnownLocation = player.transform;
                             return;
                         }
                     }
@@ -102,8 +105,6 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-
-
     private void Searching()
     {
         throw new NotImplementedException();
@@ -129,7 +130,8 @@ public class EnemyController : MonoBehaviour
         isChasing = false;
         agent.speed = speed;
         detectionRange = normalDetectionRange;
-        agent.ResetPath();
+        agent.SetDestination(lastKnownLocation.position);
+       
     }
 
     public void TriggerEnemyRemotly()
@@ -140,6 +142,13 @@ public class EnemyController : MonoBehaviour
     // Debug
     private void OnDrawGizmos()
     {
+        // Draw the destination point for the enemy
+        if (agent != null && agent.hasPath)
+        {
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawSphere(agent.destination, 0.5f);
+        }
+
         if (detectionOriginPoint != null)
         {
             // Draw the normal detection range
