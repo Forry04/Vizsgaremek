@@ -8,13 +8,15 @@ using UnityEngine.InputSystem;
 public class PlayerCameraController : NetworkBehaviour
 {
     [InspectorLabel("Mouse Sensitivity")]
-    [Range(1,200)]
-    [SerializeField] private float mouseSensitivity = 100f;
-
+    [Range(1,100)]
+    [SerializeField] private float mouseSensitivity = 18f;
+    [Range(1,500)]
+    [InspectorLabel("Joystick Sensitivity")]
+    [SerializeField] private float joystickSensitivity = 250f;
     private float xRotation = 0f;
     private float yRotation = 0f;
     private Transform orientation;
-
+    private PlayerInputHandler inputHandler;
     public override void OnNetworkSpawn()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -28,11 +30,20 @@ public class PlayerCameraController : NetworkBehaviour
         }
     }
 
+    private void Start()
+    {
+        inputHandler = transform.parent.GetComponent<PlayerInputHandler>();
+    }
+
     private void Update()
     {
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
+        HandleCamMovement();
+    }
 
+    private void HandleCamMovement()
+    {
+        float mouseX = inputHandler.LookInput.x * (inputHandler.LookDevice ? mouseSensitivity : joystickSensitivity) * Time.deltaTime;
+        float mouseY = inputHandler.LookInput.y * (inputHandler.LookDevice ? mouseSensitivity : joystickSensitivity) * Time.deltaTime;
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 

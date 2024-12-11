@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using UnityEngine.InputSystem;
+using System;
+using static UnityEngine.UI.Image;
 
 [RequireComponent(typeof(CharacterController))]
 
@@ -19,10 +21,21 @@ public class PlayerMovementController : NetworkBehaviour
     [SerializeField]
     private float gravity = 20.0f;
 
-
+    private Vector3 currentMoevement;
     CharacterController characterController;
-    Vector3 moveDirection = Vector3.zero;
-    //PlayerInput input;
+    private PlayerInputHandler inputHandler;
+
+    private readonly float raycastHeight = 0.5f;
+    private readonly float checkDistance = 1.0f;
+
+    private readonly Vector3 center_Crouch = new(0,0.6f,0.3f);
+    private readonly float radius_Crouch = 0.4f;
+    private readonly float height_Crouch = 1.2f;
+
+    private readonly Vector3 center_Stand = new(0, 1, 0);
+    private readonly float radius_Stand = 0.4f;
+    private readonly float height_Stand = 2;
+
     [HideInInspector]
     public bool canMove = true;
     public bool IsCrouching = false;
@@ -31,51 +44,98 @@ public class PlayerMovementController : NetworkBehaviour
     void Start()
     {
         characterController = GetComponent<CharacterController>();
+        inputHandler = GetComponent<PlayerInputHandler>();
         // Lock cursor
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if (!IsOwner) return;
-      
-        Vector3 forward = transform.TransformDirection(Vector3.forward);
-        Vector3 right = transform.TransformDirection(Vector3.right);      
-        bool isRunning = Input.GetKey(KeyCode.LeftShift);
+        HandleMovement();
+    }
 
-        if (((Input.GetKeyDown(KeyCode.LeftControl) || (Input.GetButton("Jump") && IsCrouching))) && characterController.isGrounded)
+    void HandleMovement()
+    {
+        HandleCrouch();
+
+        float speed = canMove ? ((IsCrouching? sneakingSpeed:(inputHandler.SprintTriggered? runningSpeed:walkingSpeed))) : 0;
+        Vector3 inputDirection = new(inputHandler.MoveInput.x, 0f,inputHandler.MoveInput.y);
+        Vector3 worldDirection = transform.TransformDirection(inputDirection);
+        currentMoevement.x = worldDirection.x * speed;
+        currentMoevement.z = worldDirection.z * speed;
+
+        HandleJumping();
+        if (StandUp && !inputHandler.JumpTriggered && !IsCrouching) StandUp = false;
+
+        characterController.Move(currentMoevement * Time.deltaTime);
+    }
+
+    private void HandleCrouch()
+    {
+        if ((inputHandler.CrouchTriggered || (inputHandler.JumpTriggered && IsCrouching)) && characterController.isGrounded)
         {
-            StandUp = true;
-            IsCrouching = !IsCrouching;
+            if (IsCrouching)
+            {
+                if (!ObstacleAbove())
+                {
+                    StandUp = true;
+                    IsCrouching = !IsCrouching;
+                    ModifyController(false);
+                }
+            }
+            else
+            {
+                StandUp = true;
+                IsCrouching = !IsCrouching;
+                ModifyController(true);
+            }
         }
-
-        float curSpeedX = canMove ? ((IsCrouching? sneakingSpeed: (isRunning ? runningSpeed : walkingSpeed)) * Input.GetAxis("Vertical")) : 0;
-        float curSpeedY = canMove ? ((IsCrouching? sneakingSpeed: (isRunning ? runningSpeed : walkingSpeed)) * Input.GetAxis("Horizontal")) : 0;
-        float movementDirectionY = moveDirection.y;
-        moveDirection = (forward * curSpeedX) + (right * curSpeedY);
-
-
-        if (Input.GetButton("Jump") && canMove && characterController.isGrounded && !IsCrouching & !StandUp)
+    }
+    private void HandleJumping()
+    {
+        if (inputHandler.JumpTriggered && canMove && characterController.isGrounded && !IsCrouching && !StandUp)
         {
             Jump = true;
-            moveDirection.y = jumpSpeed;
+            currentMoevement.y = jumpSpeed;
         }
-        else
-        {
-            moveDirection.y = movementDirectionY;
-        }
+        else Jump = false;
 
         if (!characterController.isGrounded)
         {
-            moveDirection.y -= gravity * Time.deltaTime;
+            currentMoevement.y -= gravity * Time.deltaTime;
         }
-
-        if (StandUp && Input.GetButtonUp("Jump"))
-        {
-            StandUp = false;
-        }
-        characterController.Move(moveDirection * Time.deltaTime);
     }
-   
+
+    private bool ObstacleAbove()
+    {
+        Vector3 origin = characterController.transform.position + Vector3.up * raycastHeight;
+        RaycastHit hit;
+        if (Physics.Raycast(origin, Vector3.up, out hit, checkDistance))
+        {
+            Debug.DrawRay(origin, Vector3.up * raycastHeight, Color.blue);
+            if (hit.collider != null && hit.collider != characterController.GetComponent<Collider>())
+            {
+                return true;
+            }
+        }
+        return false; 
+    }
+
+    private void ModifyController(bool toCrouch)
+    {
+        if (toCrouch)
+        {
+            characterController.center = center_Crouch;
+            characterController.radius = radius_Crouch;
+            characterController.height = height_Crouch;
+        }
+        else
+        {
+            characterController.center = center_Stand;
+            characterController.radius = radius_Stand;
+            characterController.height = height_Stand;
+        }
+    }
 }
