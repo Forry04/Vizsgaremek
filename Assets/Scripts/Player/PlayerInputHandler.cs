@@ -38,7 +38,6 @@ public class PlayerInputHandler : MonoBehaviour
     public bool SprintTriggered { get; private set; }
     public bool LookDevice { get; private set; }
     public bool UnlockCameraTriggered { get; private set; }
-
     public static PlayerInputHandler Instance { get; private set; }
 
     private void Awake()

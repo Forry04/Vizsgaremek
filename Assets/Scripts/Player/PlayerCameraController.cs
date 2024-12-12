@@ -8,15 +8,18 @@ using UnityEngine.InputSystem;
 public class PlayerCameraController : NetworkBehaviour
 {
     [InspectorLabel("Mouse Sensitivity")]
-    [Range(1,100)]
+    [Range(1, 100)]
     [SerializeField] private float mouseSensitivity = 18f;
-    [Range(1,500)]
+    [Range(1, 500)]
     [InspectorLabel("Joystick Sensitivity")]
     [SerializeField] private float joystickSensitivity = 250f;
-    private float xRotation = 0f;
-    private float yRotation = 0f;
+    [SerializeField] private float distanceFromPlayer = 5f;
+    [SerializeField] private Vector3 offset = new(0, 2, 0);
+    private (float X, float Y) rotation = (0, 0);
     private Transform orientation;
     private PlayerInputHandler inputHandler;
+    private bool isCameraUnlocked = false;
+
     public override void OnNetworkSpawn()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -44,12 +47,32 @@ public class PlayerCameraController : NetworkBehaviour
     {
         float mouseX = inputHandler.LookInput.x * (inputHandler.LookDevice ? mouseSensitivity : joystickSensitivity) * Time.deltaTime;
         float mouseY = inputHandler.LookInput.y * (inputHandler.LookDevice ? mouseSensitivity : joystickSensitivity) * Time.deltaTime;
-        xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+        rotation.X -= mouseY;
+        rotation.X = Mathf.Clamp(rotation.X, -90f, 90f);
 
-        yRotation += mouseX;
+        rotation.Y += mouseX;
 
-        transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
-        orientation.localRotation = Quaternion.Euler(0f, yRotation, 0f);
+        if (inputHandler.UnlockCameraTriggered)
+        {
+            isCameraUnlocked = true;
+        }
+        else if (isCameraUnlocked)
+        {
+            isCameraUnlocked = false;
+            // Ensure the camera smoothly transitions back to the locked state
+            rotation.Y = orientation.eulerAngles.y;
+        }
+
+        if (isCameraUnlocked)
+        {
+            Vector3 direction = new(0, 0, -distanceFromPlayer);
+            Quaternion rotationQuat = Quaternion.Euler(rotation.X, rotation.Y, 0);
+            transform.position = orientation.position + offset + rotationQuat * direction;
+            transform.LookAt(orientation.position + offset);
+        }
+        else
+        {
+            orientation.localRotation = Quaternion.Euler(0f, rotation.Y, 0f);
+        }
     }
 }
