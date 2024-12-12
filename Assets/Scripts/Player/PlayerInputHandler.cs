@@ -19,7 +19,8 @@ public class PlayerInputHandler : MonoBehaviour
     [SerializeField] private string jump = "Jump";
     [SerializeField] private string crouch = "Crouch";
     [SerializeField] private string sprint = "Sprint";
-    
+    [SerializeField] private string unlockCamera = "UnlockCamera";
+
     private InputAction moveAction;
     private InputAction lookAction;
     private InputAction fireAction;
@@ -27,6 +28,7 @@ public class PlayerInputHandler : MonoBehaviour
     public InputAction crouchAction;
     private InputAction sprintAction;
     private bool crouchTriggered;
+    private InputAction unlockCameraAction;
 
     public Vector2 MoveInput { get; private set; }
     public Vector2 LookInput { get; private set; }
@@ -35,6 +37,7 @@ public class PlayerInputHandler : MonoBehaviour
     public bool CrouchTriggered { get => crouchTriggered; private set => crouchTriggered = value; }
     public bool SprintTriggered { get; private set; }
     public bool LookDevice { get; private set; }
+    public bool UnlockCameraTriggered { get; private set; }
 
     public static PlayerInputHandler Instance { get; private set; }
 
@@ -53,6 +56,7 @@ public class PlayerInputHandler : MonoBehaviour
         jumpAction = playerControls.FindActionMap(actionMapName).FindAction(jump);
         crouchAction = playerControls.FindActionMap(actionMapName).FindAction(crouch);
         sprintAction = playerControls.FindActionMap(actionMapName).FindAction(sprint);
+        unlockCameraAction = playerControls.FindActionMap(actionMapName).FindAction(unlockCamera);
         RegisterInputActions();
     }
 
@@ -74,6 +78,9 @@ public class PlayerInputHandler : MonoBehaviour
 
         sprintAction.performed += context => SprintTriggered = true;
         sprintAction.canceled += context => SprintTriggered = false;
+
+        unlockCameraAction.performed += context => UnlockCameraTriggered = true;
+        unlockCameraAction.canceled += context => UnlockCameraTriggered = false;
     }
 
 
