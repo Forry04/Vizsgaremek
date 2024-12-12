@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -29,12 +30,14 @@ public class EnemyController : MonoBehaviour
     private bool detected = false;
     private float targetSwitchLockoutTimer = 0f;
     private bool isChasing = false;
-    private Transform lastKnownLocation;
+    private Vector3 lastKnownLocation;
+
 
     private void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         detectionRange = normalDetectionRange;
+
     }
 
     private void Update()
@@ -71,7 +74,7 @@ public class EnemyController : MonoBehaviour
                             targetSwitchLockoutTimer = Time.time + targetSwitchLockoutTime;
                             player = raycastHit.collider.gameObject;
                             detected = true;
-                            lastKnownLocation = player.transform;
+                            lastKnownLocation = raycastHit.point;
                             return;
                         }
                     }
@@ -133,16 +136,25 @@ public class EnemyController : MonoBehaviour
         isChasing = false;
         agent.speed = speed;
         detectionRange = normalDetectionRange;
-        agent.SetDestination(lastKnownLocation.position);
+        agent.SetDestination(lastKnownLocation);
        
     }
 
     public void TriggerEnemyRemotly()
     {
         throw new NotImplementedException();
+
+    }
+    private void CheckIfDestinationReached()
+    {
+        if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance && !agent.hasPath && agent.velocity.sqrMagnitude == 0f)
+        {
+            throw new NotImplementedException();
+        }
     }
 
-    // Debug
+
+            // Debug
     private void OnDrawGizmos()
     {
         // Draw the destination point for the enemy
