@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -9,15 +10,19 @@ public class EnemyController : MonoBehaviour
 {
     [SerializeField] private List<Transform> patrolPoints;
     [SerializeField] private Transform detectionOriginPoint;
-    [SerializeField] private float proxyDetectionRange = 2f;
-    [SerializeField] private float normalDetectionRange = 10f;
-    [SerializeField] private float detectedDetectionRangeModifier = 1.5f;
-    [Range(0, 360)]
-    [SerializeField] private float detectionAngle = 80f;
+    [SerializeField] private float targetSwitchLockoutTime = 10f;
+    [Header("Movement Settings")]
     [SerializeField] private float speed = 3.5f;
     [SerializeField] private float turnSpeed = 120f;
+    [Header("Detection Settings")]
+    [SerializeField] private float proxyDetectionRange = 2f;
+    [SerializeField] private float normalDetectionRange = 10f;
+    [Range(0, 360)]
+    [SerializeField] private float detectionAngle = 80f;
+    [Range(1f, 3f)]
+    [SerializeField] private float detectedDetectionRangeModifier = 1.5f;
+    [Range(1f, 2f)]
     [SerializeField] private float detectedSpeedModifier = 1.2f;
-    [SerializeField] private float targetSwitchLockoutTime = 10f;
 
     private NavMeshAgent agent;
     private GameObject player;
@@ -25,11 +30,14 @@ public class EnemyController : MonoBehaviour
     private bool detected = false;
     private float targetSwitchLockoutTimer = 0f;
     private bool isChasing = false;
+    private Vector3 lastKnownLocation;
+
 
     private void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         detectionRange = normalDetectionRange;
+
     }
 
     private void Update()
@@ -66,6 +74,7 @@ public class EnemyController : MonoBehaviour
                             targetSwitchLockoutTimer = Time.time + targetSwitchLockoutTime;
                             player = raycastHit.collider.gameObject;
                             detected = true;
+                            lastKnownLocation = raycastHit.point;
                             return;
                         }
                     }
@@ -102,8 +111,6 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-
-
     private void Searching()
     {
         throw new NotImplementedException();
@@ -129,17 +136,34 @@ public class EnemyController : MonoBehaviour
         isChasing = false;
         agent.speed = speed;
         detectionRange = normalDetectionRange;
-        agent.ResetPath();
+        agent.SetDestination(lastKnownLocation);
+       
     }
 
     public void TriggerEnemyRemotly()
     {
         throw new NotImplementedException();
+
+    }
+    private void CheckIfDestinationReached()
+    {
+        if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance && !agent.hasPath && agent.velocity.sqrMagnitude == 0f)
+        {
+            throw new NotImplementedException();
+        }
     }
 
-    // Debug
+
+            // Debug
     private void OnDrawGizmos()
     {
+        // Draw the destination point for the enemy
+        if (agent != null && agent.hasPath)
+        {
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawSphere(agent.destination, 0.5f);
+        }
+
         if (detectionOriginPoint != null)
         {
             // Draw the normal detection range
