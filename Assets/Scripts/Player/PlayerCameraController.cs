@@ -15,10 +15,12 @@ public class PlayerCameraController : NetworkBehaviour
     [SerializeField] private float joystickSensitivity = 250f;
     [SerializeField] private float distanceFromPlayer = 5f;
     [SerializeField] private Vector3 offset = new(0, 2, 0);
+    [SerializeField] private float rotationSmoothTime = 0.1f;
     private (float X, float Y) rotation = (0, 0);
     private Transform orientation;
     private PlayerInputHandler inputHandler;
-    private bool isCameraUnlocked = false;
+    private Vector2 currentRotation;
+    private Vector2 rotationVelocity;
 
     public override void OnNetworkSpawn()
     {
@@ -45,34 +47,23 @@ public class PlayerCameraController : NetworkBehaviour
 
     private void HandleCamMovement()
     {
-        float mouseX = inputHandler.LookInput.x * (inputHandler.LookDevice ? mouseSensitivity : joystickSensitivity) * Time.deltaTime;
-        float mouseY = inputHandler.LookInput.y * (inputHandler.LookDevice ? mouseSensitivity : joystickSensitivity) * Time.deltaTime;
-        rotation.X -= mouseY;
+        float inputX = inputHandler.LookInput.x * (inputHandler.LookDevice ? mouseSensitivity : joystickSensitivity) * Time.deltaTime;
+        float inputY = inputHandler.LookInput.y * (inputHandler.LookDevice ? mouseSensitivity : joystickSensitivity) * Time.deltaTime;
+        rotation.X -= inputY;
         rotation.X = Mathf.Clamp(rotation.X, -90f, 90f);
 
-        rotation.Y += mouseX;
+        rotation.Y += inputX;
 
-        if (inputHandler.UnlockCameraTriggered)
-        {
-            isCameraUnlocked = true;
-        }
-        else if (isCameraUnlocked)
-        {
-            isCameraUnlocked = false;
-            // Ensure the camera smoothly transitions back to the locked state
-            rotation.Y = orientation.eulerAngles.y;
-        }
+        // Smoothly interpolate the camera rotation
+        currentRotation = Vector2.SmoothDamp(currentRotation, new Vector2(rotation.X, rotation.Y), ref rotationVelocity, rotationSmoothTime);
 
-        if (isCameraUnlocked)
-        {
-            Vector3 direction = new(0, 0, -distanceFromPlayer);
-            Quaternion rotationQuat = Quaternion.Euler(rotation.X, rotation.Y, 0);
-            transform.position = orientation.position + offset + rotationQuat * direction;
-            transform.LookAt(orientation.position + offset);
-        }
-        else
-        {
-            orientation.localRotation = Quaternion.Euler(0f, rotation.Y, 0f);
-        }
+        // Apply the rotation to the camera
+        Vector3 direction = new(0, 0, -distanceFromPlayer);
+        Quaternion rotationQuat = Quaternion.Euler(currentRotation.x, currentRotation.y, 0);
+        transform.position = orientation.position + offset + rotationQuat * direction;
+        transform.LookAt(orientation.position + offset);
+
+        // Rotate the player after the camera has rotated
+        orientation.localRotation = Quaternion.Euler(0f, currentRotation.y, 0f);
     }
 }
