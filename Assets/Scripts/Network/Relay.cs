@@ -45,7 +45,7 @@ public class Relay : MonoBehaviour
         Singleton = this;
         DontDestroyOnLoad(gameObject);
 
-        unityTransport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+       
 
         if (IsInternetAvailable())
         {
@@ -57,6 +57,10 @@ public class Relay : MonoBehaviour
             Debug.LogWarning("No internet connection. Running in offline mode.");
             IsOfflineMode = true;
         }
+    }
+    private void Start()
+    {
+        unityTransport = NetworkManager.Singleton.GetComponent<UnityTransport>();
     }
 
     /// <summary>
