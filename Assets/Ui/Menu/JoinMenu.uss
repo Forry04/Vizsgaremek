@@ -4,15 +4,18 @@
 
 .code-input {
     -unity-text-align: middle-center;
-    width: 50%;
+    width: 30%;
     margin: 1%;
     font-size: 30px;
     align-items: center;
     white-space: nowrap;
 }
-.code-input .unity-text-element--inner-input-field-component
-{
-    color:black
+
+.code-input .unity-text-element--inner-input-field-component {
+    color: black;
+    -unity-text-align: middle-center;
+    letter-spacing: 30px; 
+    -unity-font-style: bold;
 }
 
 .input-box {
@@ -25,8 +28,8 @@
     font-size: 40px;
 }
 
-.button{
-     color: black;
+.button {
+    color: black;
     font-size: 30px;
     width: 25%;
     align-self: center;
@@ -34,6 +37,7 @@
     height: auto;
     margin: 1%;
 }
-#join-title{
+
+#join-title {
     top: 2%;
 }

@@ -32,6 +32,25 @@ public class JoinMenu : MonoBehaviour
         backButton.clicked += OnBackClicked;
         joinButton.clicked += OnJoinClicked;
 
+        joinCodeField.textEdition.maxLength = 6;
+
+        joinCodeField.RegisterCallback<ChangeEvent<string>>((evt) =>
+        {
+            joinCodeField.value = evt.newValue.ToUpper();
+        });
+
+        joinCodeField.RegisterCallback<KeyDownEvent>((evt) =>
+        {
+            if (evt.keyCode == KeyCode.Return)
+            {
+                OnJoinClicked();
+            }
+            else if (evt.keyCode == KeyCode.Escape)
+            {
+                OnBackClicked();
+            }
+
+        });
     }
     
     private void OnBackClicked()
