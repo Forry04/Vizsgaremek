@@ -181,19 +181,38 @@ public class Relay : MonoBehaviour
     }
 
     /// <summary>
-    /// Checks if the internet is available.
+    /// Checks if the internet is available by attempting to reach well-known external servers.
     /// </summary>
     /// <returns>True if the internet is available; otherwise, false.</returns>
     private bool IsInternetAvailable()
     {
         try
         {
-            return NetworkInterface.GetIsNetworkAvailable();
+            using var client = new System.Net.WebClient();
+            using (client.OpenRead("http://www.google.com"))
+            {
+                return true;
+            }
         }
-        catch (System.Exception e)
+        catch (System.Net.WebException googleEx)
         {
-            Debug.LogError($"Failed to check internet availability: {e.Message}");
-            return false;
+            Debug.LogWarning($"Failed to reach Google: {googleEx.Message}");
         }
+
+        try
+        {
+            using var client = new System.Net.WebClient();
+            using (client.OpenRead("http://www.example.com"))
+            {
+                return true;
+            }
+        }
+        catch (System.Net.WebException exampleEx)
+        {
+            Debug.LogWarning($"Failed to reach Example: {exampleEx.Message}");
+        }
+
+        Debug.LogError("No internet connection available.");
+        return false;
     }
 }
