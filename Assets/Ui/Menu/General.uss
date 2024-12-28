@@ -1,5 +1,5 @@
 * {
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(240, 240, 240, 0.9);
 }
 
 .button {
@@ -9,24 +9,28 @@
     transition-timing-function: ease-out;
     transition-duration: 0.3s;
     border-radius: 5px;
-    color: black;
+    color: white;
+    background-color: rgb(70, 130, 180); /* SteelBlue */
 }
 
 .button:hover {
     scale: 1.1;
+    background-color: rgb(100, 149, 237); /* CornflowerBlue */
 }
 
 .button:active {
     opacity: 0.99;
+    background-color: rgb(65, 105, 225); /* RoyalBlue */
 }
 
 .button:focus {
     scale: 1.1;
+    background-color: rgb(100, 149, 237); /* CornflowerBlue */
 }
 
 .main {
     flex-grow: 1;
-    background-color: rgb(56, 56, 56);
+    background-color: rgb(40, 40, 40);
 }
 
 .title {
@@ -34,5 +38,5 @@
     font-size: 20px;
     -unity-font-style: bold;
     font-size: 40px;
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(240, 240, 240, 0.9);
 }
