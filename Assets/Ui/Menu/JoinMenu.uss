@@ -29,7 +29,6 @@
 }
 
 .button {
-    color: black;
     font-size: 30px;
     width: 25%;
     align-self: center;
