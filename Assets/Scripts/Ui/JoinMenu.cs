@@ -18,7 +18,7 @@ public class JoinMenu : MonoBehaviour
 
     private void Update()
     {
-        
+
     }
     private void OnEnable()
     {
@@ -51,8 +51,10 @@ public class JoinMenu : MonoBehaviour
             }
 
         });
+
+        joinCodeField.Focus();
     }
-    
+
     private void OnBackClicked()
     {
         mainMenuUiObject.SetActive(true);
@@ -61,12 +63,12 @@ public class JoinMenu : MonoBehaviour
 
     private async void OnJoinClicked()
     {
-       
+
         mainContainer.visible = false;
 
         if (joinCodeField.text is null || joinCodeField.text.Equals(string.Empty))
         {
-            Debug.LogError("Joicode invalid");
+            Debug.LogError("Join code invalid");
             mainContainer.visible = true;
             return;
         }
@@ -75,15 +77,25 @@ public class JoinMenu : MonoBehaviour
         if (await Relay.Singleton.JoinRelay(joinCodeField.text))
         {
             Debug.Log("Joined");
-            NetworkManager.Singleton.SceneManager.LoadScene("Lobby", default);
+            RequestSceneSwitchServerRpc();
         }
         else
-        { 
+        {
             Debug.LogError("Failed to join");
             mainContainer.visible = true;
             loadingMenUiObject.SetActive(false);
         }
     }
 
+    [Rpc (SendTo.Server)]
+    private void RequestSceneSwitchServerRpc()
+    {
+        SwitchSceneClientRpc();
+    }
 
+    [Rpc (SendTo.NotServer)]
+    private void SwitchSceneClientRpc()
+    {
+        NetworkManager.Singleton.SceneManager.LoadScene("Lobby", UnityEngine.SceneManagement.LoadSceneMode.Single);
+    }
 }
