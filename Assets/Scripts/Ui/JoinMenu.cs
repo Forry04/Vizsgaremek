@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 public class JoinMenu : MonoBehaviour
@@ -77,7 +78,7 @@ public class JoinMenu : MonoBehaviour
         if (await Relay.Singleton.JoinRelay(joinCodeField.text))
         {
             Debug.Log("Joined");
-            RequestSceneSwitchServerRpc();
+            SceneManager.LoadScene("Lobby");
         }
         else
         {
@@ -87,15 +88,5 @@ public class JoinMenu : MonoBehaviour
         }
     }
 
-    [Rpc (SendTo.Server)]
-    private void RequestSceneSwitchServerRpc()
-    {
-        SwitchSceneClientRpc();
-    }
-
-    [Rpc (SendTo.NotServer)]
-    private void SwitchSceneClientRpc()
-    {
-        NetworkManager.Singleton.SceneManager.LoadScene("Lobby", UnityEngine.SceneManagement.LoadSceneMode.Single);
-    }
+  
 }

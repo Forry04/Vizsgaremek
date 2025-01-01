@@ -43,4 +43,6 @@ public class PlayerSpawner : NetworkBehaviour
         playerNetworkObject.SpawnAsPlayerObject(clientId);
         spawnPostionIndex++;
     }
+
+
 }
