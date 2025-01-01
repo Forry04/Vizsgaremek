@@ -3,21 +3,44 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.Netcode;
+using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 
 public class PlayerSpawner : NetworkBehaviour
 {
     [SerializeField] private GameObject playerPrefab;
-    [SerializeField] private  Transform[] playerSpawnPoint;
+    [SerializeField] private Transform[] playerSpawnPoint;
     [SerializeField] private TextMeshProUGUI joinCodeText;
+    private int spawnPostionIndex;
 
-    private int spawnPostionIndex = 0;
+    public Transform PlayerSpawnPoint
+    {
+        get
+        {
+            Transform spawnPoint = playerSpawnPoint[spawnPostionIndex];
+            spawnPostionIndex = (spawnPostionIndex + 1) % playerSpawnPoint.Length;
+            return spawnPoint;
+        }
+    }
+
+    public static PlayerSpawner Singleton { get; private set; }
+
+    private void Awake()
+    {
+        if (Singleton != null && Singleton != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Singleton = this;
+    }
+
 
     private void Start()
     {
         if (IsServer) NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
         if (IsHost) joinCodeText.text = Relay.Singleton.JoinCode;
-
     }
 
     public override void OnDestroy()
@@ -29,6 +52,7 @@ public class PlayerSpawner : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         if (IsServer && IsHost) SpawnPlayerServer(NetworkManager.Singleton.LocalClientId);
+        base.OnNetworkSpawn();
     }
 
     private void OnClientConnected(ulong clientId)
@@ -38,9 +62,8 @@ public class PlayerSpawner : NetworkBehaviour
 
     private void SpawnPlayerServer(ulong clientId)
     {
-        GameObject player = Instantiate(playerPrefab, playerSpawnPoint[spawnPostionIndex].position, playerSpawnPoint[spawnPostionIndex].rotation);
-        NetworkObject playerNetworkObject = player.GetComponent<NetworkObject>();
-        playerNetworkObject.SpawnAsPlayerObject(clientId);
-        spawnPostionIndex++;
+        GameObject player = Instantiate(playerPrefab);
+        player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId);
     }
+
 }

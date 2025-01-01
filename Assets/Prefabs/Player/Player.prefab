@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 3214117639331186276}
   - component: {fileID: -2499835459869256277}
   - component: {fileID: 4152306886755625058}
+  - component: {fileID: 3543775128385066565}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -53,7 +54,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1808249678
+  GlobalObjectIdHash: 3790768928
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -286,6 +287,7 @@ MonoBehaviour:
   jump: Jump
   crouch: Crouch
   sprint: Sprint
+  unlockCamera: UnlockCamera
   crouchAction:
     m_Name: Crouch
     m_Type: 0
@@ -295,6 +297,18 @@ MonoBehaviour:
     m_Interactions: 
     m_SingletonActionBindings: []
     m_Flags: 0
+--- !u!114 &3543775128385066565
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4657337878885597230}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d20db0d01d037dc42908a21b6c0e0348, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6617967557542111509
 GameObject:
   m_ObjectHideFlags: 0

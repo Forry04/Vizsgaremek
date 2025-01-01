@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 public class JoinMenu : MonoBehaviour
@@ -18,7 +19,7 @@ public class JoinMenu : MonoBehaviour
 
     private void Update()
     {
-        
+
     }
     private void OnEnable()
     {
@@ -51,8 +52,10 @@ public class JoinMenu : MonoBehaviour
             }
 
         });
+
+        joinCodeField.Focus();
     }
-    
+
     private void OnBackClicked()
     {
         mainMenuUiObject.SetActive(true);
@@ -61,12 +64,12 @@ public class JoinMenu : MonoBehaviour
 
     private async void OnJoinClicked()
     {
-       
+
         mainContainer.visible = false;
 
         if (joinCodeField.text is null || joinCodeField.text.Equals(string.Empty))
         {
-            Debug.LogError("Joicode invalid");
+            Debug.LogError("Join code invalid");
             mainContainer.visible = true;
             return;
         }
@@ -75,15 +78,15 @@ public class JoinMenu : MonoBehaviour
         if (await Relay.Singleton.JoinRelay(joinCodeField.text))
         {
             Debug.Log("Joined");
-            NetworkManager.Singleton.SceneManager.LoadScene("Lobby", default);
+            SceneManager.LoadScene("Lobby");
         }
         else
-        { 
+        {
             Debug.LogError("Failed to join");
             mainContainer.visible = true;
             loadingMenUiObject.SetActive(false);
         }
     }
 
-
+  
 }
