@@ -13,8 +13,19 @@ public class PlayerSpawner : NetworkBehaviour
 
     private int spawnPostionIndex = 0;
 
+    public static PlayerSpawner Singleton { get; private set; }
+
     private void Start()
     {
+        if (Singleton != null && Singleton != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Singleton = this;
+
+
+
         if (IsServer) NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
         if (IsHost) joinCodeText.text = Relay.Singleton.JoinCode;
     }
@@ -28,6 +39,7 @@ public class PlayerSpawner : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         if (IsServer && IsHost) StartCoroutine(WaitForClientConnected(NetworkManager.Singleton.LocalClientId));
+        base.OnNetworkSpawn();
     }
 
     private void OnClientConnected(ulong clientId)
@@ -44,11 +56,14 @@ public class PlayerSpawner : NetworkBehaviour
         SpawnPlayerServer(clientId);
     }
 
+    
     private void SpawnPlayerServer(ulong clientId)
     {
         GameObject player = Instantiate(playerPrefab, playerSpawnPoint[spawnPostionIndex].position, playerSpawnPoint[spawnPostionIndex].rotation);
-        NetworkObject playerNetworkObject = player.GetComponent<NetworkObject>();
-        playerNetworkObject.SpawnAsPlayerObject(clientId);
+        player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId);
         spawnPostionIndex++;
     }
+    public Transform GetCurrentSpawnPoint() => playerSpawnPoint[spawnPostionIndex];
+
+
 }
