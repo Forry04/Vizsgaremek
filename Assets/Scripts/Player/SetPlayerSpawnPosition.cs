@@ -18,8 +18,8 @@ public class SpawPlayerPostion : NetworkBehaviour
         if (IsServer)
         {
             transform.SetPositionAndRotation(PlayerSpawner.Singleton.PlayerSpawnPoint.position, PlayerSpawner.Singleton.PlayerSpawnPoint.rotation);
-            characterController.enabled = true;
         }
+        characterController.enabled = true;
         Destroy(this);
         base.OnNetworkSpawn();
     }
