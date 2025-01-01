@@ -8,7 +8,7 @@ using UnityEngine;
 public class PlayerSpawner : NetworkBehaviour
 {
     [SerializeField] private GameObject playerPrefab;
-    [SerializeField] private  Transform[] playerSpawnPoint;
+    [SerializeField] private Transform[] playerSpawnPoint;
     [SerializeField] private TextMeshProUGUI joinCodeText;
 
     private int spawnPostionIndex = 0;
@@ -17,7 +17,6 @@ public class PlayerSpawner : NetworkBehaviour
     {
         if (IsServer) NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
         if (IsHost) joinCodeText.text = Relay.Singleton.JoinCode;
-
     }
 
     public override void OnDestroy()
@@ -28,12 +27,21 @@ public class PlayerSpawner : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        if (IsServer && IsHost) SpawnPlayerServer(NetworkManager.Singleton.LocalClientId);
+        if (IsServer && IsHost) StartCoroutine(WaitForClientConnected(NetworkManager.Singleton.LocalClientId));
     }
 
     private void OnClientConnected(ulong clientId)
     {
-        if (IsServer) SpawnPlayerServer(clientId);
+        if (IsServer) StartCoroutine(WaitForClientConnected(clientId));
+    }
+
+    private IEnumerator WaitForClientConnected(ulong clientId)
+    {
+        while (!NetworkManager.Singleton.ConnectedClients.ContainsKey(clientId))
+        {
+            yield return new WaitForSeconds(0.1f);
+        }
+        SpawnPlayerServer(clientId);
     }
 
     private void SpawnPlayerServer(ulong clientId)
@@ -43,6 +51,4 @@ public class PlayerSpawner : NetworkBehaviour
         playerNetworkObject.SpawnAsPlayerObject(clientId);
         spawnPostionIndex++;
     }
-
-
 }
