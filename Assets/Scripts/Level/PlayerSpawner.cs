@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.Netcode;
+using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 
 public class PlayerSpawner : NetworkBehaviour
@@ -10,12 +12,21 @@ public class PlayerSpawner : NetworkBehaviour
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private Transform[] playerSpawnPoint;
     [SerializeField] private TextMeshProUGUI joinCodeText;
+    private int spawnPostionIndex;
 
-    private int spawnPostionIndex = 0;
+    public Transform PlayerSpawnPoint
+    {
+        get
+        {
+            Transform spawnPoint = playerSpawnPoint[spawnPostionIndex];
+            spawnPostionIndex = (spawnPostionIndex + 1) % playerSpawnPoint.Length;
+            return spawnPoint;
+        }
+    }
 
     public static PlayerSpawner Singleton { get; private set; }
 
-    private void Start()
+    private void Awake()
     {
         if (Singleton != null && Singleton != this)
         {
@@ -23,9 +34,11 @@ public class PlayerSpawner : NetworkBehaviour
             return;
         }
         Singleton = this;
+    }
 
 
-
+    private void Start()
+    {
         if (IsServer) NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
         if (IsHost) joinCodeText.text = Relay.Singleton.JoinCode;
     }
@@ -38,32 +51,19 @@ public class PlayerSpawner : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        if (IsServer && IsHost) StartCoroutine(WaitForClientConnected(NetworkManager.Singleton.LocalClientId));
+        if (IsServer && IsHost) SpawnPlayerServer(NetworkManager.Singleton.LocalClientId);
         base.OnNetworkSpawn();
     }
 
     private void OnClientConnected(ulong clientId)
     {
-        if (IsServer) StartCoroutine(WaitForClientConnected(clientId));
+        if (IsServer) SpawnPlayerServer(clientId);
     }
 
-    private IEnumerator WaitForClientConnected(ulong clientId)
-    {
-        while (!NetworkManager.Singleton.ConnectedClients.ContainsKey(clientId))
-        {
-            yield return new WaitForSeconds(0.1f);
-        }
-        SpawnPlayerServer(clientId);
-    }
-
-    
     private void SpawnPlayerServer(ulong clientId)
     {
-        GameObject player = Instantiate(playerPrefab, playerSpawnPoint[spawnPostionIndex].position, playerSpawnPoint[spawnPostionIndex].rotation);
+        GameObject player = Instantiate(playerPrefab);
         player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId);
-        spawnPostionIndex++;
     }
-    public Transform GetCurrentSpawnPoint() => playerSpawnPoint[spawnPostionIndex];
-
 
 }
