@@ -7,10 +7,12 @@ public class SpawPlayerPostion : NetworkBehaviour
 {
     public override void OnNetworkSpawn()
     {
-        transform.SetPositionAndRotation(PlayerSpawner.Singleton.GetCurrentSpawnPoint().position, PlayerSpawner.Singleton.GetCurrentSpawnPoint().rotation);
-        base.OnNetworkSpawn();
-        Destroy(this);
-
+        if (IsServer)
+        {
+            transform.SetPositionAndRotation(PlayerSpawner.Singleton.GetCurrentSpawnPoint().position, PlayerSpawner.Singleton.GetCurrentSpawnPoint().rotation);
+            Destroy(this);
+        }
+            base.OnNetworkSpawn();
     }
 
 }
