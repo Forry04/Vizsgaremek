@@ -28,7 +28,8 @@ public class PlayerAnimator : NetworkBehaviour
     private readonly float BlendStand = 0;
     private readonly float BlendCrouch = 1;
     private float BlendState;
-    public bool Jump;
+    private bool jump;
+    private bool fall;
 
     void Start()
     {
@@ -52,8 +53,13 @@ public class PlayerAnimator : NetworkBehaviour
         // Jump transition
         JumpTransition();
 
+        // Fall transition
+        FallTransition();
+
         //Setting animator parameters
         SetAnimator();
+
+
     }
 
     private void ChangeVelocity()
@@ -73,8 +79,14 @@ public class PlayerAnimator : NetworkBehaviour
     }
     private void JumpTransition()
     {
-        if (pmc.Jump) Jump = true;
-        else if (characterController.isGrounded && !pmc.Jump && animator.GetCurrentAnimatorStateInfo(0).IsName("Jump")) Jump = false;
+        if (pmc.Jump) jump = true;
+        else if (characterController.isGrounded && !pmc.Jump && animator.GetCurrentAnimatorStateInfo(0).IsName("Jump")) jump = false;
+    }
+
+    private void FallTransition()
+    {
+        fall = (!characterController.isGrounded && characterController.velocity.y < 0);
+        Debug.Log(fall);
     }
 
     private void SetAnimator()
@@ -82,6 +94,7 @@ public class PlayerAnimator : NetworkBehaviour
         animator.SetFloat("VelocityZ", velocityZX.Z);
         animator.SetFloat("VelocityX", velocityZX.X);
         animator.SetFloat("Blend", BlendState);
-        animator.SetBool("Jump", Jump);
+        animator.SetBool("Jump", jump);
+        animator.SetBool("Fall", fall);
     }
 }

@@ -54,7 +54,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3790768928
+  GlobalObjectIdHash: 1808249678
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -158,7 +158,6 @@ MonoBehaviour:
   blendSpeed: 8
   maximumWalk_CrouchVelocity: 0.5
   maximumRunVelocity: 2
-  Jump: 0
 --- !u!114 &3214117639331186276
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -416,6 +415,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mouseSensitivity: 18
   joystickSensitivity: 250
+  distanceFromPlayer: 5
+  offset: {x: 0, y: 2, z: 0}
+  rotationSmoothTime: 0.1
 --- !u!1001 &7543755775731328114
 PrefabInstance:
   m_ObjectHideFlags: 0
