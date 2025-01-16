@@ -11,6 +11,9 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private List<Transform> patrolPoints;
     [SerializeField] private Transform detectionOriginPoint;
     [SerializeField] private float targetSwitchLockoutTime = 10f;
+    [SerializeField] private float searchTime = 10f;
+    [SerializeField] private float maxChaseTime = 30f;
+    [SerializeField] private float detectionCooldownTime = 5f;
     [Header("Movement Settings")]
     [SerializeField] private float speed = 3.5f;
     [SerializeField] private float turnSpeed = 120f;
@@ -31,13 +34,19 @@ public class EnemyController : MonoBehaviour
     private float targetSwitchLockoutTimer = 0f;
     private bool isChasing = false;
     private Vector3 lastKnownLocation;
-
+    private bool isSearching = false;
+    private int currentPatrolIndex = 0;
+    private float chaseStartTime;
+    private float detectionCooldownTimer = 0f;
 
     private void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         detectionRange = normalDetectionRange;
-
+        if (patrolPoints.Count > 0)
+        {
+            agent.SetDestination(patrolPoints[currentPatrolIndex].position);
+        }
     }
 
     private void Update()
@@ -53,10 +62,24 @@ public class EnemyController : MonoBehaviour
         {
             StopChasing();
         }
+        else if (!isChasing && !isSearching)
+        {
+            Patroling();
+        }
+
+        if (isChasing && Time.time - chaseStartTime > maxChaseTime)
+        {
+            StopChasing();
+        }
     }
 
     private void DetectPlayer()
     {
+        if (Time.time < targetSwitchLockoutTimer || Time.time < detectionCooldownTimer)
+        {
+            return;
+        }
+
         Collider[] hits = Physics.OverlapSphere(detectionOriginPoint.position, detectionRange);
         foreach (var hit in hits)
         {
@@ -88,19 +111,15 @@ public class EnemyController : MonoBehaviour
 
     private void ProxyDetection()
     {
-        
         Collider[] hits = Physics.OverlapSphere(transform.position, proxyDetectionRange);
         foreach (var hit in hits)
         {
-   
             if (hit.CompareTag("Player"))
             {
                 Vector3 directionToPlayer = (hit.transform.position - transform.position).normalized;
 
-                
                 if (Physics.Raycast(transform.position, directionToPlayer, out RaycastHit raycastHit, proxyDetectionRange))
                 {
-                    
                     if (raycastHit.collider.CompareTag("Player") && raycastHit.collider.gameObject != gameObject)
                     {
                         transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(directionToPlayer), turnSpeed * Time.deltaTime);
@@ -113,17 +132,53 @@ public class EnemyController : MonoBehaviour
 
     private void Searching()
     {
-        throw new NotImplementedException();
+        StartCoroutine(SearchCoroutine());
+    }
+
+    private IEnumerator SearchCoroutine()
+    {
+        isSearching = true;
+        float searchEndTime = Time.time + searchTime;
+
+        while (Time.time < searchEndTime)
+        {
+            // Perform search behavior (e.g., look around, move to last known location, etc.)
+            float lookAroundDuration = 2f;
+            float lookAroundTimer = 0f;
+
+            while (lookAroundTimer < lookAroundDuration)
+            {
+                transform.Rotate(0, turnSpeed * Time.deltaTime, 0);
+                lookAroundTimer += Time.deltaTime;
+                yield return null;
+            }
+            agent.SetDestination(lastKnownLocation);
+            yield return null;
+        }
+
+        isSearching = false;
+        Patroling();
     }
 
     private void Patroling()
     {
-        throw new NotImplementedException();
+        if (patrolPoints.Count == 0) return;
+
+        if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
+        {
+            currentPatrolIndex = (currentPatrolIndex + 1) % patrolPoints.Count;
+            agent.SetDestination(patrolPoints[currentPatrolIndex].position);
+        }
     }
 
     private void Chase()
     {
         if (player == null) return;
+
+        if (!isChasing)
+        {
+            chaseStartTime = Time.time;
+        }
 
         detectionRange = normalDetectionRange * detectedDetectionRangeModifier;
         agent.speed = speed * detectedSpeedModifier;
@@ -137,14 +192,20 @@ public class EnemyController : MonoBehaviour
         agent.speed = speed;
         detectionRange = normalDetectionRange;
         agent.SetDestination(lastKnownLocation);
-       
+
+        detectionCooldownTimer = Time.time + detectionCooldownTime; // Start cooldown timer
+
+        if (!isSearching)
+        {
+            Searching();
+        }
     }
 
     public void TriggerEnemyRemotly()
     {
         throw new NotImplementedException();
-
     }
+
     private void CheckIfDestinationReached()
     {
         if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance && !agent.hasPath && agent.velocity.sqrMagnitude == 0f)
@@ -153,8 +214,7 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-
-            // Debug
+    // Debug
     private void OnDrawGizmos()
     {
         // Draw the destination point for the enemy
