@@ -24,6 +24,7 @@ public class PlayerMovementController : NetworkBehaviour
     private Vector3 currentMoevement;
     CharacterController characterController;
     private PlayerInputHandler inputHandler;
+    private Animator animator;
 
     private readonly float raycastHeight = 0.5f;
     private readonly float checkDistance = 1.0f;
@@ -41,10 +42,13 @@ public class PlayerMovementController : NetworkBehaviour
     public bool IsCrouching = false;
     public bool StandUp = false;
     public bool Jump = false;
+
     void Start()
     {
         characterController = GetComponent<CharacterController>();
         inputHandler = GetComponent<PlayerInputHandler>();
+        animator = GetComponentInChildren<Animator>();
+
         // Lock cursor
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -67,6 +71,7 @@ public class PlayerMovementController : NetworkBehaviour
         currentMoevement.z = worldDirection.z * speed;
 
         HandleJumping();
+        
         if (StandUp && !inputHandler.JumpTriggered && !IsCrouching) StandUp = false;
 
         characterController.Move(currentMoevement * Time.deltaTime);
@@ -95,17 +100,32 @@ public class PlayerMovementController : NetworkBehaviour
     }
     private void HandleJumping()
     {
-        if (inputHandler.JumpTriggered && canMove && characterController.isGrounded && !IsCrouching && !StandUp)
+
+        if (canMove && inputHandler.JumpTriggered && characterController.isGrounded && !IsCrouching && !StandUp && animator.GetCurrentAnimatorStateInfo(0).IsName("BasicMovements"))
         {
-            Jump = true;
             currentMoevement.y = jumpSpeed;
+            Jump = true;
         }
         else Jump = false;
+
+        //if (FallBack && canMove && inputHandler.JumpTriggered && characterController.isGrounded && !IsCrouching && !StandUp)
+        //{
+        //    FallBack = false;
+        //}
+
+        //if (canMove && inputHandler.JumpTriggered && characterController.isGrounded && !IsCrouching && !StandUp && !FallBack)
+        //{
+        //    FallBack = true;
+        //    Jump = true;
+        //    currentMoevement.y = jumpSpeed;
+        //}
+        //else Jump = false;
 
         if (!characterController.isGrounded)
         {
             currentMoevement.y -= gravity * Time.deltaTime;
         }
+
     }
 
     private bool ObstacleAbove()

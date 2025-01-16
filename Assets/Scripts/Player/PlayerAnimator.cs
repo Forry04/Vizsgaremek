@@ -75,6 +75,7 @@ public class PlayerAnimator : NetworkBehaviour
     {
         if (pmc.Jump) Jump = true;
         else if (characterController.isGrounded && !pmc.Jump && animator.GetCurrentAnimatorStateInfo(0).IsName("Jump")) Jump = false;
+
     }
 
     private void SetAnimator()
