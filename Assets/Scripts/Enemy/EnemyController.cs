@@ -101,11 +101,12 @@ public class EnemyController : MonoBehaviour
                     {
                         if (raycastHit.collider.CompareTag("Player"))
                         {
-                            
                             targetSwitchLockoutTimer = Time.time + targetSwitchLockoutTime;
                             player = raycastHit.collider.gameObject;
                             detected = true;
-                          
+
+                            // Stop searching if the player is detected
+                            StopSearching();
                             return;
                         }
                     }
@@ -115,7 +116,7 @@ public class EnemyController : MonoBehaviour
 
         if (player != null)
         {
-          lastKnownLocation = player.transform.position;
+            lastKnownLocation = player.transform.position;
         }
 
         detected = false;
@@ -170,6 +171,13 @@ public class EnemyController : MonoBehaviour
 
         while (Time.time < searchEndTime)
         {
+            // Check for player detection during search
+            DetectPlayer();
+            if (detected)
+            {
+                yield break; // Exit the coroutine if the player is detected
+            }
+
             float lookAroundDuration = 2f;
             float lookAroundTimer = 0f;
 
