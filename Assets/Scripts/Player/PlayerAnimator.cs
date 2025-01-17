@@ -79,6 +79,7 @@ public class PlayerAnimator : NetworkBehaviour
     }
     private void JumpTransition()
     {
+
         if (pmc.Jump) jump = true;
         else if (characterController.isGrounded && !pmc.Jump && animator.GetCurrentAnimatorStateInfo(0).IsName("Jump")) jump = false;
     }
@@ -86,7 +87,7 @@ public class PlayerAnimator : NetworkBehaviour
     private void FallTransition()
     {
         fall = (!characterController.isGrounded && characterController.velocity.y < 0);
-        Debug.Log(fall);
+       
     }
 
     private void SetAnimator()
