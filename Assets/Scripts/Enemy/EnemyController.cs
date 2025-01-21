@@ -10,7 +10,7 @@ public class EnemyController : MonoBehaviour
 {
     [SerializeField] private List<Transform> patrolPoints;
     [SerializeField] private Transform detectionOriginPoint;
-    [SerializeField] private float targetSwitchLockoutTime = 10f;
+    [SerializeField] private float targetSwitchLockoutTime = 5f;
     [SerializeField] private float searchTime = 10f;
     [SerializeField] private float maxChaseTime = 30f;
     [SerializeField] private float detectionCooldownTime = 5f;
@@ -38,6 +38,7 @@ public class EnemyController : MonoBehaviour
     private int currentPatrolIndex = 0;
     private float chaseStartTime;
     private float detectionCooldownTimer = 0f;
+    private bool moveToLastKnownLocation = false;
 
     private void Start()
     {
@@ -71,6 +72,12 @@ public class EnemyController : MonoBehaviour
         {
             StopChasing();
         }
+
+        if (moveToLastKnownLocation && !agent.pathPending && agent.remainingDistance <= agent.stoppingDistance && agent.velocity.sqrMagnitude == 0f)
+        {
+            moveToLastKnownLocation = false;
+            Searching();
+        }
     }
 
     private void DetectPlayer()
@@ -97,12 +104,19 @@ public class EnemyController : MonoBehaviour
                             targetSwitchLockoutTimer = Time.time + targetSwitchLockoutTime;
                             player = raycastHit.collider.gameObject;
                             detected = true;
-                            lastKnownLocation = raycastHit.point;
+
+                            // Stop searching if the player is detected
+                            StopSearching();
                             return;
                         }
                     }
                 }
             }
+        }
+
+        if (player != null)
+        {
+            lastKnownLocation = player.transform.position;
         }
 
         detected = false;
@@ -128,11 +142,26 @@ public class EnemyController : MonoBehaviour
                 }
             }
         }
+    
     }
+
+
 
     private void Searching()
     {
-        StartCoroutine(SearchCoroutine());
+        if (!isSearching)
+        {
+         StartCoroutine(SearchCoroutine());
+        }
+    }
+
+    private void StopSearching()
+    {
+        if (isSearching)
+        {
+            isSearching = false;
+            StopCoroutine(SearchCoroutine());
+        }
     }
 
     private IEnumerator SearchCoroutine()
@@ -142,7 +171,13 @@ public class EnemyController : MonoBehaviour
 
         while (Time.time < searchEndTime)
         {
-            // Perform search behavior (e.g., look around, move to last known location, etc.)
+            // Check for player detection during search
+            DetectPlayer();
+            if (detected)
+            {
+                yield break; // Exit the coroutine if the player is detected
+            }
+
             float lookAroundDuration = 2f;
             float lookAroundTimer = 0f;
 
@@ -195,10 +230,7 @@ public class EnemyController : MonoBehaviour
 
         detectionCooldownTimer = Time.time + detectionCooldownTime; // Start cooldown timer
 
-        if (!isSearching)
-        {
-            Searching();
-        }
+        moveToLastKnownLocation = true;
     }
 
     public void TriggerEnemyRemotly()
