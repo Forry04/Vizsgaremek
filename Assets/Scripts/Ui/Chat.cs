@@ -10,7 +10,7 @@ public class Chat : NetworkBehaviour
 {
     public static Chat Singleton;
     [SerializeField] private GameObject chatUiObject;
-    [SerializeField] private string playerName = $"Player{NetworkManager.Singleton.LocalClient}";
+    [SerializeField] private string playerName = $"Player{NetworkManager.Singleton.LocalClient.ClientId}";
     private VisualElement chatUi;
 
     private VisualElement chatContainer;
@@ -23,7 +23,6 @@ public class Chat : NetworkBehaviour
 
     private void Start()
     {
-
         chatUi = chatUiObject.GetComponent<UIDocument>().rootVisualElement;
         chatContainer = chatUi.Q<VisualElement>("chat-container");
         chatListView = chatUi.Q<ScrollView>("chat-window");
@@ -44,6 +43,7 @@ public class Chat : NetworkBehaviour
                     string message = chatInputField.value;
                     chatInputField.value = string.Empty;
                     SendChatMessage(message);
+                    chatInputField.schedule.Execute(() => chatInputField.Focus()).ExecuteLater(100); // Schedule focus
                 }
             }
         });
@@ -59,7 +59,7 @@ public class Chat : NetworkBehaviour
                 chatContainer.RemoveFromClassList("hidden");
                 UnityEngine.Cursor.lockState = CursorLockMode.None;
                 UnityEngine.Cursor.visible = true; // Enable the cursor
-                StartCoroutine(FocusChatInputField()); // Focus the text field
+                chatInputField.schedule.Execute(() => chatInputField.Focus()).ExecuteLater(100); // Schedule focus
                 isChatOpen = true; // Set chat open flag
                 ignoreNextReturn = true; // Ignore the next Return key press
             }
@@ -70,6 +70,7 @@ public class Chat : NetworkBehaviour
                     string message = chatInputField.value;
                     chatInputField.value = string.Empty;
                     SendChatMessage(message);
+                    chatInputField.schedule.Execute(() => chatInputField.Focus()).ExecuteLater(100); // Schedule focus
                 }
             }
         }
@@ -90,7 +91,7 @@ public class Chat : NetworkBehaviour
     {
         if (string.IsNullOrWhiteSpace(message)) return;
 
-        string s = $"{playerName}> {message}";
+        string s = $"{playerName} > {message}";
         ReceiveChatMessageRpc(s);
     }
 
@@ -103,8 +104,6 @@ public class Chat : NetworkBehaviour
             chatContainer.RemoveFromClassList("hidden");
             StartCoroutine(HideChatBox());
         }
-        StartCoroutine(FocusChatInputField());
-
     }
 
     private IEnumerator HideChatBox()
@@ -114,11 +113,5 @@ public class Chat : NetworkBehaviour
         UnityEngine.Cursor.lockState = CursorLockMode.Locked;
         UnityEngine.Cursor.visible = false; // Disable the cursor
         isChatOpen = false; // Reset chat open flag
-    }
-
-    private IEnumerator FocusChatInputField()
-    {
-        yield return null; // Wait for the next frame
-        chatInputField.Focus();
     }
 }
