@@ -1,0 +1,38 @@
+.chat-container {
+    flex-grow: 0;
+    background-color: rgba(67, 64, 65, 0.74);
+    width: 30%;
+    height: 30%;
+    flex-shrink: 0;
+    border-radius: 20px;
+    color: white;
+    font-size: 20px;
+}
+
+.hidden {
+    display: none;
+}
+
+.chat-input > .unity-base-text-field__label {
+    display: none;
+}
+
+.chat-input {
+    -unity-text-align: middle-center;
+    width: 100%;
+    margin: 1%;
+    font-size: 20px;
+    align-items: center;
+    white-space: nowrap;
+    border-radius: 17px;
+}
+
+.chat-input #unity-text-input {
+    color: white;
+    background-color: rgba(255, 255, 255, 0);
+    border-width: 0;
+}
+
+.chat-input .unity-text-element--inner-input-field-component {
+    border-width: 0;
+}
