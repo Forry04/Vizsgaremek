@@ -43,13 +43,13 @@ public class Chat : NetworkBehaviour
                     string message = chatInputField.value;
                     chatInputField.value = string.Empty;
                     SendChatMessage(message);
-                    chatInputField.schedule.Execute(() => chatInputField.Focus()).ExecuteLater(100); // Schedule focus
+                    UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+                    UnityEngine.Cursor.visible = false;
                 }
             }
         });
     }
 
-    // Listen to keyboard input to open chat
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Return))
@@ -58,10 +58,10 @@ public class Chat : NetworkBehaviour
             {
                 chatContainer.RemoveFromClassList("hidden");
                 UnityEngine.Cursor.lockState = CursorLockMode.None;
-                UnityEngine.Cursor.visible = true; // Enable the cursor
-                chatInputField.schedule.Execute(() => chatInputField.Focus()).ExecuteLater(100); // Schedule focus
-                isChatOpen = true; // Set chat open flag
-                ignoreNextReturn = true; // Ignore the next Return key press
+                UnityEngine.Cursor.visible = true;
+                StartCoroutine(FocusChatInputField());
+                isChatOpen = true;
+                ignoreNextReturn = true;
             }
             else if (isChatOpen)
             {
@@ -70,7 +70,6 @@ public class Chat : NetworkBehaviour
                     string message = chatInputField.value;
                     chatInputField.value = string.Empty;
                     SendChatMessage(message);
-                    chatInputField.schedule.Execute(() => chatInputField.Focus()).ExecuteLater(100); // Schedule focus
                 }
             }
         }
@@ -81,8 +80,8 @@ public class Chat : NetworkBehaviour
             {
                 chatContainer.AddToClassList("hidden");
                 UnityEngine.Cursor.lockState = CursorLockMode.Locked;
-                UnityEngine.Cursor.visible = false; // Disable the cursor
-                isChatOpen = false; // Reset chat open flag
+                UnityEngine.Cursor.visible = false;
+                isChatOpen = false;
             }
         }
     }
@@ -99,19 +98,21 @@ public class Chat : NetworkBehaviour
     private void ReceiveChatMessageRpc(string message)
     {
         chatListView.Add(new Label(message));
-        if (chatContainer.ClassListContains("hidden"))
-        {
-            chatContainer.RemoveFromClassList("hidden");
-            StartCoroutine(HideChatBox());
-        }
+        chatContainer.RemoveFromClassList("hidden");
+        chatListView.scrollOffset = new Vector2(0, chatListView.contentContainer.layout.height);
+        StartCoroutine(HideChatBox());
     }
 
     private IEnumerator HideChatBox()
     {
         yield return new WaitForSeconds(5);
         chatContainer.AddToClassList("hidden");
-        UnityEngine.Cursor.lockState = CursorLockMode.Locked;
-        UnityEngine.Cursor.visible = false; // Disable the cursor
-        isChatOpen = false; // Reset chat open flag
+        isChatOpen = false;
+    }
+
+    private IEnumerator FocusChatInputField()
+    {
+        yield return null; // Wait for the next frame
+        chatInputField.Focus();
     }
 }
