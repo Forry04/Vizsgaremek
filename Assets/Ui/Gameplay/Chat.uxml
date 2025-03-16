@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Ui/Gameplay/Chat.uss?fileID=7433441132597879392&amp;guid=64b7d939616a57049b35b8870ad5ef9c&amp;type=3#Chat" />
+    <ui:VisualElement name="main" style="flex-grow: 1; justify-content: flex-end;">
+        <ui:VisualElement name="chat-container" class="chat-container hidden">
+            <ui:ScrollView scroll-deceleration-rate="0,135" elasticity="0,1" name="chat-window" horizontal-page-size="10" vertical-page-size="100" class="chat-list" style="flex-grow: 1; border-bottom-color: rgb(255, 255, 255); border-bottom-width: 1px;" />
+            <ui:TextField picking-mode="Ignore" label="Text Field" name="chat-input" max-length="255" password="false" class="chat-input" style="width: auto;" />
+        </ui:VisualElement>
+        <ui:VisualElement name="temp-container" class="chat-container" style="flex-direction: column-reverse; background-color: rgba(67, 64, 65, 0);" />
+    </ui:VisualElement>
+</ui:UXML>
