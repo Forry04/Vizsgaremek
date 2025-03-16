@@ -14,7 +14,8 @@ public class Chat : NetworkBehaviour
     private VisualElement chatUi;
 
     private VisualElement chatContainer;
-    private ScrollView chatListView;
+    private VisualElement tempContainer;
+    private ScrollView chatScrollView;
     private TextField chatInputField;
     private bool isChatOpen = false;
     private bool ignoreNextReturn = false;
@@ -25,7 +26,8 @@ public class Chat : NetworkBehaviour
     {
         chatUi = chatUiObject.GetComponent<UIDocument>().rootVisualElement;
         chatContainer = chatUi.Q<VisualElement>("chat-container");
-        chatListView = chatUi.Q<ScrollView>("chat-window");
+        tempContainer = chatUi.Q<VisualElement>("temp-container");
+        chatScrollView = chatUi.Q<ScrollView>("chat-window");
         chatInputField = chatUi.Q<TextField>("chat-input");
 
         chatInputField.RegisterCallback<KeyDownEvent>((evt) =>
@@ -56,6 +58,7 @@ public class Chat : NetworkBehaviour
         {
             if (chatContainer.ClassListContains("hidden"))
             {
+                tempContainer.AddToClassList("hidden");
                 chatContainer.RemoveFromClassList("hidden");
                 UnityEngine.Cursor.lockState = CursorLockMode.None;
                 UnityEngine.Cursor.visible = true;
@@ -79,6 +82,7 @@ public class Chat : NetworkBehaviour
             if (!chatContainer.ClassListContains("hidden"))
             {
                 chatContainer.AddToClassList("hidden");
+                tempContainer.RemoveFromClassList("hidden");
                 UnityEngine.Cursor.lockState = CursorLockMode.Locked;
                 UnityEngine.Cursor.visible = false;
                 isChatOpen = false;
@@ -97,22 +101,30 @@ public class Chat : NetworkBehaviour
     [Rpc(SendTo.ClientsAndHost, RequireOwnership = false)]
     private void ReceiveChatMessageRpc(string message)
     {
-        chatListView.Add(new Label(message));
-        chatContainer.RemoveFromClassList("hidden");
-        chatListView.scrollOffset = new Vector2(0, chatListView.contentContainer.layout.height);
-        StartCoroutine(HideChatBox());
+          chatScrollView.Add(new Label(message));
+        if (!chatContainer.ClassListContains("hidden"))
+        {
+            chatScrollView.scrollOffset = new Vector2(0, chatScrollView.contentContainer.layout.height);
+        }
+        else
+        {
+            Label tempLabel = new(message);
+            tempLabel.AddToClassList("temp");
+            tempContainer.Add(tempLabel);
+            StartCoroutine(RemoveTempMessage(tempLabel));
+        }
     }
 
-    private IEnumerator HideChatBox()
+    private IEnumerator RemoveTempMessage(Label lbl)
     {
         yield return new WaitForSeconds(5);
-        chatContainer.AddToClassList("hidden");
-        isChatOpen = false;
+        tempContainer.Remove(lbl);
     }
+ 
 
     private IEnumerator FocusChatInputField()
     {
-        yield return null; // Wait for the next frame
+        yield return null;
         chatInputField.Focus();
     }
 }
