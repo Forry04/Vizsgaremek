@@ -17,13 +17,10 @@
     border-radius: 20px;
     color: white;
     font-size: 20px;
-    /*line break*/
-    white-space: pre-wrap;
+    white-space: normal;
     word-wrap: break-word;
     overflow-wrap: break-word;
     word-break: break-word;
-    hyphens: auto;
-    /*line break*/
     margin: 2%;
     padding: 2%;
 }

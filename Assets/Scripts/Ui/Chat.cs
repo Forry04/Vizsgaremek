@@ -20,8 +20,14 @@ public class Chat : NetworkBehaviour
     private bool isChatOpen = false;
     private bool ignoreNextReturn = false;
 
+    /// <summary>
+    /// Initializes the singleton instance and player name.
+    /// </summary>
     private void Awake() => Singleton = this;
 
+    /// <summary>
+    /// Initializes the chat UI elements and registers the key down event for the chat input field.
+    /// </summary>
     private void Start()
     {
         chatUi = chatUiObject.GetComponent<UIDocument>().rootVisualElement;
@@ -45,13 +51,14 @@ public class Chat : NetworkBehaviour
                     string message = chatInputField.value;
                     chatInputField.value = string.Empty;
                     SendChatMessage(message);
-                    UnityEngine.Cursor.lockState = CursorLockMode.Locked;
-                    UnityEngine.Cursor.visible = false;
                 }
             }
         });
     }
 
+    /// <summary>
+    /// Handles the Return and Escape key inputs to open/close the chat and send messages.
+    /// </summary>
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Return))
@@ -90,18 +97,31 @@ public class Chat : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Sends a chat message to all clients and closes the chat box.
+    /// </summary>
+    /// <param name="message">The message to send.</param>
     private void SendChatMessage(string message)
     {
         if (string.IsNullOrWhiteSpace(message)) return;
 
         string s = $"{playerName} > {message}";
+        chatContainer.AddToClassList("hidden");
+        tempContainer.RemoveFromClassList("hidden");
+        UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+        UnityEngine.Cursor.visible = false;
+        isChatOpen = false;
         ReceiveChatMessageRpc(s);
     }
 
-    [Rpc(SendTo.ClientsAndHost, RequireOwnership = false)]
+    /// <summary>
+    /// Receives a chat message and displays it in the chat UI.
+    /// </summary>
+    /// <param name="message">The message to display.</param>
+    [Rpc(SendTo.Everyone, RequireOwnership = false)]
     private void ReceiveChatMessageRpc(string message)
     {
-          chatScrollView.Add(new Label(message));
+        chatScrollView.Add(new Label(message));
         if (!chatContainer.ClassListContains("hidden"))
         {
             chatScrollView.scrollOffset = new Vector2(0, chatScrollView.contentContainer.layout.height);
@@ -115,13 +135,21 @@ public class Chat : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Removes a temporary message from the chat UI after a delay.
+    /// </summary>
+    /// <param name="lbl">The label to remove.</param>
+    /// <returns>An IEnumerator for the coroutine.</returns>
     private IEnumerator RemoveTempMessage(Label lbl)
     {
         yield return new WaitForSeconds(5);
         tempContainer.Remove(lbl);
     }
- 
 
+    /// <summary>
+    /// Focuses the chat input field.
+    /// </summary>
+    /// <returns>An IEnumerator for the coroutine.</returns>
     private IEnumerator FocusChatInputField()
     {
         yield return null;
