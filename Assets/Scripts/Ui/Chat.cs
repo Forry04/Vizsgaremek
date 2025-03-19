@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -9,12 +7,16 @@ using UnityEngine.UIElements;
 [RequireComponent(typeof(NetworkObject))]
 public class Chat : NetworkBehaviour
 {
+    private PlayerInputHandler inputHandler;
+
     public static Chat Singleton;
 
     public PlayerInputHandler playerInput;
 
     [SerializeField] private GameObject chatUiObject;
+
     [SerializeField] private string playerName => $"Player{NetworkManager.Singleton.LocalClient.ClientId}";
+
     private VisualElement chatUi;
 
     private VisualElement chatContainer;
@@ -24,21 +26,30 @@ public class Chat : NetworkBehaviour
     private bool isChatOpen = false;
     private bool ignoreNextReturn = false;
 
+
     
     private void Awake() => Singleton = this;
+
 
  
     private void Start()
     {
+        PlayerSpawner.OnPlayerSpawned += OnPlayerSpawned;
+
+        DontDestroyOnLoad(this.gameObject);
         chatUi = chatUiObject.GetComponent<UIDocument>().rootVisualElement;
         chatContainer = chatUi.Q<VisualElement>("chat-container");
         tempContainer = chatUi.Q<VisualElement>("temp-container");
         chatScrollView = chatUi.Q<ScrollView>("chat-window");
         chatInputField = chatUi.Q<TextField>("chat-input");
 
+        inputHandler = FindObjectOfType<PlayerInputHandler>();
+
         chatInputField.RegisterCallback<KeyDownEvent>((evt) =>
         {
+
             if (playerInput.SubmitTriggered && isChatOpen)
+
             {
                 if (ignoreNextReturn)
                 {
@@ -59,7 +70,9 @@ public class Chat : NetworkBehaviour
     
     private void Update()
     {
+
         if (playerInput.OpenChatTriggered)
+
         {
             playerInput.EnableUIActionMap();
             if (chatContainer.ClassListContains("hidden"))
@@ -71,10 +84,13 @@ public class Chat : NetworkBehaviour
                 StartCoroutine(FocusChatInputField());
                 isChatOpen = true;
                 ignoreNextReturn = true;
+                inputHandler.EnableUIActionMap();
             }
         }
 
+
         if (playerInput.CancelTriggered)
+
         {
             if (!chatContainer.ClassListContains("hidden"))
             {
@@ -83,7 +99,9 @@ public class Chat : NetworkBehaviour
                 UnityEngine.Cursor.lockState = CursorLockMode.Locked;
                 UnityEngine.Cursor.visible = false;
                 isChatOpen = false;
+
                 playerInput.EnablePlayerActionMap();
+
             }
         }
     }
@@ -98,6 +116,7 @@ public class Chat : NetworkBehaviour
         tempContainer.RemoveFromClassList("hidden");
         UnityEngine.Cursor.lockState = CursorLockMode.Locked;
         UnityEngine.Cursor.visible = false;
+        inputHandler.EnablePlayerActionMap();
         isChatOpen = false;
         playerInput.EnablePlayerActionMap();
         ReceiveChatMessageRpc(s);
@@ -120,7 +139,9 @@ public class Chat : NetworkBehaviour
         }
     }
 
+
    
+
     private IEnumerator RemoveTempMessage(Label lbl)
     {
         yield return new WaitForSeconds(5);
