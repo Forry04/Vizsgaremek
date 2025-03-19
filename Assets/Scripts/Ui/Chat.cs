@@ -34,7 +34,7 @@ public class Chat : NetworkBehaviour
  
     private void Start()
     {
-        PlayerSpawner.OnPlayerSpawned += OnPlayerSpawned;
+      
 
         DontDestroyOnLoad(this.gameObject);
         chatUi = chatUiObject.GetComponent<UIDocument>().rootVisualElement;

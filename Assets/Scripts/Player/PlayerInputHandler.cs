@@ -50,9 +50,6 @@ public class PlayerInputHandler : NetworkBehaviour
     private InputAction submitAction;
     private InputAction cancelAction;
 
-    //ui
-    private InputAction submitAction;
-    private InputAction cancelAction;
 
     //gameplay
     public Vector2 MoveInput { get; private set; }
@@ -212,20 +209,7 @@ public class PlayerInputHandler : NetworkBehaviour
         playerControls.FindActionMap(uiActionMapName).Disable();
     }
 
-    public void EnablePlayerActionMap()
-    {
-        
-
-        playerControls.FindActionMap(actionMapName).Enable();
-        playerControls.FindActionMap(uiActionMapName).Disable();
-    }
-    public void EnableUIActionMap()
-    {
-       
-
-        playerControls.FindActionMap(actionMapName).Disable();
-        playerControls.FindActionMap(uiActionMapName).Enable();
-    }
+    
 
     private void FixedUpdate()
     {
