@@ -35314,7 +35314,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chatUiObject: {fileID: 2080436872}
-  playerName: 
 --- !u!1001 &2083346485
 PrefabInstance:
   m_ObjectHideFlags: 0
