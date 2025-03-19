@@ -63,7 +63,7 @@ public class PlayerInputHandler : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        if(!IsOwner) enabled = false;
+        if(!IsOwner) return;
 
         Chat.Singleton.playerInput = this;
         base.OnNetworkSpawn();
@@ -134,6 +134,7 @@ public class PlayerInputHandler : NetworkBehaviour
 
     private void OnEnable()
     {
+        if (!IsOwner) return;
         playerControls.FindActionMap(actionMapName).Enable();
         lookAction.performed += OnActionPerformed;
         //crouchAction.started += OnCrouchStarted;
@@ -146,8 +147,8 @@ public class PlayerInputHandler : NetworkBehaviour
     }
     private void OnDisable()
     {
+        if (!IsOwner) return;
 
-        
         playerControls.FindActionMap(actionMapName).Disable();
         lookAction.performed -= OnActionPerformed;
         //crouchAction.started -= OnCrouchStarted;
@@ -161,6 +162,7 @@ public class PlayerInputHandler : NetworkBehaviour
 
     private void OnActionPerformed(InputAction.CallbackContext context)
     {
+        if (!IsOwner) return;
         // Get the device that triggered the action
         var device = context.control.device;
 
@@ -179,14 +181,14 @@ public class PlayerInputHandler : NetworkBehaviour
 
     public void EnablePlayerActionMap()
     {
-        
 
+        if (!IsOwner) return;
         playerControls.FindActionMap(actionMapName).Enable();
         playerControls.FindActionMap(uiActionMapName).Disable();
     }
     public void EnableUIActionMap()
     {
-       
+        if (!IsOwner) return;
 
         playerControls.FindActionMap(actionMapName).Disable();
         playerControls.FindActionMap(uiActionMapName).Enable();
