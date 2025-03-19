@@ -14,7 +14,6 @@ public class PlayerInputHandler : NetworkBehaviour
     [SerializeField] private string actionMapName = "Player";
 
     [Header("UI Action Map Name References")]
-
     [SerializeField] private string uiActionMapName = "UI";
 
     [Header("Action Name References")]
@@ -25,17 +24,14 @@ public class PlayerInputHandler : NetworkBehaviour
     [SerializeField] private string crouch = "Crouch";
     [SerializeField] private string sprint = "Sprint";
     [SerializeField] private string unlockCamera = "UnlockCamera";
-
     [SerializeField] private string openChat = "OpenChat";
     [SerializeField] private string pause = "Pause";    
 
 
     [Header("UI Action References")]
-
     [SerializeField] private string submit = "Submit";
     [SerializeField] private string cancel = "Cancel";
 
-    //actions
     private InputAction moveAction;
     private InputAction lookAction;
     private InputAction fireAction;
@@ -45,16 +41,10 @@ public class PlayerInputHandler : NetworkBehaviour
     private bool crouchTriggered;
     private InputAction unlockCameraAction;
     private InputAction openChatAction;
-
     private InputAction pauseAction;
     private InputAction submitAction;
     private InputAction cancelAction;
 
-    //ui
-    private InputAction submitAction;
-    private InputAction cancelAction;
-
-    //gameplay
     public Vector2 MoveInput { get; private set; }
     public Vector2 LookInput { get; private set; }
     public bool FireTriggered { get; private set; }
@@ -64,23 +54,19 @@ public class PlayerInputHandler : NetworkBehaviour
     public bool LookDevice { get; private set; }
     public bool UnlockCameraTriggered { get; private set; }
     public bool OpenChatTriggered { get; private set; }
-
     public bool PauseTriggered { get; private set; }
     public bool SubmitTriggered { get; private set; }
     public bool CancelTriggered { get; private set; }
-
 
 
     public static PlayerInputHandler Instance { get; private set; }
 
     public override void OnNetworkSpawn()
     {
-
         if(!IsOwner) enabled = false;
 
         Chat.Singleton.playerInput = this;
         base.OnNetworkSpawn();
-
         moveAction = playerControls.FindActionMap(actionMapName).FindAction(move);
         lookAction = playerControls.FindActionMap(actionMapName).FindAction(look);
         fireAction = playerControls.FindActionMap(actionMapName).FindAction(fire);
@@ -89,11 +75,9 @@ public class PlayerInputHandler : NetworkBehaviour
         sprintAction = playerControls.FindActionMap(actionMapName).FindAction(sprint);
         unlockCameraAction = playerControls.FindActionMap(actionMapName).FindAction(unlockCamera);
         openChatAction = playerControls.FindActionMap(actionMapName).FindAction(openChat);
-
         pauseAction = playerControls.FindActionMap(actionMapName).FindAction(pause);
         submitAction = playerControls.FindActionMap(uiActionMapName).FindAction(submit);
         cancelAction = playerControls.FindActionMap(uiActionMapName).FindAction(cancel);
-
 
         RegisterInputActions();
 
@@ -112,7 +96,6 @@ public class PlayerInputHandler : NetworkBehaviour
 
     void RegisterInputActions()
     {
-        //gameplay
         moveAction.performed += context => MoveInput = context.ReadValue<Vector2>();
         moveAction.canceled += context => MoveInput = Vector2.zero;
 
@@ -139,7 +122,6 @@ public class PlayerInputHandler : NetworkBehaviour
         pauseAction.performed += context => PauseTriggered = true;
         pauseAction.canceled += context => PauseTriggered = false;
 
-
         submitAction.performed += context => SubmitTriggered = true;
         submitAction.canceled += context => SubmitTriggered = false;
 
@@ -152,7 +134,8 @@ public class PlayerInputHandler : NetworkBehaviour
 
     private void OnEnable()
     {
-        EnablePlayerActionMap();
+        playerControls.FindActionMap(actionMapName).Enable();
+        lookAction.performed += OnActionPerformed;
         //crouchAction.started += OnCrouchStarted;
         //moveAction.Enable();
         //lookAction.Enable();
@@ -164,11 +147,9 @@ public class PlayerInputHandler : NetworkBehaviour
     private void OnDisable()
     {
 
-
         
         playerControls.FindActionMap(actionMapName).Disable();
         lookAction.performed -= OnActionPerformed;
-
         //crouchAction.started -= OnCrouchStarted;
         //moveAction.Disable();
         //lookAction.Disable();
@@ -194,22 +175,6 @@ public class PlayerInputHandler : NetworkBehaviour
             default:
                 break;
         }
-    }
-    public void EnablePlayerActionMap()
-    {
-        playerControls.FindActionMap(actionMapName).Enable();
-        playerControls.FindActionMap(uiActionMapName).Disable();
-    }
-    public void EnableUIActionMap()
-    {
-        playerControls.FindActionMap(actionMapName).Disable();
-        playerControls.FindActionMap(uiActionMapName).Enable();
-    }
-
-    private void DisableAllActionMaps()
-    {
-        playerControls.FindActionMap(actionMapName).Disable();
-        playerControls.FindActionMap(uiActionMapName).Disable();
     }
 
     public void EnablePlayerActionMap()

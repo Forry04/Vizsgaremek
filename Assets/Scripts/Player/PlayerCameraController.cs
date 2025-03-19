@@ -47,8 +47,8 @@ public class PlayerCameraController : NetworkBehaviour
 
     private void HandleCamMovement()
     {
-        float inputX = inputHandler.LookInput.x * (!inputHandler.LookDevice ? mouseSensitivity : joystickSensitivity) * Time.deltaTime;
-        float inputY = inputHandler.LookInput.y * (!inputHandler.LookDevice ? mouseSensitivity : joystickSensitivity) * Time.deltaTime;
+        float inputX = inputHandler.LookInput.x * (inputHandler.LookDevice ? mouseSensitivity : joystickSensitivity) * Time.deltaTime;
+        float inputY = inputHandler.LookInput.y * (inputHandler.LookDevice ? mouseSensitivity : joystickSensitivity) * Time.deltaTime;
         rotation.X -= inputY;
         rotation.X = Mathf.Clamp(rotation.X, -90f, 90f);
 
