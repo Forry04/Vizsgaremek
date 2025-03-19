@@ -71,16 +71,20 @@
                 {
                     "name": "OpenChat",
                     "type": "Button",
-                    "id": "cb64d8c5-bdff-4f42-9978-9e55faee73f1",
+
+                    "id": "c53a86e6-e585-46fb-ac70-7c511b78c7b5",
+
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
                 },
                 {
-                    "name": "EscapeMenu",
+
+                    "name": "Pause",
                     "type": "Button",
-                    "id": "be1659dd-eb53-4b83-8ec6-6403822f628f",
+                    "id": "74da1084-b958-4024-beac-73cc05a4c344",
+
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -398,8 +402,10 @@
                 },
                 {
                     "name": "",
-                    "id": "87235237-fa6b-444d-b46b-97abda929142",
-                    "path": "<Keyboard>/{Submit}",
+
+                    "id": "3b69d98b-39c3-4e37-aaf5-e4b487c348a1",
+                    "path": "<Keyboard>/enter",
+
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -409,12 +415,16 @@
                 },
                 {
                     "name": "",
-                    "id": "97b70f4e-d906-4482-bafb-d00b705fd12d",
+
+                    "id": "52d615f2-f11e-46b9-8ba4-51cf6724005b",
+
                     "path": "<Keyboard>/escape",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "EscapeMenu",
+
+                    "action": "Pause",
+
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

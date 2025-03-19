@@ -1,10 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerInputHandler : MonoBehaviour
+public class PlayerInputHandler : NetworkBehaviour
 {
     [Header("Input Action Asset")]
     [SerializeField] private InputActionAsset playerControls;
@@ -12,7 +13,8 @@ public class PlayerInputHandler : MonoBehaviour
     [Header("Action Map Name References")]
     [SerializeField] private string actionMapName = "Player";
 
-    [Header("Ui Input Action Map Name References")]
+    [Header("UI Action Map Name References")]
+
     [SerializeField] private string uiActionMapName = "UI";
 
     [Header("Action Name References")]
@@ -23,10 +25,13 @@ public class PlayerInputHandler : MonoBehaviour
     [SerializeField] private string crouch = "Crouch";
     [SerializeField] private string sprint = "Sprint";
     [SerializeField] private string unlockCamera = "UnlockCamera";
-    [SerializeField] private string openChat = "OpenChat"; 
-    [SerializeField] private string escapeMenu = "EscapeMenu";
 
-    [Header("Ui Name References")]
+    [SerializeField] private string openChat = "OpenChat";
+    [SerializeField] private string pause = "Pause";    
+
+
+    [Header("UI Action References")]
+
     [SerializeField] private string submit = "Submit";
     [SerializeField] private string cancel = "Cancel";
 
@@ -40,7 +45,10 @@ public class PlayerInputHandler : MonoBehaviour
     private bool crouchTriggered;
     private InputAction unlockCameraAction;
     private InputAction openChatAction;
-    private InputAction escapeMenuAction;
+
+    private InputAction pauseAction;
+    private InputAction submitAction;
+    private InputAction cancelAction;
 
     //ui
     private InputAction submitAction;
@@ -56,24 +64,23 @@ public class PlayerInputHandler : MonoBehaviour
     public bool LookDevice { get; private set; }
     public bool UnlockCameraTriggered { get; private set; }
     public bool OpenChatTriggered { get; private set; }
-    public bool EscapeMenuTriggered { get; private set; }
 
-    //ui
+    public bool PauseTriggered { get; private set; }
     public bool SubmitTriggered { get; private set; }
     public bool CancelTriggered { get; private set; }
 
+
+
     public static PlayerInputHandler Instance { get; private set; }
 
-    private void Awake()
+    public override void OnNetworkSpawn()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else Destroy(gameObject);
 
-        //gameplay
+        if(!IsOwner) enabled = false;
+
+        Chat.Singleton.playerInput = this;
+        base.OnNetworkSpawn();
+
         moveAction = playerControls.FindActionMap(actionMapName).FindAction(move);
         lookAction = playerControls.FindActionMap(actionMapName).FindAction(look);
         fireAction = playerControls.FindActionMap(actionMapName).FindAction(fire);
@@ -82,12 +89,25 @@ public class PlayerInputHandler : MonoBehaviour
         sprintAction = playerControls.FindActionMap(actionMapName).FindAction(sprint);
         unlockCameraAction = playerControls.FindActionMap(actionMapName).FindAction(unlockCamera);
         openChatAction = playerControls.FindActionMap(actionMapName).FindAction(openChat);
-        escapeMenuAction = playerControls.FindActionMap(actionMapName).FindAction(escapeMenu);
 
-        //ui
+        pauseAction = playerControls.FindActionMap(actionMapName).FindAction(pause);
         submitAction = playerControls.FindActionMap(uiActionMapName).FindAction(submit);
         cancelAction = playerControls.FindActionMap(uiActionMapName).FindAction(cancel);
+
+
         RegisterInputActions();
+
+    }
+
+    private void Awake()
+    {
+        //if (Instance == null)
+        //{
+        //    Instance = this;
+        //    DontDestroyOnLoad(gameObject);
+        //}
+        //else Destroy(gameObject);
+
     }
 
     void RegisterInputActions()
@@ -116,10 +136,10 @@ public class PlayerInputHandler : MonoBehaviour
         openChatAction.performed += context => OpenChatTriggered = true;
         openChatAction.canceled += context => OpenChatTriggered = false;
 
-        escapeMenuAction.performed += context => EscapeMenuTriggered = true;
-        escapeMenuAction.canceled += context => EscapeMenuTriggered = false;
+        pauseAction.performed += context => PauseTriggered = true;
+        pauseAction.canceled += context => PauseTriggered = false;
 
-        //ui
+
         submitAction.performed += context => SubmitTriggered = true;
         submitAction.canceled += context => SubmitTriggered = false;
 
@@ -143,9 +163,12 @@ public class PlayerInputHandler : MonoBehaviour
     }
     private void OnDisable()
     {
-        DisableAllActionMaps();
-        //playerControls.FindActionMap(actionMapName).Disable();
-        //lookAction.performed -= OnActionPerformed;
+
+
+        
+        playerControls.FindActionMap(actionMapName).Disable();
+        lookAction.performed -= OnActionPerformed;
+
         //crouchAction.started -= OnCrouchStarted;
         //moveAction.Disable();
         //lookAction.Disable();
@@ -187,6 +210,21 @@ public class PlayerInputHandler : MonoBehaviour
     {
         playerControls.FindActionMap(actionMapName).Disable();
         playerControls.FindActionMap(uiActionMapName).Disable();
+    }
+
+    public void EnablePlayerActionMap()
+    {
+        
+
+        playerControls.FindActionMap(actionMapName).Enable();
+        playerControls.FindActionMap(uiActionMapName).Disable();
+    }
+    public void EnableUIActionMap()
+    {
+       
+
+        playerControls.FindActionMap(actionMapName).Disable();
+        playerControls.FindActionMap(uiActionMapName).Enable();
     }
 
     private void FixedUpdate()
