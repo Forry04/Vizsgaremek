@@ -9,9 +9,12 @@ using UnityEngine;
 
 public class PlayerSpawner : NetworkBehaviour
 {
+
+
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private Transform[] playerSpawnPoint;
     [SerializeField] private TextMeshProUGUI joinCodeText;
+
     private int spawnPostionIndex;
 
     public Transform PlayerSpawnPoint
@@ -25,6 +28,8 @@ public class PlayerSpawner : NetworkBehaviour
     }
 
     public static PlayerSpawner Singleton { get; private set; }
+
+    public static event Action OnPlayerSpawned;
 
     private void Awake()
     {
@@ -64,6 +69,7 @@ public class PlayerSpawner : NetworkBehaviour
     {
         GameObject player = Instantiate(playerPrefab);
         player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId);
+        OnPlayerSpawned?.Invoke();
     }
 
 }

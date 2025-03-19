@@ -10,7 +10,7 @@ public class Chat : NetworkBehaviour
 
     public static Chat Singleton;
     [SerializeField] private GameObject chatUiObject;
-    [SerializeField] private string playerName = $"Player{NetworkManager.Singleton.LocalClient.ClientId}";
+    [SerializeField] private string playerName => $"Player{NetworkManager.Singleton.LocalClient.ClientId}";
     private VisualElement chatUi;
 
     private VisualElement chatContainer;
@@ -34,7 +34,7 @@ public class Chat : NetworkBehaviour
     /// </summary>
     private void Start()
     {
-        
+        PlayerSpawner.OnPlayerSpawned += OnPlayerSpawned;
 
         DontDestroyOnLoad(this.gameObject);
         chatUi = chatUiObject.GetComponent<UIDocument>().rootVisualElement;
@@ -63,6 +63,7 @@ public class Chat : NetworkBehaviour
                 }
             }
         });
+
     }
 
     /// <summary>
@@ -70,6 +71,8 @@ public class Chat : NetworkBehaviour
     /// </summary>
     private void Update()
     {
+        if (inputHandler == null) return;
+
         if (inputHandler.OpenChatTriggered)
         {
             if (chatContainer.ClassListContains("hidden"))
@@ -146,6 +149,18 @@ public class Chat : NetworkBehaviour
             StartCoroutine(RemoveTempMessage(tempLabel));
         }
     }
+
+    private void OnDestroy()
+    {
+        // Unsubscribe from the player spawned event
+        PlayerSpawner.OnPlayerSpawned -= OnPlayerSpawned;
+    }
+
+    private void OnPlayerSpawned()
+    {
+        inputHandler = FindObjectOfType<PlayerInputHandler>();
+    }
+
 
     /// <summary>
     /// Removes a temporary message from the chat UI after a delay.
