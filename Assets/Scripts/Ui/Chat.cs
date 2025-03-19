@@ -43,6 +43,8 @@ public class Chat : NetworkBehaviour
         chatScrollView = chatUi.Q<ScrollView>("chat-window");
         chatInputField = chatUi.Q<TextField>("chat-input");
 
+        inputHandler = FindObjectOfType<PlayerInputHandler>();
+
         chatInputField.RegisterCallback<KeyDownEvent>((evt) =>
         {
             if (inputHandler.SubmitTriggered && isChatOpen)
