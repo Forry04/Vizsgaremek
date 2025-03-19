@@ -10,7 +10,7 @@ public class Chat : NetworkBehaviour
 
     public static Chat Singleton;
     [SerializeField] private GameObject chatUiObject;
-    [SerializeField] private string playerName => $"Player{NetworkManager.Singleton.LocalClient.ClientId}";
+    private string playerName => $"Player{NetworkManager.Singleton.LocalClient.ClientId}";
     private VisualElement chatUi;
 
     private VisualElement chatContainer;
@@ -21,12 +21,11 @@ public class Chat : NetworkBehaviour
     private bool ignoreNextReturn = false;
 
     /// <summary>
-    /// Initializes the singleton instance and player name.
+    /// Initializes the singleton instance.
     /// </summary>
     private void Awake()
     {
         Singleton = this;
-       
     }
 
     /// <summary>
@@ -63,7 +62,6 @@ public class Chat : NetworkBehaviour
                 }
             }
         });
-
     }
 
     /// <summary>
@@ -150,17 +148,21 @@ public class Chat : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Unsubscribes from the player spawned event.
+    /// </summary>
     private void OnDestroy()
     {
-        // Unsubscribe from the player spawned event
         PlayerSpawner.OnPlayerSpawned -= OnPlayerSpawned;
     }
 
+    /// <summary>
+    /// Updates the input handler when a player is spawned.
+    /// </summary>
     private void OnPlayerSpawned()
     {
         inputHandler = FindObjectOfType<PlayerInputHandler>();
     }
-
 
     /// <summary>
     /// Removes a temporary message from the chat UI after a delay.
