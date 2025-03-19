@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -8,6 +6,8 @@ using UnityEngine.UIElements;
 [RequireComponent(typeof(NetworkObject))]
 public class Chat : NetworkBehaviour
 {
+    private PlayerInputHandler inputHandler;
+
     public static Chat Singleton;
     [SerializeField] private GameObject chatUiObject;
     [SerializeField] private string playerName = $"Player{NetworkManager.Singleton.LocalClient.ClientId}";
@@ -23,22 +23,31 @@ public class Chat : NetworkBehaviour
     /// <summary>
     /// Initializes the singleton instance and player name.
     /// </summary>
-    private void Awake() => Singleton = this;
+    private void Awake()
+    {
+        Singleton = this;
+       
+    }
 
     /// <summary>
     /// Initializes the chat UI elements and registers the key down event for the chat input field.
     /// </summary>
     private void Start()
     {
+        
+
+        DontDestroyOnLoad(this.gameObject);
         chatUi = chatUiObject.GetComponent<UIDocument>().rootVisualElement;
         chatContainer = chatUi.Q<VisualElement>("chat-container");
         tempContainer = chatUi.Q<VisualElement>("temp-container");
         chatScrollView = chatUi.Q<ScrollView>("chat-window");
         chatInputField = chatUi.Q<TextField>("chat-input");
 
+        inputHandler = FindObjectOfType<PlayerInputHandler>();
+
         chatInputField.RegisterCallback<KeyDownEvent>((evt) =>
         {
-            if (evt.keyCode == KeyCode.Return && isChatOpen)
+            if (inputHandler.SubmitTriggered && isChatOpen)
             {
                 if (ignoreNextReturn)
                 {
@@ -61,7 +70,7 @@ public class Chat : NetworkBehaviour
     /// </summary>
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Return))
+        if (inputHandler.OpenChatTriggered)
         {
             if (chatContainer.ClassListContains("hidden"))
             {
@@ -72,6 +81,7 @@ public class Chat : NetworkBehaviour
                 StartCoroutine(FocusChatInputField());
                 isChatOpen = true;
                 ignoreNextReturn = true;
+                inputHandler.EnableUIActionMap();
             }
             else if (isChatOpen)
             {
@@ -84,7 +94,7 @@ public class Chat : NetworkBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (inputHandler.CancelTriggered)
         {
             if (!chatContainer.ClassListContains("hidden"))
             {
@@ -93,6 +103,7 @@ public class Chat : NetworkBehaviour
                 UnityEngine.Cursor.lockState = CursorLockMode.Locked;
                 UnityEngine.Cursor.visible = false;
                 isChatOpen = false;
+                inputHandler.EnablePlayerActionMap();
             }
         }
     }
@@ -110,6 +121,7 @@ public class Chat : NetworkBehaviour
         tempContainer.RemoveFromClassList("hidden");
         UnityEngine.Cursor.lockState = CursorLockMode.Locked;
         UnityEngine.Cursor.visible = false;
+        inputHandler.EnablePlayerActionMap();
         isChatOpen = false;
         ReceiveChatMessageRpc(s);
     }

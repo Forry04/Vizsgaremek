@@ -12,6 +12,9 @@ public class PlayerInputHandler : MonoBehaviour
     [Header("Action Map Name References")]
     [SerializeField] private string actionMapName = "Player";
 
+    [Header("Ui Input Action Map Name References")]
+    [SerializeField] private string uiActionMapName = "UI";
+
     [Header("Action Name References")]
     [SerializeField] private string move = "Move";
     [SerializeField] private string look = "Look";
@@ -20,7 +23,14 @@ public class PlayerInputHandler : MonoBehaviour
     [SerializeField] private string crouch = "Crouch";
     [SerializeField] private string sprint = "Sprint";
     [SerializeField] private string unlockCamera = "UnlockCamera";
+    [SerializeField] private string openChat = "OpenChat"; 
+    [SerializeField] private string escapeMenu = "EscapeMenu";
 
+    [Header("Ui Name References")]
+    [SerializeField] private string submit = "Submit";
+    [SerializeField] private string cancel = "Cancel";
+
+    //actions
     private InputAction moveAction;
     private InputAction lookAction;
     private InputAction fireAction;
@@ -29,7 +39,14 @@ public class PlayerInputHandler : MonoBehaviour
     private InputAction sprintAction;
     private bool crouchTriggered;
     private InputAction unlockCameraAction;
+    private InputAction openChatAction;
+    private InputAction escapeMenuAction;
 
+    //ui
+    private InputAction submitAction;
+    private InputAction cancelAction;
+
+    //gameplay
     public Vector2 MoveInput { get; private set; }
     public Vector2 LookInput { get; private set; }
     public bool FireTriggered { get; private set; }
@@ -38,17 +55,25 @@ public class PlayerInputHandler : MonoBehaviour
     public bool SprintTriggered { get; private set; }
     public bool LookDevice { get; private set; }
     public bool UnlockCameraTriggered { get; private set; }
+    public bool OpenChatTriggered { get; private set; }
+    public bool EscapeMenuTriggered { get; private set; }
+
+    //ui
+    public bool SubmitTriggered { get; private set; }
+    public bool CancelTriggered { get; private set; }
+
     public static PlayerInputHandler Instance { get; private set; }
 
     private void Awake()
     {
-        //if (Instance == null)
-        //{
-        //    Instance = this;
-        //    DontDestroyOnLoad(gameObject);
-        //}
-        //else Destroy(gameObject);
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else Destroy(gameObject);
 
+        //gameplay
         moveAction = playerControls.FindActionMap(actionMapName).FindAction(move);
         lookAction = playerControls.FindActionMap(actionMapName).FindAction(look);
         fireAction = playerControls.FindActionMap(actionMapName).FindAction(fire);
@@ -56,11 +81,18 @@ public class PlayerInputHandler : MonoBehaviour
         crouchAction = playerControls.FindActionMap(actionMapName).FindAction(crouch);
         sprintAction = playerControls.FindActionMap(actionMapName).FindAction(sprint);
         unlockCameraAction = playerControls.FindActionMap(actionMapName).FindAction(unlockCamera);
+        openChatAction = playerControls.FindActionMap(actionMapName).FindAction(openChat);
+        escapeMenuAction = playerControls.FindActionMap(actionMapName).FindAction(escapeMenu);
+
+        //ui
+        submitAction = playerControls.FindActionMap(uiActionMapName).FindAction(submit);
+        cancelAction = playerControls.FindActionMap(uiActionMapName).FindAction(cancel);
         RegisterInputActions();
     }
 
     void RegisterInputActions()
     {
+        //gameplay
         moveAction.performed += context => MoveInput = context.ReadValue<Vector2>();
         moveAction.canceled += context => MoveInput = Vector2.zero;
 
@@ -80,14 +112,27 @@ public class PlayerInputHandler : MonoBehaviour
 
         unlockCameraAction.performed += context => UnlockCameraTriggered = true;
         unlockCameraAction.canceled += context => UnlockCameraTriggered = false;
+
+        openChatAction.performed += context => OpenChatTriggered = true;
+        openChatAction.canceled += context => OpenChatTriggered = false;
+
+        escapeMenuAction.performed += context => EscapeMenuTriggered = true;
+        escapeMenuAction.canceled += context => EscapeMenuTriggered = false;
+
+        //ui
+        submitAction.performed += context => SubmitTriggered = true;
+        submitAction.canceled += context => SubmitTriggered = false;
+
+        cancelAction.performed += context => CancelTriggered = true;
+        cancelAction.canceled += context => CancelTriggered = false;
+
     }
 
 
 
     private void OnEnable()
     {
-        playerControls.FindActionMap(actionMapName).Enable();
-        lookAction.performed += OnActionPerformed;
+        EnablePlayerActionMap();
         //crouchAction.started += OnCrouchStarted;
         //moveAction.Enable();
         //lookAction.Enable();
@@ -98,8 +143,9 @@ public class PlayerInputHandler : MonoBehaviour
     }
     private void OnDisable()
     {
-        playerControls.FindActionMap(actionMapName).Disable();
-        lookAction.performed -= OnActionPerformed;
+        DisableAllActionMaps();
+        //playerControls.FindActionMap(actionMapName).Disable();
+        //lookAction.performed -= OnActionPerformed;
         //crouchAction.started -= OnCrouchStarted;
         //moveAction.Disable();
         //lookAction.Disable();
@@ -125,6 +171,22 @@ public class PlayerInputHandler : MonoBehaviour
             default:
                 break;
         }
+    }
+    public void EnablePlayerActionMap()
+    {
+        playerControls.FindActionMap(actionMapName).Enable();
+        playerControls.FindActionMap(uiActionMapName).Disable();
+    }
+    public void EnableUIActionMap()
+    {
+        playerControls.FindActionMap(actionMapName).Disable();
+        playerControls.FindActionMap(uiActionMapName).Enable();
+    }
+
+    private void DisableAllActionMaps()
+    {
+        playerControls.FindActionMap(actionMapName).Disable();
+        playerControls.FindActionMap(uiActionMapName).Disable();
     }
 
     private void FixedUpdate()
