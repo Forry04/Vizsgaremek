@@ -66,6 +66,7 @@ public class PlayerInputHandler : NetworkBehaviour
         if(!IsOwner) return;
 
         Chat.Singleton.playerInput = this;
+        EnablePauseMenu.Singleton.playerInput = this;
         base.OnNetworkSpawn();
         moveAction = playerControls.FindActionMap(actionMapName).FindAction(move);
         lookAction = playerControls.FindActionMap(actionMapName).FindAction(look);
