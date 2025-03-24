@@ -14,6 +14,7 @@ public class PlayerSpawner : NetworkBehaviour
     [SerializeField] private TextMeshProUGUI joinCodeText;
     private int spawnPostionIndex;
 
+
     public Transform PlayerSpawnPoint
     {
         get

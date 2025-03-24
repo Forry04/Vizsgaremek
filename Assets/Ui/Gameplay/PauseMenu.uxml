@@ -1,0 +1,11 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Ui/Gameplay/PauseMenu.uss?fileID=7433441132597879392&amp;guid=6a114877aeaa14644afd06293e9957b0&amp;type=3#PauseMenu" />
+    <Style src="project://database/Assets/Ui/Menu/General.uss?fileID=7433441132597879392&amp;guid=f89a2678f5e910b4f9cb48d2186c123a&amp;type=3#General" />
+    <ui:VisualElement name="main" class="main-container">
+        <ui:Button text="Continue&#10;" parse-escape-sequences="true" display-tooltip-when-elided="true" name="resume-button" class="button pm-button" />
+        <ui:Button text="Setting&#10;" parse-escape-sequences="true" display-tooltip-when-elided="true" name="setting-button" class="button pm-button" />
+        <ui:Button text="Ready" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ready-button" class="button pm-button" />
+        <ui:Button text="Start&#10;" parse-escape-sequences="true" display-tooltip-when-elided="true" name="start-button" class="button pm-button" />
+        <ui:Button text="Exit&#10;" parse-escape-sequences="true" display-tooltip-when-elided="true" name="exit-button" class="pm-button button" />
+    </ui:VisualElement>
+</ui:UXML>

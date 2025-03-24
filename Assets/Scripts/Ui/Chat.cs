@@ -24,10 +24,8 @@ public class Chat : NetworkBehaviour
     private bool isChatOpen = false;
     private bool ignoreNextReturn = false;
 
-    
     private void Awake() => Singleton = this;
 
- 
     private void Start()
     {
         chatUi = chatUiObject.GetComponent<UIDocument>().rootVisualElement;
@@ -50,13 +48,12 @@ public class Chat : NetworkBehaviour
                 {
                     string message = chatInputField.value;
                     chatInputField.value = string.Empty;
-                    SendChatMessage(message);
+                    SendChatMessage(message, Color.white);
                 }
             }
         });
     }
 
-    
     private void Update()
     {
         if (playerInput.OpenChatTriggered)
@@ -88,8 +85,13 @@ public class Chat : NetworkBehaviour
         }
     }
 
-  
-    private void SendChatMessage(string message)
+    public void SendAnnouncement(string message, Color color)
+    {
+        string s = $"System > {message}";
+        ReceiveChatMessageRpc(s, color);
+    }
+
+    private void SendChatMessage(string message, Color color)
     {
         if (string.IsNullOrWhiteSpace(message)) return;
 
@@ -100,27 +102,35 @@ public class Chat : NetworkBehaviour
         UnityEngine.Cursor.visible = false;
         isChatOpen = false;
         playerInput.EnablePlayerActionMap();
-        ReceiveChatMessageRpc(s);
+        ReceiveChatMessageRpc(s, color);
     }
 
     [Rpc(SendTo.Everyone, RequireOwnership = false)]
-    private void ReceiveChatMessageRpc(string message)
+    private void ReceiveChatMessageRpc(string message, Color color)
     {
-        chatScrollView.Add(new Label(message));
+        Label messageLabel = CreateColoredLabel(message, color);
+        chatScrollView.Add(messageLabel);
+        chatScrollView.ScrollTo(messageLabel);
         if (!chatContainer.ClassListContains("hidden"))
         {
             chatScrollView.scrollOffset = new Vector2(0, chatScrollView.contentContainer.layout.height);
         }
         else
         {
-            Label tempLabel = new(message);
+            Label tempLabel = CreateColoredLabel(message, color);
             tempLabel.AddToClassList("temp");
             tempContainer.Add(tempLabel);
             StartCoroutine(RemoveTempMessage(tempLabel));
         }
     }
 
-   
+    private Label CreateColoredLabel(string text, Color color)
+    {
+        Label label = new(text);
+        label.style.color = new StyleColor(color);
+        return label;
+    }
+
     private IEnumerator RemoveTempMessage(Label lbl)
     {
         yield return new WaitForSeconds(5);

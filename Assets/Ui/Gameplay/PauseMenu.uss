@@ -1,0 +1,16 @@
+.pm-button {
+    color: black;
+    font-size: 30px;
+    width: 25%;
+    align-self: center;
+    flex-shrink: 1;
+    height: auto;
+    margin: 1%;
+}
+
+.main-container {
+    flex-grow: 1;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.47);
+}
