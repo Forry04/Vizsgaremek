@@ -280,6 +280,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerControls: {fileID: -944628639613478452, guid: 80abae242581a2c48a288c7ced8edf5e, type: 3}
   actionMapName: Player
+  uiActionMapName: UI
   move: Move
   look: Look
   fire: Fire
@@ -287,6 +288,10 @@ MonoBehaviour:
   crouch: Crouch
   sprint: Sprint
   unlockCamera: UnlockCamera
+  openChat: OpenChat
+  pause: Pause
+  submit: Submit
+  cancel: Cancel
   crouchAction:
     m_Name: Crouch
     m_Type: 0
