@@ -58,6 +58,8 @@ public class PlayerInputHandler : NetworkBehaviour
     public bool SubmitTriggered { get; private set; }
     public bool CancelTriggered { get; private set; }
 
+    public bool IsCrouching { get; private set; }
+
 
     public static PlayerInputHandler Instance { get; private set; }
 
@@ -109,7 +111,7 @@ public class PlayerInputHandler : NetworkBehaviour
         jumpAction.performed += context => JumpTriggered = true;
         jumpAction.canceled += context => JumpTriggered = false;
 
-        crouchAction.started += context => crouchTriggered = true;
+        crouchAction.started += context => { crouchTriggered = true; IsCrouching = !IsCrouching; };
 
         sprintAction.performed += context => SprintTriggered = true;
         sprintAction.canceled += context => SprintTriggered = false;
@@ -198,5 +200,7 @@ public class PlayerInputHandler : NetworkBehaviour
     private void FixedUpdate()
     {
         if (crouchTriggered) crouchTriggered = false;
+
     }
+    
 }
