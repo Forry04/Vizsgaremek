@@ -423,6 +423,9 @@ MonoBehaviour:
   distanceFromPlayer: 5
   offset: {x: 0, y: 2, z: 0}
   rotationSmoothTime: 0.1
+  cameraCollisionRadius: 0.2
+  minCameraDistance: 1
+  centerPlayer: {fileID: 0}
 --- !u!1001 &7543755775731328114
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -474,6 +477,14 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: bfd7e2afbf9216d4abc8e0ebd026e7e9, type: 3}
       propertyPath: m_Name
       value: Character4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2621493037507402764, guid: bfd7e2afbf9216d4abc8e0ebd026e7e9, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2621493037507402764, guid: bfd7e2afbf9216d4abc8e0ebd026e7e9, type: 3}
+      propertyPath: m_TagString
+      value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: bfd7e2afbf9216d4abc8e0ebd026e7e9, type: 3}
       propertyPath: m_Controller
