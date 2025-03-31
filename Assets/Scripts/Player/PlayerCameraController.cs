@@ -69,7 +69,13 @@ public class PlayerCameraController : NetworkBehaviour
         targetPosition = CameraCollisions(targetPosition);
 
         transform.position = targetPosition;
-        transform.LookAt(orientation.position + offset);
+
+        Vector3 lookAtPosition = orientation.position + offset;
+        if (movementController.IsCrouching)
+        {
+            lookAtPosition.y += crouchHeightAdjustment;
+        }
+        transform.LookAt(lookAtPosition);
 
         orientation.localRotation = Quaternion.Euler(0f, currentRotation.y, 0f);
     }
