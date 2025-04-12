@@ -6,7 +6,10 @@ using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using Unity.Networking.Transport.Relay;
 using System.Threading.Tasks;
+using System.Collections;
+using System;
 using System.Net.NetworkInformation;
+using Ping = System.Net.NetworkInformation.Ping;
 
 
 /// <summary>
@@ -58,6 +61,9 @@ public class Relay : MonoBehaviour
             IsOfflineMode = true;
         }
     }
+
+  
+
     private void Start()
     {
         unityTransport = NetworkManager.Singleton.GetComponent<UnityTransport>();
@@ -180,39 +186,31 @@ public class Relay : MonoBehaviour
         Debug.LogError($"RelayServiceException: {e.Message}");
     }
 
+ 
+
     /// <summary>
-    /// Checks if the internet is available by attempting to reach well-known external servers.
+    /// Checks if the internet is available by pinging well-known external servers using System.Net.NetworkInformation.Ping.
     /// </summary>
     /// <returns>True if the internet is available; otherwise, false.</returns>
     private bool IsInternetAvailable()
     {
         try
         {
-            using var client = new System.Net.WebClient();
-            using (client.OpenRead("http://www.google.com"))
+            using Ping ping = new();
+
+            // Ping Google's DNS server (8.8.8.8)
+            if (ping.Send("8.8.8.8", 3000)?.Status == IPStatus.Success)
             {
                 return true;
             }
-        }
-        catch (System.Net.WebException googleEx)
-        {
-            Debug.LogWarning($"Failed to reach Google: {googleEx.Message}");
-        }
 
-        try
-        {
-            using var client = new System.Net.WebClient();
-            using (client.OpenRead("http://www.example.com"))
-            {
-                return true;
-            }
+            // Fallback to Cloudflare's DNS server (1.1.1.1)
+            return ping.Send("1.1.1.1", 3000)?.Status == IPStatus.Success;
         }
-        catch (System.Net.WebException exampleEx)
+        catch (Exception ex)
         {
-            Debug.LogWarning($"Failed to reach Example: {exampleEx.Message}");
+            Debug.LogError($"Error checking internet connection: {ex.Message}");
+            return false;
         }
-
-        Debug.LogError("No internet connection available.");
-        return false;
     }
 }
