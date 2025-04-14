@@ -16,9 +16,14 @@ public class PlayerCameraController : NetworkBehaviour
     [SerializeField] private float distanceFromPlayer = 5f;
     [SerializeField] private Vector3 offset = new(0, 2, 0);
     [SerializeField] private float rotationSmoothTime = 0.1f;
+    [SerializeField] private float cameraCollisionRadius = 0.2f;
+    [SerializeField] private float minCameraDistance = 1f;
+    [SerializeField] private float crouchHeightAdjustment = -1f;
+
     private (float X, float Y) rotation = (0, 0);
     private Transform orientation;
     private PlayerInputHandler inputHandler;
+    private PlayerMovementController movementController;
     private Vector2 currentRotation;
     private Vector2 rotationVelocity;
 
@@ -38,6 +43,7 @@ public class PlayerCameraController : NetworkBehaviour
     private void Start()
     {
         inputHandler = transform.parent.GetComponent<PlayerInputHandler>();
+        movementController = transform.parent.GetComponent<PlayerMovementController>();
     }
 
     private void Update()
@@ -50,20 +56,50 @@ public class PlayerCameraController : NetworkBehaviour
         float inputX = inputHandler.LookInput.x * (inputHandler.LookDevice ? mouseSensitivity : joystickSensitivity) * Time.deltaTime;
         float inputY = inputHandler.LookInput.y * (inputHandler.LookDevice ? mouseSensitivity : joystickSensitivity) * Time.deltaTime;
         rotation.X -= inputY;
-        rotation.X = Mathf.Clamp(rotation.X, -90f, 90f);
+        rotation.X = Mathf.Clamp(rotation.X, -75f, 90f);
 
         rotation.Y += inputX;
 
-        // Smoothly interpolate the camera rotation
         currentRotation = Vector2.SmoothDamp(currentRotation, new Vector2(rotation.X, rotation.Y), ref rotationVelocity, rotationSmoothTime);
 
-        // Apply the rotation to the camera
         Vector3 direction = new(0, 0, -distanceFromPlayer);
         Quaternion rotationQuat = Quaternion.Euler(currentRotation.x, currentRotation.y, 0);
-        transform.position = orientation.position + offset + rotationQuat * direction;
-        transform.LookAt(orientation.position + offset);
+        Vector3 targetPosition = orientation.position + offset + rotationQuat * direction;
 
-        // Rotate the player after the camera has rotated
+        targetPosition = CameraCollisions(targetPosition);
+
+        transform.position = targetPosition;
+
+        Vector3 lookAtPosition = orientation.position + offset;
+        if (movementController.IsCrouching)
+        {
+            lookAtPosition.y += crouchHeightAdjustment;
+        }
+        transform.LookAt(lookAtPosition);
+
         orientation.localRotation = Quaternion.Euler(0f, currentRotation.y, 0f);
     }
+
+    private Vector3 CameraCollisions(Vector3 targetPosition)
+    {
+        Vector3 adjustedOffset = offset;
+        if (movementController.IsCrouching)
+        {
+            adjustedOffset.y += crouchHeightAdjustment;
+        }
+
+        Vector3 direction = targetPosition - (orientation.position + adjustedOffset);
+        if (Physics.SphereCast(orientation.position + adjustedOffset, cameraCollisionRadius, direction, out RaycastHit hit, distanceFromPlayer))
+        {
+            float distanceToHit = Vector3.Distance(orientation.position + adjustedOffset, hit.point);
+            if (distanceToHit < minCameraDistance)
+            {
+                return orientation.position + adjustedOffset - direction.normalized * minCameraDistance;
+            }
+            return hit.point + hit.normal * cameraCollisionRadius;
+        }
+        return targetPosition;
+    }
+
+
 }
