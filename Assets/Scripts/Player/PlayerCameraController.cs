@@ -28,9 +28,7 @@ public class PlayerCameraController : NetworkBehaviour
     [SerializeField] private float crouchHeightAdjustment = -1f;
 
     [Header("FirstPersonSettings")]
-    [SerializeField] private Transform firstPersonCameraPositon;
-    [SerializeField] private float rotationSmoothTimeFp = 0.2f;
-
+    [SerializeField] private Transform firstPersonCameraPosition;
 
 
     private (float X, float Y) rotation = (0, 0);
