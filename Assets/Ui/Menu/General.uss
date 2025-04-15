@@ -9,6 +9,7 @@
     transition-timing-function: ease-out;
     transition-duration: 0.3s;
     border-radius: 5px;
+    font-size: 25px;
     color: white;
     background-color: rgb(70, 130, 180); /* SteelBlue */
 }

@@ -48,7 +48,6 @@ public class Relay : MonoBehaviour
         Singleton = this;
         DontDestroyOnLoad(gameObject);
 
-       
 
         if (IsInternetAvailable())
         {

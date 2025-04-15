@@ -22,7 +22,7 @@ public class MainMenu : MonoBehaviour
     {
 
         mainMenuUi = mainMenuUiObject.GetComponent<UIDocument>().rootVisualElement;
-
+        
 
         mainContainer = mainMenuUi.Q<VisualElement>("main-container");
         hosttButton = mainMenuUi.Q<Button>("host-button");
@@ -35,6 +35,7 @@ public class MainMenu : MonoBehaviour
         setingstButton.clicked += OnSettingsClicked;
         exitButton.clicked += OnExitClicked;
 
+        hosttButton.Focus();
 
     }
 
@@ -62,7 +63,7 @@ public class MainMenu : MonoBehaviour
 
     private void OnJoinClicked()
     {
-        mainMenuUiObject.SetActive(false);
+        gameObject.SetActive(false);
         joinMenuUiObject.SetActive(true);
 
     }

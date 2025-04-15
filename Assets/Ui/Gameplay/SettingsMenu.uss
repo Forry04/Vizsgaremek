@@ -1,0 +1,45 @@
+.buttonline {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.TopButton {
+    -unity-text-align: middle-center;
+    font-size: 150%;
+    width: 15%;
+    align-self: center;
+    flex-shrink: 1;
+    flex-grow: 1;
+    height: auto;
+    margin: 1%;
+}
+
+.text {
+    font-size: 25px;
+    color: white;
+}
+
+.hidden {
+    display: none;
+}
+
+.ContentElement {
+    scale: 1;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    font-size: 22px;
+    background-color: rgba(74, 69, 108, 0.2);
+    margin-left: 10%;
+}
+
+.ContentElement:hover {
+    scale: 1.05;
+    background-color: rgb(74, 69, 108);
+}
+
+.ContentElement:focus {
+    scale: 1.05;
+    background-color: rgb(74, 69, 108);
+}

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class EnablePauseMenu : MonoBehaviour
 {
@@ -15,15 +16,23 @@ public class EnablePauseMenu : MonoBehaviour
     }
 
 
-
     private void Update()
     {
+        // Open UI
         if (playerInput.PauseTriggered)
         {
             pauseMenu.SetActive(true);
             playerInput.EnableUIActionMap();
             UnityEngine.Cursor.lockState = CursorLockMode.None;
-            UnityEngine.Cursor.visible = true;
+            UnityEngine.Cursor.visible = true; 
         }
+        // Exit UI
+        if (playerInput.ExitTriggered)
+        {
+            gameObject.transform.GetComponentsInChildren<Transform>().FirstOrDefault(t=> t.gameObject.activeSelf && t != gameObject.transform).gameObject.SetActive(false);
+            playerInput.EnablePlayerActionMap();
+            UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+            UnityEngine.Cursor.visible = false;
+        }     
     }
 }
