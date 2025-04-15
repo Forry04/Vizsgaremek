@@ -19,7 +19,7 @@ public class PlayerCameraController : NetworkBehaviour
 
     [SerializeField] private float joystickSensitivity = 250f;
 
-    [Header("ThirdPresonSettings")]
+    [Header("ThirdPersonSettings")]
     [SerializeField] private float distanceFromPlayer = 5f;
     [SerializeField] private Vector3 offset = new(0, 2, 0);
     [SerializeField] private float rotationSmoothTime = 0.1f;
