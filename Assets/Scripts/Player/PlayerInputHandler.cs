@@ -25,7 +25,9 @@ public class PlayerInputHandler : NetworkBehaviour
     [SerializeField] private string sprint = "Sprint";
     [SerializeField] private string unlockCamera = "UnlockCamera";
     [SerializeField] private string openChat = "OpenChat";
-    [SerializeField] private string pause = "Pause";    
+    [SerializeField] private string pause = "Pause"; 
+    [SerializeField] private string switchCamera = "SwitchCamera";
+
 
 
     [Header("UI Action References")]
@@ -44,6 +46,7 @@ public class PlayerInputHandler : NetworkBehaviour
     private InputAction pauseAction;
     private InputAction submitAction;
     private InputAction cancelAction;
+    private InputAction switchCameraAction;
 
     public Vector2 MoveInput { get; private set; }
     public Vector2 LookInput { get; private set; }
@@ -57,6 +60,7 @@ public class PlayerInputHandler : NetworkBehaviour
     public bool PauseTriggered { get; private set; }
     public bool SubmitTriggered { get; private set; }
     public bool CancelTriggered { get; private set; }
+    public bool SwitchCameraTriggered { get; private set; }
 
     public bool IsCrouching { get; private set; }
 
@@ -81,6 +85,7 @@ public class PlayerInputHandler : NetworkBehaviour
         pauseAction = playerControls.FindActionMap(actionMapName).FindAction(pause);
         submitAction = playerControls.FindActionMap(uiActionMapName).FindAction(submit);
         cancelAction = playerControls.FindActionMap(uiActionMapName).FindAction(cancel);
+        switchCameraAction = playerControls.FindActionMap(actionMapName).FindAction(switchCamera);
 
         RegisterInputActions();
 
@@ -130,6 +135,9 @@ public class PlayerInputHandler : NetworkBehaviour
 
         cancelAction.performed += context => CancelTriggered = true;
         cancelAction.canceled += context => CancelTriggered = false;
+
+        switchCameraAction.performed += context => SwitchCameraTriggered = true;
+        switchCameraAction.canceled += context => SwitchCameraTriggered = false;
 
     }
 

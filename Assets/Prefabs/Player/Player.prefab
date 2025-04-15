@@ -69,8 +69,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 8014846673018225561}
   - {fileID: 761935499730400727}
+  - {fileID: 8014846673018225561}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2889633378012869140
@@ -321,6 +321,7 @@ MonoBehaviour:
   unlockCamera: UnlockCamera
   openChat: OpenChat
   pause: Pause
+  switchCamera: SwitchCamera
   submit: Submit
   cancel: Cancel
   crouchAction:
@@ -460,6 +461,7 @@ MonoBehaviour:
   minCameraDistance: 1
   crouchHeightAdjustment: -1
   firstPersonCameraPositon: {fileID: 7665044730637283966}
+  rotationSmoothTimeFp: 0.2
 --- !u!1001 &7543755775731328114
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -526,6 +528,10 @@ PrefabInstance:
       objectReference: {fileID: 9100000, guid: c7e1bd4390926674d87c981b69936746, type: 2}
     - target: {fileID: 5866666021909216657, guid: bfd7e2afbf9216d4abc8e0ebd026e7e9, type: 3}
       propertyPath: m_UpdateMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: bfd7e2afbf9216d4abc8e0ebd026e7e9, type: 3}
+      propertyPath: m_CullingMode
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

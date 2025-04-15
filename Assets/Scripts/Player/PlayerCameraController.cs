@@ -40,6 +40,7 @@ public class PlayerCameraController : NetworkBehaviour
     private Vector2 currentRotation;
     private Vector2 rotationVelocity;
     private Vector3 positionVelocity;
+    private bool switchCameraTriggered = false;
 
 
     public override void OnNetworkSpawn()
@@ -62,8 +63,22 @@ public class PlayerCameraController : NetworkBehaviour
         movementController = transform.parent.GetComponent<PlayerMovementController>();
     }
 
+    private void FixedUpdate()
+    {
+        if (inputHandler.SwitchCameraTriggered && !switchCameraTriggered)
+        {
+            SwitchCamera();
+            switchCameraTriggered = true; // Set the flag to true after switching the camera
+        }
+        else if (!inputHandler.SwitchCameraTriggered)
+        {
+            switchCameraTriggered = false; // Reset the flag when the input is released
+        }
+    }
+
     private void Update()
     {
+
         if (isFirstPerson)
         {
            
@@ -75,10 +90,11 @@ public class PlayerCameraController : NetworkBehaviour
 
         }
     }
-    [ContextMenu("Switch Camera")]
-    public void SwitchCamera()
+    
+    private void SwitchCamera()
     {
-        if (!IsLocalPlayer) {
+        if (!IsLocalPlayer)
+        {
             return;
         }
         if (isFirstPerson)
@@ -87,10 +103,13 @@ public class PlayerCameraController : NetworkBehaviour
             transform.SetPositionAndRotation(orientation.position + offset, orientation.rotation);
             transform.localRotation = Quaternion.Euler(rotation.X, 0f, 0f);
             orientation.localRotation = Quaternion.Euler(0f, rotation.Y, 0f);
+            Debug.Log("Third person");
         }
+        else
         {
             man.layer = LayerMask.NameToLayer("OwnPlayer");
             transform.SetPositionAndRotation(firstPersonCameraPositon.position, firstPersonCameraPositon.rotation);
+            Debug.Log("First person");
         }
         isFirstPerson = !isFirstPerson;
     }
