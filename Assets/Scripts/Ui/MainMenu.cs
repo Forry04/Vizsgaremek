@@ -22,7 +22,7 @@ public class MainMenu : MonoBehaviour
     {
 
         mainMenuUi = mainMenuUiObject.GetComponent<UIDocument>().rootVisualElement;
-
+        
 
         mainContainer = mainMenuUi.Q<VisualElement>("main-container");
         hosttButton = mainMenuUi.Q<Button>("host-button");
@@ -35,6 +35,28 @@ public class MainMenu : MonoBehaviour
         setingstButton.clicked += OnSettingsClicked;
         exitButton.clicked += OnExitClicked;
 
+        var buttons = GetComponent<UIDocument>().rootVisualElement.Query<Button>().ToList();
+        foreach (var button in buttons)
+        {
+            button.RegisterCallback<MouseEnterEvent>(evt =>
+            {
+
+                FindObjectOfType<AudioManager>().Play("ButtonHover");
+            });
+
+            button.RegisterCallback<FocusEvent>(evt =>
+            {
+
+                FindObjectOfType<AudioManager>().Play("ButtonHover");
+            });
+
+            button.RegisterCallback<ClickEvent>(evt =>
+            {
+                //PlayClickSound();
+            });
+        }
+
+        hosttButton.Focus();
 
     }
 
@@ -62,7 +84,7 @@ public class MainMenu : MonoBehaviour
 
     private void OnJoinClicked()
     {
-        mainMenuUiObject.SetActive(false);
+        gameObject.SetActive(false);
         joinMenuUiObject.SetActive(true);
 
     }

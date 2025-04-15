@@ -1,0 +1,43 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Ui/Menu/General.uss?fileID=7433441132597879392&amp;guid=f89a2678f5e910b4f9cb48d2186c123a&amp;type=3#General" />
+    <Style src="project://database/Assets/Ui/Gameplay/SettingsMenu.uss?fileID=7433441132597879392&amp;guid=7cc9d6567839f98409a164b0d287466b&amp;type=3#SettingsMenu" />
+    <ui:VisualElement name="container" style="flex-grow: 1; justify-content: center; display: flex; visibility: visible;">
+        <ui:VisualElement name="window" style="flex-grow: 0; background-color: rgb(12, 9, 41); flex-shrink: 0; width: 1600px; height: 800px; justify-content: flex-start; align-self: center; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; align-items: stretch; border-left-color: rgba(74, 69, 108, 0.98); border-right-color: rgba(74, 69, 108, 0.98); border-top-color: rgba(74, 69, 108, 0.98); border-bottom-color: rgba(74, 69, 108, 0.98); border-top-width: 5px; border-right-width: 5px; border-bottom-width: 5px; border-left-width: 5px;">
+            <ui:VisualElement name="UpperLine" class="buttonline" style="flex-grow: 0; align-self: center; flex-shrink: 0; align-items: flex-start; width: 100%; height: 10%; border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0; justify-content: flex-start; border-left-color: rgb(74, 69, 108); border-right-color: rgb(74, 69, 108); border-top-color: rgb(74, 69, 108); border-bottom-color: rgb(74, 69, 108); border-top-width: 0; border-right-width: 0; border-bottom-width: 5px; border-left-width: 0; background-color: rgb(32, 29, 53);">
+                <ui:Button text="Back" parse-escape-sequences="true" display-tooltip-when-elided="true" name="back-button" class="TopButton button" />
+                <ui:VisualElement name="separateElement" style="flex-grow: 0; flex-shrink: 0; width: 0.5%; height: 100%; border-left-color: rgba(56, 56, 56, 0.98); border-right-color: rgba(56, 56, 56, 0.98); border-top-color: rgba(56, 56, 56, 0.98); border-bottom-color: rgba(56, 56, 56, 0.98); background-color: rgb(74, 69, 108);" />
+                <ui:Button text="Sound" parse-escape-sequences="true" display-tooltip-when-elided="true" name="sound-button" class="button TopButton" />
+                <ui:Button text="Controls" parse-escape-sequences="true" display-tooltip-when-elided="true" name="controls-button" class="button TopButton" />
+                <ui:Button text="Graphics" parse-escape-sequences="true" display-tooltip-when-elided="true" name="graphics-button" class="button TopButton" style="display: flex;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="contentContent-element" style="flex-grow: 0; background-color: rgba(0, 0, 0, 0); justify-content: flex-start; flex-shrink: 0; width: 100%; height: 80%; align-self: center; align-items: stretch; border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0; border-left-color: rgba(41, 33, 75, 0.98); border-right-color: rgba(41, 33, 75, 0.98); border-top-color: rgba(41, 33, 75, 0.98); border-bottom-color: rgba(41, 33, 75, 0.98); border-top-width: 0; padding-top: 20px; padding-right: 60px; padding-bottom: 20px; padding-left: 60px;">
+                <ui:VisualElement name="SoundContent-element" class="hidden" style="flex-grow: 1; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; display: none;">
+                    <ui:Label tabindex="-1" text="Volume" parse-escape-sequences="true" display-tooltip-when-elided="true" style="font-size: 28px; -unity-font-style: bold; border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255); border-bottom-width: 2px; margin-bottom: 10px; display: flex;" />
+                    <ui:Slider label="Master Volume" high-value="100" inverted="false" direction="Horizontal" name="MVolume-slider" class="text soundElement ContentElement" style="-unity-font-style: normal; display: flex; font-size: 22px;" />
+                    <ui:Slider label="Music               " high-value="100" name="music-slider" class="text slider soundElement ContentElement" style="font-size: 22px; -unity-font-style: normal;" />
+                    <ui:Slider label="Sound Effects " high-value="100" name="SoundE-slider" class="text slider soundElement ContentElement" style="font-size: 22px;" />
+                    <ui:Toggle label="Mute All" name="Toggle" class="text soundElement ContentElement" style="font-size: 22px;" />
+                </ui:VisualElement>
+                <ui:VisualElement name="ControlsContent-element" class="hidden" style="flex-grow: 1; display: none; font-size: 28px; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;">
+                    <ui:Label tabindex="-1" text="Sensitivity" parse-escape-sequences="true" display-tooltip-when-elided="true" style="margin-bottom: 10px; -unity-font-style: bold; border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255); border-bottom-width: 2px;" />
+                    <ui:Slider label="Mouse" high-value="100" name="mouse-slider" class="ContentElement" style="margin-left: 10%;" />
+                    <ui:Slider label="Gamepad" high-value="100" name="gamepad-slider" class="ContentElement" />
+                    <ui:Label tabindex="-1" text="Invert Axes" parse-escape-sequences="true" display-tooltip-when-elided="true" style="-unity-font-style: bold; border-bottom-width: 2px; border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255); margin-bottom: 10px; font-size: 25px;" />
+                    <ui:Toggle label="Invert X Axis" name="axis_x-toggle" class="ContentElement" />
+                    <ui:Toggle label="Invert Y Axis" name="axis_y-toggle" class="ContentElement" />
+                    <ui:Label tabindex="-1" text="Gamepad Vibration" parse-escape-sequences="true" display-tooltip-when-elided="true" style="font-size: 25px; -unity-font-style: bold; border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255); border-bottom-width: 2px; margin-bottom: 10px;" />
+                    <ui:Slider label="Intensity" high-value="100" name="vibrationIntensity-slider" class="ContentElement" />
+                    <ui:Toggle label="Spatial Vibration" name="spatialvibration-toggle" class="ContentElement" />
+                </ui:VisualElement>
+                <ui:VisualElement name="GraphicsContent-element" class="hidden" style="flex-grow: 1; display: none;">
+                    <ui:DropdownField label="Resolution" name="resolution-dropdown" class="ContentElement" style="margin-left: 0;" />
+                    <ui:DropdownField label="Display Mode" name="display-dropdown" class="ContentElement" style="margin-left: 0;" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="BottomLine" class="buttonline" style="flex-grow: 1; width: 100%; height: 10%; border-left-color: rgb(74, 69, 108); border-right-color: rgb(74, 69, 108); border-top-color: rgb(74, 69, 108); border-bottom-color: rgb(74, 69, 108); border-top-width: 5px; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; background-color: rgb(32, 29, 53);">
+                <ui:Button text="Save" parse-escape-sequences="true" display-tooltip-when-elided="true" name="save-button" class="button TopButton" />
+                <ui:Button text="Reset" parse-escape-sequences="true" display-tooltip-when-elided="true" name="reset-button" class="button TopButton" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

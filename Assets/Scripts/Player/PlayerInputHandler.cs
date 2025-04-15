@@ -33,6 +33,7 @@ public class PlayerInputHandler : NetworkBehaviour
     [Header("UI Action References")]
     [SerializeField] private string submit = "Submit";
     [SerializeField] private string cancel = "Cancel";
+    [SerializeField] private string exit = "Exit";
 
     private InputAction moveAction;
     private InputAction lookAction;
@@ -46,7 +47,11 @@ public class PlayerInputHandler : NetworkBehaviour
     private InputAction pauseAction;
     private InputAction submitAction;
     private InputAction cancelAction;
+
+    private InputAction exitAction;
+
     private InputAction switchCameraAction;
+
 
     public Vector2 MoveInput { get; private set; }
     public Vector2 LookInput { get; private set; }
@@ -63,7 +68,7 @@ public class PlayerInputHandler : NetworkBehaviour
     public bool SwitchCameraTriggered { get; private set; }
 
     public bool IsCrouching { get; private set; }
-
+    public bool ExitTriggered { get; private set; }
 
     public static PlayerInputHandler Instance { get; private set; }
 
@@ -85,7 +90,11 @@ public class PlayerInputHandler : NetworkBehaviour
         pauseAction = playerControls.FindActionMap(actionMapName).FindAction(pause);
         submitAction = playerControls.FindActionMap(uiActionMapName).FindAction(submit);
         cancelAction = playerControls.FindActionMap(uiActionMapName).FindAction(cancel);
+
+        exitAction = playerControls.FindActionMap(uiActionMapName).FindAction(exit);
+
         switchCameraAction = playerControls.FindActionMap(actionMapName).FindAction(switchCamera);
+
 
         RegisterInputActions();
 
@@ -136,8 +145,13 @@ public class PlayerInputHandler : NetworkBehaviour
         cancelAction.performed += context => CancelTriggered = true;
         cancelAction.canceled += context => CancelTriggered = false;
 
+
+        exitAction.performed += context => ExitTriggered = true;
+        exitAction.canceled += context => ExitTriggered = false;
+
         switchCameraAction.performed += context => SwitchCameraTriggered = true;
         switchCameraAction.canceled += context => SwitchCameraTriggered = false;
+
 
     }
 
@@ -209,6 +223,20 @@ public class PlayerInputHandler : NetworkBehaviour
     {
         if (crouchTriggered) crouchTriggered = false;
 
+        var mouse = Mouse.current;
+        if (mouse != null && mouse.delta.ReadValue().magnitude > 0)
+        {
+            LookDevice = true;
+            Debug.Log("Mouse detected!");
+        }
+
+        var gamepad = Gamepad.current;
+        if (gamepad != null && gamepad.rightStick.ReadValue().magnitude > 0)
+        {
+            LookDevice = false;
+            Debug.Log("Gamepad detected!");
+        }
+
     }
-    
+
 }
