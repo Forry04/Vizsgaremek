@@ -9,7 +9,7 @@ public class SettingsMenu : MonoBehaviour
 {
 
     [SerializeField] private GameObject PauseMenuUiObject;
-    PlayerInputHandler playerInput;
+    public PlayerInputHandler playerInput;
 
     private VisualElement settingsMenuUi;
 
@@ -31,8 +31,8 @@ public class SettingsMenu : MonoBehaviour
 
     private void OnEnable()
     {
-        //playerInput = Chat.Singleton.playerInput;
-        //playerInput = GameObject.Find("Player").GetComponent<PlayerInputHandler>();
+        playerInput = Chat.Singleton.playerInput;
+
         settingsMenuUi = gameObject.GetComponent<UIDocument>().rootVisualElement;
 
         soundContent = settingsMenuUi.Q<VisualElement>("SoundContent-element");
@@ -56,7 +56,7 @@ public class SettingsMenu : MonoBehaviour
         graphicsButton.clicked += OnGraphicsClicked;
         saveButton.clicked += OnSaveClicked;
         resetButton.clicked += OnResetClicked;
-
+        
         soundContent.style.display = DisplayStyle.Flex;
         controlsContent.style.display = DisplayStyle.None;
         graphicsContent.style.display = DisplayStyle.None;

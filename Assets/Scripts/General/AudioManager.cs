@@ -9,7 +9,7 @@ public class AudioManager : MonoBehaviour
     public AudioMixer audioMixer;
     public float fadeOutDuration = 2f;
     public static AudioManager instance;
-
+    public GameObject movingAudioPrefab;
     void Awake()
     {
         if (instance == null) instance = this;
@@ -113,5 +113,16 @@ public class AudioManager : MonoBehaviour
         from.source.Stop();
 
         to.source.volume = toTargetVolume;
+    }
+
+    public void PlayMovingSound(AudioClip clip, Transform followTarget, float volume = 1f)
+    {
+        GameObject soundObj = Instantiate(movingAudioPrefab, followTarget.position, Quaternion.identity, followTarget);
+        AudioSource source = soundObj.GetComponent<AudioSource>();
+        source.clip = clip;
+        source.volume = volume;
+        source.spatialBlend = 1f; // Makes it 3D
+        source.Play();
+        Destroy(soundObj, clip.length);
     }
 }

@@ -62,7 +62,13 @@ public class PauseMenu : MonoBehaviour
             button.RegisterCallback<MouseEnterEvent>(evt =>
             {
 
-                //PlayHoverSound();
+                FindObjectOfType<AudioManager>().Play("ButtonHover");
+            });
+
+            button.RegisterCallback<FocusEvent>(evt =>
+            {
+
+                FindObjectOfType<AudioManager>().Play("ButtonHover");
             });
 
             button.RegisterCallback<ClickEvent>(evt =>
