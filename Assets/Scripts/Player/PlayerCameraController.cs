@@ -106,7 +106,7 @@ public class PlayerCameraController : NetworkBehaviour
         else
         {
             man.layer = LayerMask.NameToLayer("OwnPlayer");
-            transform.SetPositionAndRotation(firstPersonCameraPositon.position, firstPersonCameraPositon.rotation);
+            transform.SetPositionAndRotation(firstPersonCameraPosition.position, firstPersonCameraPosition.rotation);
             Debug.Log("First person");
         }
         isFirstPerson = !isFirstPerson;
@@ -130,8 +130,8 @@ public class PlayerCameraController : NetworkBehaviour
         orientation.localRotation = Quaternion.Euler(0f, rotation.Y, 0f);
 
         // Smoothly interpolate the camera's position
-        Vector3 targetPosition = firstPersonCameraPositon.position;
-        transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref positionVelocity, rotationSmoothTimeFp);
+        Vector3 targetPosition = firstPersonCameraPosition.position;
+        transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref positionVelocity, rotationSmoothTime);
     }
     #endregion
 
