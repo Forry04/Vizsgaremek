@@ -79,7 +79,7 @@ public class PauseMenu : MonoBehaviour
         // only host can start
         startButton.style.display = DisplayStyle.None;
 
-        resumeButton.Focus();
+        pauseMenuUi.Focus();
     }
 
     

@@ -10,6 +10,7 @@ public class SettingsMenu : MonoBehaviour
 
     [SerializeField] private GameObject PauseMenuUiObject;
     public PlayerInputHandler playerInput;
+    public AudioManager audioManager;
 
     private VisualElement settingsMenuUi;
 
@@ -29,8 +30,14 @@ public class SettingsMenu : MonoBehaviour
     private DropdownField resDropDown;
     private DropdownField displayDropDown;
 
+    List<Button> Buttons;
+    List<Slider> Sliders;
+    List<Toggle> Toggles;
+    List<DropdownField> DropDownFields;
+
     private void OnEnable()
     {
+        audioManager = FindObjectOfType<AudioManager>();
         playerInput = Chat.Singleton.playerInput;
 
         settingsMenuUi = gameObject.GetComponent<UIDocument>().rootVisualElement;
@@ -62,6 +69,7 @@ public class SettingsMenu : MonoBehaviour
         graphicsContent.style.display = DisplayStyle.None;
         activeContent = soundContent;
 
+        Resolution[] resolutionss = Screen.resolutions;
         List<string> resolutions = new() { "1280x720 (720p) – HD", "1920x1080 (1080p) – Full HD", "2560x1440 (1440p) – QHD", "3840x2160 (4K) – Ultra HD" };
         List<string> displayModes = new() { "Fullscreen" , "Windowed", "Borderless Windowed" };
 
@@ -70,16 +78,112 @@ public class SettingsMenu : MonoBehaviour
         resDropDown.index = 1;
         displayDropDown.index = 0;
 
-        
+        Buttons = GetComponent<UIDocument>().rootVisualElement.Query<Button>().ToList();  
+        Sliders = GetComponent<UIDocument>().rootVisualElement.Query<Slider>().ToList();
+        Toggles = GetComponent<UIDocument>().rootVisualElement.Query<Toggle>().ToList();
+        DropDownFields = GetComponent<UIDocument>().rootVisualElement.Query<DropdownField>().ToList();
 
+        AssignButtonSounds();
+        AssignSliderSounds();
         settingsMenuUi.MarkDirtyRepaint();
         soundButton.Focus();
+    }
+
+    private void AssignButtonSounds()
+    {
+        foreach (var button in Buttons)
+        {
+            button.RegisterCallback<MouseEnterEvent>(evt =>
+            {
+
+                audioManager.Play("ButtonHover");
+            });
+
+            button.RegisterCallback<FocusEvent>(evt =>
+            {
+
+                audioManager.Play("ButtonHover");
+            });
+
+            button.RegisterCallback<ClickEvent>(evt =>
+            {
+                //PlayClickSound();
+            });
+        }
+    }
+
+    private void AssignSliderSounds()
+    {
+        foreach (var button in Sliders)
+        {
+            button.RegisterCallback<MouseEnterEvent>(evt =>
+            {
+
+                audioManager.Play("ElementHover");
+            });
+
+            button.RegisterCallback<FocusEvent>(evt =>
+            {
+
+                audioManager.Play("ElementHover");
+            });
+
+            button.RegisterCallback<ClickEvent>(evt =>
+            {
+                //PlayClickSound();
+            });
+        }
+    }
+
+    private void AssignToggleSounds()
+    {
+        foreach (var button in Toggles)
+        {
+            button.RegisterCallback<MouseEnterEvent>(evt =>
+            {
+
+                audioManager.Play("ButtonHover");
+            });
+
+            button.RegisterCallback<FocusEvent>(evt =>
+            {
+
+                audioManager.Play("ButtonHover");
+            });
+
+            button.RegisterCallback<ClickEvent>(evt =>
+            {
+                //PlayClickSound();
+            });
+        }
+    }
+
+    private void AssignDropDownSounds()
+    {
+        foreach (var button in DropDownFields)
+        {
+            button.RegisterCallback<MouseEnterEvent>(evt =>
+            {
+
+                audioManager.Play("ButtonHover");
+            });
+
+            button.RegisterCallback<FocusEvent>(evt =>
+            {
+
+                audioManager.Play("ButtonHover");
+            });
+
+            button.RegisterCallback<ClickEvent>(evt =>
+            {
+                //PlayClickSound();
+            });
+        }
     }
 
     private void OnDisable()
     {
         backButton.clicked -= OnBackClicked;
-
         soundButton.clicked -= OnSoundClicked;
         controlsButton.clicked -= OnControlsClicked;
         graphicsButton.clicked -= OnGraphicsClicked;
