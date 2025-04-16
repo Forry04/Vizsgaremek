@@ -76,7 +76,11 @@ public class PlayerCameraController : NetworkBehaviour
 
     private void Update()
     {
-
+        if (!IsLocalPlayer)
+        {
+            return;
+        }
+        RotateNametags();
         if (isFirstPerson)
         {
            
@@ -186,6 +190,18 @@ public class PlayerCameraController : NetworkBehaviour
         return targetPosition;
     }
     #endregion
-
+    
+    private void RotateNametags()
+    {
+        GameObject[]  playerNames = GameObject.FindGameObjectsWithTag("PlayerName");
+        foreach (GameObject playerName in playerNames)
+        {
+            if (playerName.transform.parent != null)
+            {
+                playerName.transform.LookAt(transform.position);
+                playerName.transform.Rotate(0, 180, 0);
+            }
+        }
+    }
 
 }
