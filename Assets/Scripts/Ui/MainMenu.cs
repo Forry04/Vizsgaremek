@@ -8,6 +8,7 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private GameObject mainMenuUiObject;
     [SerializeField] private GameObject joinMenuUiObject;
     [SerializeField] private GameObject loadingMenUiObject;
+    [SerializeField] private GameObject SettingsMenUiObject;
 
     private VisualElement mainMenuUi;
     private VisualElement mainContainer;
@@ -17,6 +18,7 @@ public class MainMenu : MonoBehaviour
     private Button setingstButton;
     private Button exitButton;
 
+  
 
     private void OnEnable()
     {
@@ -36,30 +38,32 @@ public class MainMenu : MonoBehaviour
         exitButton.clicked += OnExitClicked;
 
         var buttons = GetComponent<UIDocument>().rootVisualElement.Query<Button>().ToList();
-        foreach (var button in buttons)
+        if (AudioManager.Instance != null)
         {
-            button.RegisterCallback<MouseEnterEvent>(evt =>
+            foreach (var button in buttons)
             {
+                button.RegisterCallback<MouseEnterEvent>(evt =>
+                {
 
-                FindObjectOfType<AudioManager>().Play("ButtonHover");
-            });
+                    FindObjectOfType<AudioManager>().Play("ButtonHover");
+                });
 
-            button.RegisterCallback<FocusEvent>(evt =>
-            {
+                button.RegisterCallback<FocusEvent>(evt =>
+                {
 
-                FindObjectOfType<AudioManager>().Play("ButtonHover");
-            });
+                    FindObjectOfType<AudioManager>().Play("ButtonHover");
+                });
 
-            button.RegisterCallback<ClickEvent>(evt =>
-            {
-                //PlayClickSound();
-            });
+                button.RegisterCallback<ClickEvent>(evt =>
+                {
+                    //PlayClickSound();
+                });
+            }
         }
 
         hosttButton.Focus();
 
     }
-
 
     private async void OnHostClicked()
     {
@@ -91,7 +95,8 @@ public class MainMenu : MonoBehaviour
 
     private void OnSettingsClicked()
     {
-        throw new NotImplementedException();
+        gameObject.SetActive(false);
+        SettingsMenUiObject.SetActive(true);   
     }
 
     private void OnExitClicked()
