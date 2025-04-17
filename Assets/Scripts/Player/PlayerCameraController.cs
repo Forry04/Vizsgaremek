@@ -9,15 +9,16 @@ public class PlayerCameraController : NetworkBehaviour
 {
     [SerializeField] private bool isFirstPerson = false;
     [SerializeField] private GameObject man;
-    
 
-    [InspectorLabel("Mouse Sensitivity")]
-    [Range(1, 100)]
-    [SerializeField] private float mouseSensitivity = 18f;
-    [Range(1, 500)]
-    [InspectorLabel("Joystick Sensitivity")]
+    public SettingsManager Settings => SettingsManager.Instance;
 
-    [SerializeField] private float joystickSensitivity = 250f;
+    //[InspectorLabel("Mouse Sensitivity")]
+    //[Range(1, 100)]
+    //[SerializeField] private float mouseSensitivity = 18f;
+    //[Range(1, 500)]
+    //[InspectorLabel("Joystick Sensitivity")]
+
+    //[SerializeField] private float joystickSensitivity = 250f;
 
     [Header("ThirdPersonSettings")]
     [SerializeField] private float distanceFromPlayer = 5f;
@@ -117,13 +118,20 @@ public class PlayerCameraController : NetworkBehaviour
     private void HandleCamMovementFirstPerson()
     {
         // Get input for camera rotation
-        float inputX = inputHandler.LookInput.x * (inputHandler.LookDevice ? mouseSensitivity : joystickSensitivity) * Time.deltaTime;
-        float inputY = inputHandler.LookInput.y * (inputHandler.LookDevice ? mouseSensitivity : joystickSensitivity) * Time.deltaTime;
+        float inputX = inputHandler.LookInput.x * (inputHandler.LookDevice ? Settings.CurrentSettings.mouseSensitivity : Settings.CurrentSettings.gamepadSensitivity) * Time.deltaTime;
+        float inputY = inputHandler.LookInput.y * (inputHandler.LookDevice ? Settings.CurrentSettings.mouseSensitivity : Settings.CurrentSettings.gamepadSensitivity) * Time.deltaTime;
 
         // Update rotation values
-        rotation.X -= inputY;
-        rotation.X = Mathf.Clamp(rotation.X, -75f, 90f); // Limit vertical rotation
-        rotation.Y += inputX;
+        if (Settings.CurrentSettings.invertXAxis) rotation.X += inputY;   
+        else rotation.X -= inputY;
+
+        rotation.X = Mathf.Clamp(rotation.X, -75f, 90f);
+
+        if (Settings.CurrentSettings.invertYAxis) rotation.Y -= inputX;
+        else rotation.Y += inputX;
+
+        // Limit vertical rotation
+       
 
         // Apply rotation to the camera
         transform.localRotation = Quaternion.Euler(rotation.X, 0f, 0f);
@@ -138,12 +146,16 @@ public class PlayerCameraController : NetworkBehaviour
     #region thirdPerson
     private void HandleCamMovementThirdPreson()
     {
-        float inputX = inputHandler.LookInput.x * (inputHandler.LookDevice ? mouseSensitivity : joystickSensitivity) * Time.deltaTime;
-        float inputY = inputHandler.LookInput.y * (inputHandler.LookDevice ? mouseSensitivity : joystickSensitivity) * Time.deltaTime;
-        rotation.X -= inputY;
+        float inputX = inputHandler.LookInput.x * (inputHandler.LookDevice ? Settings.CurrentSettings.mouseSensitivity : Settings.CurrentSettings.gamepadSensitivity) * Time.deltaTime;
+        float inputY = inputHandler.LookInput.y * (inputHandler.LookDevice ? Settings.CurrentSettings.mouseSensitivity : Settings.CurrentSettings.gamepadSensitivity) * Time.deltaTime;
+
+        if (Settings.CurrentSettings.invertXAxis) rotation.X += inputY;
+        else rotation.X -= inputY;
+
         rotation.X = Mathf.Clamp(rotation.X, -75f, 90f);
 
-        rotation.Y += inputX;
+        if (Settings.CurrentSettings.invertYAxis) rotation.Y -= inputX;
+        else rotation.Y += inputX;
 
         currentRotation = Vector2.SmoothDamp(currentRotation, new Vector2(rotation.X, rotation.Y), ref rotationVelocity, rotationSmoothTime);
 
