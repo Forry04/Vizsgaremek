@@ -16,7 +16,7 @@
                     <ui:Slider label="Master Volume" high-value="100" inverted="false" direction="Horizontal" name="MVolume-slider" class="text soundElement ContentElement" style="-unity-font-style: normal; display: flex; font-size: 22px;" />
                     <ui:Slider label="Music               " high-value="100" name="music-slider" class="text slider soundElement ContentElement" style="font-size: 22px; -unity-font-style: normal;" />
                     <ui:Slider label="Sound Effects " high-value="100" name="SoundE-slider" class="text slider soundElement ContentElement" style="font-size: 22px;" />
-                    <ui:Toggle label="Mute All" name="MuteAll-toggle" class="text soundElement ContentElement" style="font-size: 22px;" />
+                    <ui:Toggle label="Mute All" name="Toggle" class="text soundElement ContentElement" style="font-size: 22px;" />
                 </ui:VisualElement>
                 <ui:VisualElement name="ControlsContent-element" class="hidden" style="flex-grow: 1; display: none; font-size: 28px; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;">
                     <ui:Label tabindex="-1" text="Sensitivity" parse-escape-sequences="true" display-tooltip-when-elided="true" style="margin-bottom: 10px; -unity-font-style: bold; border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255); border-bottom-width: 2px;" />

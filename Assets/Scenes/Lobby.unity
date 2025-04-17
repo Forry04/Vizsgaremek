@@ -35822,8 +35822,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2ca5f0f3d987ea489e92b3cbb857e61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BackToMenuUiObject: {fileID: 760654631}
-  playerInput: {fileID: 0}
+  PauseMenuUiObject: {fileID: 760654631}
 --- !u!43 &2115719869
 Mesh:
   m_ObjectHideFlags: 0

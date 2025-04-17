@@ -1,7 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/Ui/Menu/General.uss?fileID=7433441132597879392&amp;guid=f89a2678f5e910b4f9cb48d2186c123a&amp;type=3#General" />
     <Style src="project://database/Assets/Ui/Menu/Loading.uss?fileID=7433441132597879392&amp;guid=25742b69cfb70cc4db4a73f955051e15&amp;type=3#Loading" />
-    <ui:VisualElement name="Main" class="main loading-icon background" style="background-color: rgba(0, 0, 0, 0); background-image: none;">
+    <ui:VisualElement name="Main" class="main loading-icon">
         <ui:Label tabindex="-1" text="Loading..." parse-escape-sequences="true" display-tooltip-when-elided="true" class="title" style="align-self: center; top: -30%;" />
         <ui:VisualElement name="loading-container" style="flex-grow: 0; background-image: url(&quot;project://database/Assets/Ui/Img/loading.png?fileID=2800000&amp;guid=4b0bc68e13fc67249bbe7e2c77de7c70&amp;type=3#loading&quot;); width: 200px; height: 200px; flex-shrink: 1; margin-top: 20px; margin-right: 20px; margin-bottom: 20px; margin-left: 20px;" />
     </ui:VisualElement>
