@@ -67,8 +67,4 @@ public class PlayerSpawner : NetworkBehaviour
         player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId);
     }
 
-  
-    
-       
 }
-

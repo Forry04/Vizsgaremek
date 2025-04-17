@@ -61,7 +61,7 @@ public class ReadyStartSystem : NetworkBehaviour
         if (player.Equals(default)) return;
         player.isReady = !player.isReady;
 
-        Chat.Singleton.SendAnnouncement($"{PlayerDataManager.Singleton.Name} is {(!player.isReady ? "not" : "")} ready!",(player.isReady ? Color.green : Color.red));
+        Chat.Singleton.SendAnnouncement($"{player.playerID} is {(!player.isReady ? "not" : "")} ready!",(player.isReady ? Color.green : Color.red));
     }
 
   
