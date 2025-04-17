@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 using System.Linq;
+using System.Runtime.InteropServices;
+using UnityEngine.SceneManagement;
 
 public class SettingsMenu : MonoBehaviour
 {
@@ -13,6 +15,8 @@ public class SettingsMenu : MonoBehaviour
     public AudioManager audioManager =>AudioManager.Instance;
     public SettingsManager settingsmanager => SettingsManager.Instance;
     private VisualElement settingsMenuUi;
+
+    private VisualElement MainContent;
 
     private VisualElement contentContent;
 
@@ -34,26 +38,58 @@ public class SettingsMenu : MonoBehaviour
     private Slider MasterVolumeSlider;
     private Slider MusicSlider;
     private Slider SESlider;
+    private Slider MouseSlider;
+    private Slider GamePadSlider;
+    private Slider VibrationIntensitylider;
+
 
     private Toggle MuteAllToggle;
+    private Toggle invertXToggle;
+    private Toggle invertYToggle;
+    private Toggle SpatialVibrationToggle;
 
     List<Button> Buttons;
     List<Slider> Sliders;
     List<Toggle> Toggles;
     List<DropdownField> DropDownFields;
 
-    //List<string> resolutions = new() { "1280x720 (720p) – HD", "1920x1080 (1080p) – Full HD", "2560x1440 (1440p) – QHD", "3840x2160 (4K) – Ultra HD" };
-    List<string> displayModes = new() { "Fullscreen", "Windowed", "Borderless Windowed" };
+    List<string> displayModes = new() { "Fullscreen", "Windowed", "Borderless" };
+    string GetFriendlyName(FullScreenMode mode)
+    {
+        return mode switch
+        {
+            FullScreenMode.ExclusiveFullScreen => "Fullscreen",
+            FullScreenMode.FullScreenWindow => "Borderless",
+            FullScreenMode.Windowed => "Windowed",
+            _ => "Windowed"
+        };
+    }
+    FullScreenMode ParseDisplayMode(string choice)
+    {
+        return choice switch
+        {
+            "Fullscreen" => FullScreenMode.ExclusiveFullScreen,
+            "Borderless" => FullScreenMode.FullScreenWindow,
+            "Windowed" => FullScreenMode.Windowed,
+            _ => FullScreenMode.Windowed
+        };
+    }
+
+    
 
     private void OnEnable()
     {
         //Getting the elements of the UXML
         GettingElements();
-       
+        
         Buttons = GetComponent<UIDocument>().rootVisualElement.Query<Button>().ToList();
         Sliders = GetComponent<UIDocument>().rootVisualElement.Query<Slider>().ToList();
         Toggles = GetComponent<UIDocument>().rootVisualElement.Query<Toggle>().ToList();
         DropDownFields = GetComponent<UIDocument>().rootVisualElement.Query<DropdownField>().ToList();
+
+        SetDropDownLists();
+        SetSliderIntervals();
+
 
         backButton.clicked += OnBackClicked;
         soundButton.clicked += OnSoundClicked;
@@ -61,28 +97,26 @@ public class SettingsMenu : MonoBehaviour
         graphicsButton.clicked += OnGraphicsClicked;
         saveButton.clicked += OnSaveClicked;
         resetButton.clicked += OnResetClicked;
-        
+
         MasterVolumeSlider.RegisterValueChangedCallback(evt => OnMasterVolumeChanged(evt.newValue));
         MusicSlider.RegisterValueChangedCallback(evt => OnMusicChanged(evt.newValue));
         SESlider.RegisterValueChangedCallback(evt => OnSEChanged(evt.newValue));
+        MouseSlider.RegisterValueChangedCallback(evt => OnMouseChanged(evt.newValue));
+        GamePadSlider.RegisterValueChangedCallback(evt => OnGamepadChanged(evt.newValue));
+        VibrationIntensitylider.RegisterValueChangedCallback(evt => OnVibrationIntensityChanged(evt.newValue));
 
+        resDropDown.RegisterValueChangedCallback(evt => OnResChanged(evt.newValue));
+        displayDropDown.RegisterValueChangedCallback(evt => OnDisplayChanged(evt.newValue));
+
+        MuteAllToggle.RegisterValueChangedCallback(evt => OnMuteAllChanged(evt.newValue));
+        invertXToggle.RegisterValueChangedCallback(evt => OnInvertXChanged(evt.newValue));
+        invertYToggle.RegisterValueChangedCallback(evt => OnInvertYChanged(evt.newValue));
+        SpatialVibrationToggle.RegisterValueChangedCallback(evt => OnSpatialVibrationChanged(evt.newValue));
+        
         soundContent.style.display = DisplayStyle.Flex;
         controlsContent.style.display = DisplayStyle.None;
         graphicsContent.style.display = DisplayStyle.None;
         activeContent = soundContent;
-
-
-        foreach (var res in Screen.resolutions)
-        {
-            resDropDown.choices.Add($"{res.width}x{res.height} {res.refreshRateRatio}Hz");
-        }
-        //resDropDown.choices = resolutions;
-
-        displayDropDown.choices = displayModes;
-        resDropDown.index = System.Array.FindIndex(Screen.resolutions, r=>
-        r.width == Screen.currentResolution.width &&
-        r.height == Screen.currentResolution.height);
-        displayDropDown.index = 0;
 
 
         //Assign element sounds
@@ -91,14 +125,114 @@ public class SettingsMenu : MonoBehaviour
         AssignToggleSounds();
         AssignDropDownSounds();
 
-        //SetCurrentValues
-        SetCurrentValues();
 
-        //Setting séiders interval
-        SetSliderIntervals();
+        //Set setting values to ui elemnts
+        StartCoroutine(DelayedSettingsSetup());
 
         //settingsMenuUi.MarkDirtyRepaint();
         soundButton.Focus();
+    }
+
+    private void OnSpatialVibrationChanged(bool newValue)
+    {
+        settingsmanager.CurrentSettings.spatialVibration = newValue;
+    }
+
+    private void OnInvertYChanged(bool newValue)
+    {
+        settingsmanager.CurrentSettings.invertYAxis = newValue;
+    }
+
+    private void OnInvertXChanged(bool newValue)
+    {
+        settingsmanager.CurrentSettings.invertXAxis = newValue;
+    }
+
+    private void OnVibrationIntensityChanged(float newValue)
+    {
+        settingsmanager.CurrentSettings.gamepadVibrationIntensity = newValue;
+    }
+
+    private void OnGamepadChanged(float newValue)
+    {
+        settingsmanager.CurrentSettings.gamepadSensitivity = newValue;
+    }
+
+    private void OnMouseChanged(float newValue)
+    {
+        settingsmanager.CurrentSettings.mouseSensitivity = newValue;
+    }
+
+    private void OnMuteAllChanged(bool newValue)
+    {
+        settingsmanager.CurrentSettings.MuteAll = newValue;
+        audioManager.SetMasterVolume(newValue ? 0 : settingsmanager.CurrentSettings.masterVolume);
+    }
+
+    private IEnumerator DelayedSettingsSetup()
+    {
+        while (settingsmanager == null) yield return null;
+        AssignValues();
+    }
+
+    private void AssignValues()
+    {
+        //Sound
+        MasterVolumeSlider.value = settingsmanager.CurrentSettings.masterVolume;
+        MusicSlider.value = settingsmanager.CurrentSettings.musicVolume;
+        SESlider.value = settingsmanager.CurrentSettings.sfxVolume;
+        MuteAllToggle.value = settingsmanager.CurrentSettings.MuteAll;
+
+        //Graphics
+        displayDropDown.index = System.Array.FindIndex(displayDropDown.choices.ToArray(), d => d == GetFriendlyName(settingsmanager.CurrentSettings.displaymode));
+
+        if (Screen.resolutions.Any(r => r.width == settingsmanager.CurrentSettings.width && r.height == settingsmanager.CurrentSettings.height))
+            resDropDown.index = System.Array.FindIndex(resDropDown.choices.ToArray(), r => r == $"{settingsmanager.CurrentSettings.width}x{settingsmanager.CurrentSettings.height}");
+        else
+        {
+            resDropDown.index = -1;
+            resDropDown.value = "Custom";
+        }
+
+        //Controls
+        MouseSlider.value = settingsmanager.CurrentSettings.mouseSensitivity;
+        GamePadSlider.value = settingsmanager.CurrentSettings.gamepadSensitivity;
+        invertXToggle.value = settingsmanager.CurrentSettings.invertXAxis;
+        invertYToggle.value = settingsmanager.CurrentSettings.invertYAxis;
+        VibrationIntensitylider.value = settingsmanager.CurrentSettings.gamepadVibrationIntensity;
+        SpatialVibrationToggle.value = settingsmanager.CurrentSettings.spatialVibration;
+    }
+    private void SetDropDownLists()
+    {
+        foreach (var res in Screen.resolutions)
+        {
+            resDropDown.choices.Add($"{res.width}x{res.height}");
+        }
+        displayDropDown.choices = displayModes;
+    }
+
+    private void OnDisplayChanged(string newValue)
+    {
+        settingsmanager.CurrentSettings.displaymode = ParseDisplayMode(newValue);
+        if (!Screen.resolutions.Any(r => r.width == settingsmanager.CurrentSettings.width && r.height == settingsmanager.CurrentSettings.height))
+        {
+            settingsmanager.CurrentSettings.width = Screen.currentResolution.width;
+            settingsmanager.CurrentSettings.height = Screen.currentResolution.height;
+        }
+        SetScreen(settingsmanager.CurrentSettings.width,settingsmanager.CurrentSettings.height,settingsmanager.CurrentSettings.displaymode);
+    }
+
+    private void OnResChanged(string newValue)
+    {
+        string[] res = newValue.Split('x');
+        settingsmanager.CurrentSettings.width = int.Parse(res[0]);
+        settingsmanager.CurrentSettings.height = int.Parse(res[1]);
+        SetScreen(settingsmanager.CurrentSettings.width, settingsmanager.CurrentSettings.height, settingsmanager.CurrentSettings.displaymode);
+    }
+
+    private void SetScreen(int width, int height, FullScreenMode mode)
+    {
+        Screen.SetResolution(width,height,mode);
     }
 
     private void GettingElements()
@@ -107,6 +241,7 @@ public class SettingsMenu : MonoBehaviour
         settingsMenuUi = gameObject.GetComponent<UIDocument>().rootVisualElement;
 
         //Visual Elements
+        MainContent = settingsMenuUi.Q<VisualElement>("container");
         soundContent = settingsMenuUi.Q<VisualElement>("SoundContent-element");
         controlsContent = settingsMenuUi.Q<VisualElement>("ControlsContent-element");
         graphicsContent = settingsMenuUi.Q<VisualElement>("GraphicsContent-element");
@@ -128,30 +263,17 @@ public class SettingsMenu : MonoBehaviour
         MasterVolumeSlider = settingsMenuUi.Q<Slider>("MVolume-slider");
         MusicSlider = settingsMenuUi.Q<Slider>("music-slider");
         SESlider = settingsMenuUi.Q<Slider>("SoundE-slider");
-
+        MouseSlider = settingsMenuUi.Q<Slider>("mouse-slider");
+        GamePadSlider = settingsMenuUi.Q<Slider>("gamepad-slider");
+        VibrationIntensitylider = settingsMenuUi.Q<Slider>("vibrationIntensity-slider");
+        
         //Toggles
         MuteAllToggle = settingsMenuUi.Q<Toggle>("MuteAll-toggle");
+        invertXToggle = settingsMenuUi.Q<Toggle>("axis_x-toggle");
+        invertYToggle = settingsMenuUi.Q<Toggle>("axis_y-toggle");
+        SpatialVibrationToggle = settingsMenuUi.Q<Toggle>("spatialvibration-toggle");
     }
 
-    private void SetCurrentValues()
-    {
-        if (settingsmanager == null)
-        {
-            Debug.LogWarning("SettingsManager is null in SetCurrentValues");
-            return;
-        }
-
-        Debug.Log($"Vlaue to be set: {settingsmanager.CurrentSettings.masterVolume}");
-        MasterVolumeSlider.value = settingsmanager.CurrentSettings.masterVolume;
-        MusicSlider.value = settingsmanager.CurrentSettings.musicVolume;
-        SESlider.value = settingsmanager.CurrentSettings.sfxVolume;
-
-    }
-
-    private void SetValues()
-    {
-
-    }
     private void SetSliderIntervals()
     {
         foreach (var slider in Sliders)
@@ -159,27 +281,27 @@ public class SettingsMenu : MonoBehaviour
             slider.lowValue = 0.0f;
             slider.highValue = 1.0f;
         }
-
+        MouseSlider.highValue = 50f;
+        GamePadSlider.highValue = 500f;
     }
 
     private void OnMusicChanged(float newValue)
     {
         settingsmanager.CurrentSettings.musicVolume = newValue;
-        audioManager.SetMusicVolume(newValue);
+        if (!settingsmanager.CurrentSettings.MuteAll)audioManager.SetMusicVolume(newValue);
     }
 
     private void OnSEChanged(float newValue)
     {
         settingsmanager.CurrentSettings.sfxVolume = newValue;
-        audioManager.SetSEVolume(newValue);
+        if (!settingsmanager.CurrentSettings.MuteAll) audioManager.SetSEVolume(newValue);
     }
 
     private void OnMasterVolumeChanged(float newValue)
     {
         settingsmanager.CurrentSettings.masterVolume = newValue;
-        audioManager.SetMusicVolume(newValue);
-        audioManager.SetSEVolume(newValue);
-        Debug.Log($"Cahnged Value: {settingsmanager.CurrentSettings.masterVolume}");
+        if (!settingsmanager.CurrentSettings.MuteAll) audioManager.SetMasterVolume(newValue);
+        
     }
 
     private void AssignButtonSounds()
@@ -285,12 +407,13 @@ public class SettingsMenu : MonoBehaviour
     }
     private void OnResetClicked()
     {
-
+        settingsmanager.ResetToDefaults();
+        AssignValues();
     }
 
     private void OnSaveClicked()
     {
-
+        settingsmanager.SaveSettings();
     }
 
     private void SwitchContent(VisualElement content)

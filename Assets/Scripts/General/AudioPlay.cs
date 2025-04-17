@@ -7,7 +7,7 @@ public class AudioPlay : MonoBehaviour
 
     void Start()
     {
-        //FindObjectOfType<AudioManager>().Play("TitleMusic");
+        AudioManager.Instance.Play("TitleMusic");
     }
 
 }

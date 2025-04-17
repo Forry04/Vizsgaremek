@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -9,6 +10,7 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private GameObject joinMenuUiObject;
     [SerializeField] private GameObject loadingMenUiObject;
     [SerializeField] private GameObject SettingsMenUiObject;
+    public AudioManager audioManager => AudioManager.Instance;
 
     private VisualElement mainMenuUi;
     private VisualElement mainContainer;
@@ -37,21 +39,25 @@ public class MainMenu : MonoBehaviour
         setingstButton.clicked += OnSettingsClicked;
         exitButton.clicked += OnExitClicked;
 
+        StartCoroutine(SetupAudioCallbacks());
+       
+    }
+    private IEnumerator SetupAudioCallbacks()
+    {
+        while (audioManager == null) yield return null;
         var buttons = GetComponent<UIDocument>().rootVisualElement.Query<Button>().ToList();
-        if (AudioManager.Instance != null)
-        {
             foreach (var button in buttons)
             {
                 button.RegisterCallback<MouseEnterEvent>(evt =>
                 {
 
-                    FindObjectOfType<AudioManager>().Play("ButtonHover");
+                    audioManager.Play("ButtonHover");
                 });
 
                 button.RegisterCallback<FocusEvent>(evt =>
                 {
 
-                    FindObjectOfType<AudioManager>().Play("ButtonHover");
+                    audioManager.Play("ButtonHover");
                 });
 
                 button.RegisterCallback<ClickEvent>(evt =>
@@ -59,10 +65,7 @@ public class MainMenu : MonoBehaviour
                     //PlayClickSound();
                 });
             }
-        }
-
         hosttButton.Focus();
-
     }
 
     private async void OnHostClicked()
