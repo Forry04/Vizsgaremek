@@ -14,7 +14,7 @@ public class Chat : NetworkBehaviour
     public PlayerInputHandler playerInput;
 
     [SerializeField] private GameObject chatUiObject;
-    [SerializeField] private string playerName => $"Player{NetworkManager.Singleton.LocalClient.ClientId}";
+    [SerializeField] private string playerName => PlayerDataManager.Singleton.Name;
     private VisualElement chatUi;
 
     private VisualElement chatContainer;
