@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -8,6 +9,8 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private GameObject mainMenuUiObject;
     [SerializeField] private GameObject joinMenuUiObject;
     [SerializeField] private GameObject loadingMenUiObject;
+    [SerializeField] private GameObject SettingsMenUiObject;
+    public AudioManager audioManager => AudioManager.Instance;
 
     private VisualElement mainMenuUi;
     private VisualElement mainContainer;
@@ -17,6 +20,7 @@ public class MainMenu : MonoBehaviour
     private Button setingstButton;
     private Button exitButton;
 
+  
 
     private void OnEnable()
     {
@@ -35,31 +39,34 @@ public class MainMenu : MonoBehaviour
         setingstButton.clicked += OnSettingsClicked;
         exitButton.clicked += OnExitClicked;
 
-        var buttons = GetComponent<UIDocument>().rootVisualElement.Query<Button>().ToList();
-        foreach (var button in buttons)
-        {
-            button.RegisterCallback<MouseEnterEvent>(evt =>
-            {
-
-                FindObjectOfType<AudioManager>().Play("ButtonHover");
-            });
-
-            button.RegisterCallback<FocusEvent>(evt =>
-            {
-
-                FindObjectOfType<AudioManager>().Play("ButtonHover");
-            });
-
-            button.RegisterCallback<ClickEvent>(evt =>
-            {
-                //PlayClickSound();
-            });
-        }
-
-        hosttButton.Focus();
-
+        StartCoroutine(SetupAudioCallbacks());
+       
     }
+    private IEnumerator SetupAudioCallbacks()
+    {
+        while (audioManager == null) yield return null;
+        var buttons = GetComponent<UIDocument>().rootVisualElement.Query<Button>().ToList();
+            foreach (var button in buttons)
+            {
+                button.RegisterCallback<MouseEnterEvent>(evt =>
+                {
 
+                    audioManager.Play("ButtonHover");
+                });
+
+                button.RegisterCallback<FocusEvent>(evt =>
+                {
+
+                    audioManager.Play("ButtonHover");
+                });
+
+                button.RegisterCallback<ClickEvent>(evt =>
+                {
+                    //PlayClickSound();
+                });
+            }
+        hosttButton.Focus();
+    }
 
     private async void OnHostClicked()
     {
@@ -91,7 +98,8 @@ public class MainMenu : MonoBehaviour
 
     private void OnSettingsClicked()
     {
-        throw new NotImplementedException();
+        gameObject.SetActive(false);
+        SettingsMenUiObject.SetActive(true);   
     }
 
     private void OnExitClicked()

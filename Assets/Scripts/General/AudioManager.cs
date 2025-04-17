@@ -8,17 +8,17 @@ public class AudioManager : MonoBehaviour
     public Sound[] sounds;
     public AudioMixer audioMixer;
     public float fadeOutDuration = 2f;
-    public static AudioManager instance;
+    public static AudioManager Instance;
 
     void Awake()
     {
-        if (instance == null) instance = this;
+        if (Instance == null) Instance = this;
         else
         {
             Destroy(gameObject);
             return;
         }
-
+        Instance = this;
         DontDestroyOnLoad(gameObject);
         foreach (Sound s in sounds)
         {
@@ -64,6 +64,11 @@ public class AudioManager : MonoBehaviour
             audioMixer.SetFloat("SEVolume", Mathf.Log10(volume) * 20f);
     }
 
+    public void SetMasterVolume(float volume)
+    {
+        SetMusicVolume(volume);
+        SetSEVolume(volume);
+    }
     public IEnumerator FadeOutCoroutine(string name)
     {
         Sound s = Array.Find(sounds, s => s.name == name);
