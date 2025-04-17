@@ -258,7 +258,6 @@ MonoBehaviour:
     source: {fileID: 0}
   audioMixer: {fileID: 24100000, guid: 378bdc7f7ad51ee45ab2abb39513cbfd, type: 2}
   fadeOutDuration: 2
-<<<<<<< HEAD
 --- !u!1 &376713389
 GameObject:
   m_ObjectHideFlags: 0
@@ -349,8 +348,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_AspectMode: 4
   m_AspectRatio: 1.777
-=======
->>>>>>> PlayerTagDone
 --- !u!1 &588799986
 GameObject:
   m_ObjectHideFlags: 0
@@ -1166,10 +1163,7 @@ SceneRoots:
   - {fileID: 1851735870}
   - {fileID: 588799987}
   - {fileID: 221157697}
-<<<<<<< HEAD
   - {fileID: 1936373038}
   - {fileID: 1286392751}
   - {fileID: 1315520665}
-=======
   - {fileID: 1494652333}
->>>>>>> PlayerTagDone
