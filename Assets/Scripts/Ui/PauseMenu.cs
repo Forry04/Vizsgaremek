@@ -7,7 +7,6 @@ using System;
 
 public class PauseMenu : MonoBehaviour
 {
-
     [SerializeField] private GameObject SettingsMenuUiObject;
     [SerializeField] private GameObject CustomMenuUiObject;
 
@@ -19,14 +18,14 @@ public class PauseMenu : MonoBehaviour
     private Button startButton;
     private Button exitButton;
     private Button customButton;
+    private Button backButton;
 
     private bool isReady = false;
 
-  
+    private ConfirmationPopup confirmationPopup;
 
     private void OnEnable()
     {
-        
         playerInput = Chat.Singleton.playerInput;
 
         // Load the UXML file and get the root visual element
@@ -39,6 +38,7 @@ public class PauseMenu : MonoBehaviour
         startButton = pauseMenuUi.Q<Button>("start-button");
         exitButton = pauseMenuUi.Q<Button>("exit-button");
         customButton = pauseMenuUi.Q<Button>("custom-button");
+        backButton = pauseMenuUi.Q<Button>("back-button");
 
         // Add event listeners to the buttons
         resumeButton.clicked += OnResumeClicked;
@@ -47,7 +47,8 @@ public class PauseMenu : MonoBehaviour
         startButton.clicked += OnStartClicked;
         exitButton.clicked += OnExitClicked;
         customButton.clicked += OnCostumClicked;
- 
+        backButton.clicked += OnBackClicked;
+
         //pauseMenuUi.RegisterCallback<KeyDownEvent>((evt) =>
         //{
         //    if (playerInput.CancelTriggered)
@@ -61,13 +62,11 @@ public class PauseMenu : MonoBehaviour
         {
             button.RegisterCallback<MouseEnterEvent>(evt =>
             {
-
                 FindObjectOfType<AudioManager>().Play("ButtonHover");
             });
 
             button.RegisterCallback<FocusEvent>(evt =>
             {
-
                 FindObjectOfType<AudioManager>().Play("ButtonHover");
             });
 
@@ -76,13 +75,17 @@ public class PauseMenu : MonoBehaviour
                 //PlayClickSound();
             });
         }
-        // only host can start
-        startButton.style.display = DisplayStyle.None;
+
+        if (NetworkManager.Singleton.IsHost)
+        {
+            startButton.style.display = DisplayStyle.Flex;
+        }
+
+        confirmationPopup = gameObject.AddComponent<ConfirmationPopup>();
+        confirmationPopup.Initialize(pauseMenuUi.Q<VisualElement>("main"));
 
         pauseMenuUi.Focus();
     }
-
-    
 
     private void OnDisable()
     {
@@ -92,9 +95,8 @@ public class PauseMenu : MonoBehaviour
         startButton.clicked -= OnStartClicked;
         exitButton.clicked -= OnExitClicked;
         customButton.clicked -= OnCostumClicked;
+        backButton.clicked -= OnBackClicked;
     }
-
-    
 
     private void OnResumeClicked()
     {
@@ -117,17 +119,44 @@ public class PauseMenu : MonoBehaviour
         isReady = !isReady;
         readyButton.text = isReady ? "Unready" : "Ready";
         ReadyStartSystem.Singleton.SetPlayerState(NetworkManager.Singleton.LocalClientId);
-
     }
 
     private void OnStartClicked()
     {
-       
     }
 
     private void OnExitClicked()
     {
-       
+        confirmationPopup.Show("Are you sure you want to exit?", () =>
+        {
+            Application.Quit();
+        }, () =>
+        {
+            // Do nothing on cancel
+        });
+    }
+
+    private void OnBackClicked()
+    {
+        confirmationPopup.Show(
+            "Are you sure you want to return to the main menu?",
+            onConfirm: () =>
+            {
+              
+                if (NetworkManager.Singleton.IsServer || NetworkManager.Singleton.IsClient)
+                {
+                    NetworkManager.Singleton.Shutdown();
+                }
+
+                UnityEngine.Cursor.lockState = CursorLockMode.None;
+                UnityEngine.Cursor.visible = true;
+
+                UnityEngine.SceneManagement.SceneManager.LoadScene("Menu", UnityEngine.SceneManagement.LoadSceneMode.Single);
+            },
+            onCancel: () =>
+            {
+                // Do nothing on cancel
+            });
     }
 
     private void OnCostumClicked()
@@ -135,5 +164,4 @@ public class PauseMenu : MonoBehaviour
         gameObject.SetActive(false);
         CustomMenuUiObject.SetActive(true);
     }
-
 }

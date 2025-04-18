@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -19,8 +20,7 @@ public class MainMenu : MonoBehaviour
     private Button joinButton;
     private Button setingstButton;
     private Button exitButton;
-
-  
+    private ConfirmationPopup confirmationPopup;
 
     private void OnEnable()
     {
@@ -38,6 +38,13 @@ public class MainMenu : MonoBehaviour
         joinButton.clicked += OnJoinClicked;
         setingstButton.clicked += OnSettingsClicked;
         exitButton.clicked += OnExitClicked;
+
+        confirmationPopup = gameObject.AddComponent<ConfirmationPopup>();
+
+        
+        confirmationPopup.Initialize(mainMenuUi);
+
+
 
         StartCoroutine(SetupAudioCallbacks());
        
@@ -104,7 +111,21 @@ public class MainMenu : MonoBehaviour
 
     private void OnExitClicked()
     {
-        Application.Quit();
+        
+
+        confirmationPopup.Show(
+          message: "Are you sure you want to exit?",
+         onConfirm: () =>
+        {
+            Application.Quit();
+            Debug.Log("Exit");
+        },
+         onCancel: () =>
+        {
+           
+        });
+        
     }
+   
 
 }
