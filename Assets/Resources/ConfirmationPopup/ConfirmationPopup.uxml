@@ -1,7 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/Resources/ConfirmationPopup/ConfirmationPopup.uss?fileID=7433441132597879392&amp;guid=dffbb7939215939468d9a7de9a12247d&amp;type=3#ConfirmationPopup" />
     <ui:VisualElement name="popup-message" class="popup-message" style="position: relative; left: 0; top: 0;">
-        <ui:Label tabindex="-1" text="Are you sure you want to proceed?" parse-escape-sequences="true" display-tooltip-when-elided="true" class="popup-text" style="white-space: normal; -unity-text-outline-width: 0.5px;" />
+        <ui:Label tabindex="-1" text="Are you sure you want to proceed?" parse-escape-sequences="true" display-tooltip-when-elided="true" class="popup-text" style="white-space: normal; -unity-text-outline-width: 0.5px; -unity-font-style: bold;" />
         <ui:VisualElement name="button-container" class="button-container popup-button-container" style="justify-content: center;">
             <ui:Button name="confirm-button" text="Confirm" parse-escape-sequences="true" display-tooltip-when-elided="true" class="button popup-button" />
             <ui:Button name="cancel-button" text="Cancel" parse-escape-sequences="true" display-tooltip-when-elided="true" class="button popup-button" />
