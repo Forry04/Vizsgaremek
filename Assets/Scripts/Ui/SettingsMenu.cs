@@ -128,6 +128,8 @@ public class SettingsMenu : MonoBehaviour
         AssignToggleSounds();
         AssignDropDownSounds();
 
+        confirmationPopup = gameObject.AddComponent<ConfirmationPopup>();
+        confirmationPopup.Initialize(settingsMenuUi);
 
         //Set setting values to ui elemnts
         StartCoroutine(DelayedSettingsSetup());

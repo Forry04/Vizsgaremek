@@ -20,12 +20,12 @@
 }
 
 .button:active {
-    opacity: 0.99;
+    opacity: 0.90;
     background-color: rgb(65, 105, 225); /* RoyalBlue */
 }
 
 .button:focus {
-    scale: 1.1;
+    scale: 1.05;
     background-color: rgb(100, 149, 237); /* CornflowerBlue */
 }
 
