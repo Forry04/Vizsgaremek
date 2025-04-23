@@ -7,6 +7,7 @@
             <ui:Button text="Host" parse-escape-sequences="true" display-tooltip-when-elided="true" enable-rich-text="true" name="host-button" class="button" style="flex-basis: auto;" />
             <ui:Button text="Join" parse-escape-sequences="true" display-tooltip-when-elided="true" name="join-button" tabindex="0" class="button" />
             <ui:Button text="Settings" parse-escape-sequences="true" display-tooltip-when-elided="true" name="settings-button" tabindex="0" class="button" />
+            <ui:Button text="Log Out" parse-escape-sequences="true" display-tooltip-when-elided="true" name="LogOut-button" class="button" />
             <ui:Button text="Exit" parse-escape-sequences="true" display-tooltip-when-elided="true" name="exit-button" tabindex="0" class="button" />
         </ui:VisualElement>
     </ui:VisualElement>
