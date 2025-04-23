@@ -84,6 +84,8 @@ public class PauseMenu : MonoBehaviour
         confirmationPopup = gameObject.AddComponent<ConfirmationPopup>();
         confirmationPopup.Initialize(pauseMenuUi.Q<VisualElement>("main"));
 
+       
+
         pauseMenuUi.Focus();
     }
 
