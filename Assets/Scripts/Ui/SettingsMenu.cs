@@ -14,6 +14,9 @@ public class SettingsMenu : MonoBehaviour
     public PlayerInputHandler playerInput;
     public AudioManager audioManager =>AudioManager.Instance;
     public SettingsManager settingsmanager => SettingsManager.Instance;
+
+    private ConfirmationPopup confirmationPopup;
+
     private VisualElement settingsMenuUi;
 
     private VisualElement MainContent;
@@ -166,7 +169,9 @@ public class SettingsMenu : MonoBehaviour
     private void OnMuteAllChanged(bool newValue)
     {
         settingsmanager.CurrentSettings.MuteAll = newValue;
-        audioManager.SetMasterVolume(newValue ? 0 : settingsmanager.CurrentSettings.masterVolume);
+        if (newValue == true) audioManager.SetMasterVolume(0, 0);    
+        else audioManager.SetMasterVolume(settingsmanager.CurrentSettings.musicVolume*settingsmanager.CurrentSettings.masterVolume,
+                settingsmanager.CurrentSettings.sfxVolume*settingsmanager.CurrentSettings.sfxVolume);      
     }
 
     private IEnumerator DelayedSettingsSetup()
@@ -288,20 +293,20 @@ public class SettingsMenu : MonoBehaviour
     private void OnMusicChanged(float newValue)
     {
         settingsmanager.CurrentSettings.musicVolume = newValue;
-        if (!settingsmanager.CurrentSettings.MuteAll)audioManager.SetMusicVolume(newValue);
+        if (!settingsmanager.CurrentSettings.MuteAll)audioManager.SetMusicVolume(settingsmanager.CurrentSettings.musicVolume*newValue);
     }
 
-    private void OnSEChanged(float newValue)
+    private void OnSEChanged(float newValue) 
     {
         settingsmanager.CurrentSettings.sfxVolume = newValue;
-        if (!settingsmanager.CurrentSettings.MuteAll) audioManager.SetSEVolume(newValue);
+        if (!settingsmanager.CurrentSettings.MuteAll) audioManager.SetSEVolume(settingsmanager.CurrentSettings.sfxVolume*newValue);
     }
 
     private void OnMasterVolumeChanged(float newValue)
     {
         settingsmanager.CurrentSettings.masterVolume = newValue;
-        if (!settingsmanager.CurrentSettings.MuteAll) audioManager.SetMasterVolume(newValue);
-        
+        if (!settingsmanager.CurrentSettings.MuteAll) audioManager.SetMasterVolume(settingsmanager.CurrentSettings.musicVolume*newValue,
+           settingsmanager.CurrentSettings.sfxVolume*newValue);
     }
 
     private void AssignButtonSounds()
@@ -407,8 +412,17 @@ public class SettingsMenu : MonoBehaviour
     }
     private void OnResetClicked()
     {
-        settingsmanager.ResetToDefaults();
-        AssignValues();
+        confirmationPopup.Show(
+            "Are you sure you want reset your settings?",
+            onConfirm: () =>
+            {
+                settingsmanager.ResetToDefaults();
+                AssignValues();
+            },
+            onCancel: () =>
+            {
+                // Do nothing on cancel
+            });
     }
 
     private void OnSaveClicked()

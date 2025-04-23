@@ -15,7 +15,7 @@
 }
 
 .button:hover {
-    scale: 1.1;
+    scale: 1.05;
     background-color: rgb(100, 149, 237); /* CornflowerBlue */
 }
 
@@ -40,4 +40,21 @@
     -unity-font-style: bold;
     font-size: 40px;
     color: rgba(240, 240, 240, 0.9);
+}
+
+.window{
+    background-color: rgba(12,9,41,255);  
+    border-width: 5px;
+    border:5px;
+    border-radius: 5px;
+}
+
+.windowBar{
+    background-color: rgba(32,29,53,255);
+}
+
+.border{
+    border-color: rgba(74,69,108,250);
+    border:5px;
+    border-radius: 5px;
 }

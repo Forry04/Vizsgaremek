@@ -8,7 +8,7 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: CharacterBaked
-    second: {fileID: 2100000, guid: 564cb2eb7da7a614fa64d0d9bb108314, type: 2}
+    second: {fileID: 2100000, guid: ce5f18765528192499f69997cb7939f1, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

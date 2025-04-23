@@ -11,6 +11,7 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private GameObject joinMenuUiObject;
     [SerializeField] private GameObject loadingMenUiObject;
     [SerializeField] private GameObject SettingsMenUiObject;
+    [SerializeField] private GameObject LogInMenuUIObject;
     public AudioManager audioManager => AudioManager.Instance;
 
     private VisualElement mainMenuUi;
@@ -20,6 +21,8 @@ public class MainMenu : MonoBehaviour
     private Button joinButton;
     private Button setingstButton;
     private Button exitButton;
+    private Button logOutButton;
+
     private ConfirmationPopup confirmationPopup;
 
     private void OnEnable()
@@ -33,12 +36,13 @@ public class MainMenu : MonoBehaviour
         joinButton = mainMenuUi.Q<Button>("join-button");
         setingstButton = mainMenuUi.Q<Button>("settings-button");
         exitButton = mainMenuUi.Q<Button>("exit-button");
-
+        logOutButton = mainMenuUi.Q<Button>("LogOut-button");
+        
         hosttButton.clicked += OnHostClicked;
         joinButton.clicked += OnJoinClicked;
         setingstButton.clicked += OnSettingsClicked;
         exitButton.clicked += OnExitClicked;
-
+        logOutButton.clicked += OnLogOutClicked;
         confirmationPopup = gameObject.AddComponent<ConfirmationPopup>();
 
         
@@ -94,6 +98,23 @@ public class MainMenu : MonoBehaviour
 
         }
 
+    }
+
+    private void OnLogOutClicked()
+    {
+        confirmationPopup.Show(
+            "Are you sure you want to log out?",
+            onConfirm: () =>
+            {
+                PlayerPrefs.DeleteKey("token");
+                gameObject.SetActive(false);
+                LogInMenuUIObject.SetActive(true);
+
+            },
+            onCancel: () =>
+            {
+                // Do nothing on cancel
+            });
     }
 
     private void OnJoinClicked()

@@ -64,10 +64,10 @@ public class AudioManager : MonoBehaviour
             audioMixer.SetFloat("SEVolume", Mathf.Log10(volume) * 20f);
     }
 
-    public void SetMasterVolume(float volume)
+    public void SetMasterVolume(float MusicVolume, float SFXVolume)
     {
-        SetMusicVolume(volume);
-        SetSEVolume(volume);
+        SetMusicVolume(MusicVolume);
+        SetSEVolume(SFXVolume);
     }
     public IEnumerator FadeOutCoroutine(string name)
     {
