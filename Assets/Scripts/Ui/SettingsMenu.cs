@@ -6,6 +6,7 @@ using UnityEngine.UIElements;
 using System.Linq;
 using System.Runtime.InteropServices;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 
 public class SettingsMenu : MonoBehaviour
 {
@@ -173,7 +174,8 @@ public class SettingsMenu : MonoBehaviour
         settingsmanager.CurrentSettings.MuteAll = newValue;
         if (newValue == true) audioManager.SetMasterVolume(0, 0);    
         else audioManager.SetMasterVolume(settingsmanager.CurrentSettings.musicVolume*settingsmanager.CurrentSettings.masterVolume,
-                settingsmanager.CurrentSettings.sfxVolume*settingsmanager.CurrentSettings.sfxVolume);      
+                settingsmanager.CurrentSettings.sfxVolume*settingsmanager.CurrentSettings.sfxVolume);  
+
     }
 
     private IEnumerator DelayedSettingsSetup()

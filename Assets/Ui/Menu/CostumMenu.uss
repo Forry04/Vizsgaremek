@@ -1,0 +1,23 @@
+.card {
+    border-radius: 10px;
+    background-color: rgb(34, 34, 34);
+    flex-direction: colum;
+    align-items: center;
+    justify-content: space-between;
+    margin:20px;
+}
+
+.GridContainer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content:flex-start;
+    align-content: flex-start;
+    width: 100%;
+}
+
+.upperbar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
