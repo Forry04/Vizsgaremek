@@ -102,7 +102,7 @@ public class CustomMenu : MonoBehaviour
             var cardMaterial = skin.skinMaterial;
             var renderVisualElement = card.Q<VisualElement>("Render-element");
             card.Q<Label>("SkinName").text = skin.skinName;
-            card.Q<Button>("EquipButton").clicked += () => EquipSkin();
+            card.Q<Button>("EquipButton").clicked += () => EquipSkin(skin);
             renderVisualElement.style.backgroundImage = new StyleBackground(skin.previewImage);
             card.Q<VisualElement>("container-element").AddToClassList(skin.rarity.ToString());
             card.RegisterCallback<MouseEnterEvent>(evt => OnCardHovered(cardMaterial,renderVisualElement));
@@ -156,8 +156,10 @@ public class CustomMenu : MonoBehaviour
 
     }
 
-    private void EquipSkin()
+    private void EquipSkin(Skindata skin)
     {
-
+        PlayerPrefs.SetInt("CurrentSkin",skin.skinId);
+        if (GameObject.Find("Player"))
+            GameObject.Find("Player").GetComponentInChildren<Renderer>().material = skin.skinMaterial;
     } 
 }

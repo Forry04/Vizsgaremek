@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using Unity.Netcode;
 using Unity.VisualScripting;
@@ -12,6 +13,7 @@ public class PlayerSpawner : NetworkBehaviour
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private Transform[] playerSpawnPoint;
     [SerializeField] private TextMeshProUGUI joinCodeText;
+    public List<Skindata> skinlist => Resources.LoadAll<Skindata>("Skins").ToList();
     private int spawnPostionIndex;
 
 
@@ -65,6 +67,9 @@ public class PlayerSpawner : NetworkBehaviour
     {
         GameObject player = Instantiate(playerPrefab);
         player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId);
+
+        if (PlayerPrefs.HasKey("CurrentSkin"))
+            player.GetComponentInChildren<Renderer>().material = skinlist.Find(s=> s.skinId == PlayerPrefs.GetInt("CurrentSkin")).skinMaterial;
     }
 
   

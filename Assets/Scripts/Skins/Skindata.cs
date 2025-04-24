@@ -11,7 +11,7 @@ public enum Rarity
 public class Skindata : ScriptableObject
 {
 
-    public string skinId;
+    public int skinId;
     public string skinName;
     public Sprite previewImage;
     public Rarity rarity;
