@@ -1,7 +1,9 @@
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Collections.LowLevel.Unsafe;
 using Unity.Services.Relay.Models;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -19,6 +21,8 @@ public class CustomMenu : MonoBehaviour
     private TextField searchBarTextField;
     private DropdownField rarityDropdown;
     private VisualElement gridContainerElement;
+    private VisualElement scrollElemnt;
+
     //searchBarTextField.SetValueWithoutNotify(SettingsManager.CurrentSettings.CustomSearch);
     private Button backButton;
 
@@ -28,7 +32,6 @@ public class CustomMenu : MonoBehaviour
 
     private void OnEnable()
     {
-        Debug.Log("Custom ONenable!");
         GettingElements();
 
         backButton.clicked += BackButtonClicked;
@@ -38,8 +41,9 @@ public class CustomMenu : MonoBehaviour
         });
         searchBarTextField.RegisterValueChangedCallback(evt => OnSearchBarChanged(evt.newValue));
         rarityDropdown.RegisterValueChangedCallback(evt => OnRarityChanged(evt.newValue));
-        skinList = Resources.LoadAll<Skindata>("Skins").ToList();
+
         StartCoroutine(DelayedAssignValues());
+        backButton.Focus();
     }
     private IEnumerator DelayedAssignValues()
     {
@@ -50,17 +54,22 @@ public class CustomMenu : MonoBehaviour
         PreviewManager = PreviewManager.instance;
 
         AssignValues();
-        PopulateSkins();
+        PopulateSkins(skinList);
     }
 
     private void OnRarityChanged(string newValue)
     {
-
+        Filter(newValue,searchBarTextField.text);      
     }
 
+    private void Filter(string rarity, string seacrch)
+    {
+        if (rarityDropdown.value == "All") PopulateSkins(skinList.Where(s => s.skinName.Contains(seacrch, StringComparison.OrdinalIgnoreCase)).ToList());
+        else PopulateSkins(skinList.Where(s => s.skinName.Contains(seacrch, StringComparison.OrdinalIgnoreCase) && s.rarity.ToString() == rarity).ToList());
+    }
     private void OnSearchBarChanged(string newValue)
     {
-
+        Filter(rarityDropdown.value,newValue);
     }
 
     private void GettingElements()
@@ -70,12 +79,12 @@ public class CustomMenu : MonoBehaviour
         rarityDropdown = customMenuUi.Q<DropdownField>("Rarity-dropdown");
         gridContainerElement = customMenuUi.Q<VisualElement>("gridcontainer-element");
         backButton = customMenuUi.Q<Button>("Back-button");
+        scrollElemnt = customMenuUi.Q<VisualElement>("Content-scrollview");
         rarityDropdown.choices = rarities;
     }
     private void AssignValues()
     {
-        searchBarTextField.value = SettingsManager.CurrentSettings.CustomSearch;
-        rarityDropdown.index = rarities.FindIndex(r => r == SettingsManager.CurrentSettings.CustomRarity);
+        rarityDropdown.index = rarities.FindIndex(r => r == "All");
         skinList = Resources.LoadAll<Skindata>("Skins").ToList();
     }
     private void BackButtonClicked()
@@ -84,10 +93,10 @@ public class CustomMenu : MonoBehaviour
         BackToMenuUiObject.SetActive(true);
     }
 
-    void PopulateSkins()
+    void PopulateSkins(List<Skindata> skinlist)
     {
        gridContainerElement.Clear();
-        foreach (var skin in skinList)
+        foreach (var skin in skinlist)
         {
             var card = skinCardTemplate.Instantiate();
             var cardMaterial = skin.skinMaterial;
@@ -95,13 +104,12 @@ public class CustomMenu : MonoBehaviour
             card.Q<Label>("SkinName").text = skin.skinName;
             card.Q<Button>("EquipButton").clicked += () => EquipSkin();
             renderVisualElement.style.backgroundImage = new StyleBackground(skin.previewImage);
-
+            card.Q<VisualElement>("container-element").AddToClassList(skin.rarity.ToString());
             card.RegisterCallback<MouseEnterEvent>(evt => OnCardHovered(cardMaterial,renderVisualElement));
             card.RegisterCallback<MouseLeaveEvent>(evt => OnCardExited(renderVisualElement, skin.previewImage));
 
             gridContainerElement.Add(card);
         }
-        gridContainerElement[0].Focus();
         gridContainerElement.schedule.Execute(WaitAndAdjustCards).Every(1);
     }
 
@@ -127,22 +135,12 @@ public class CustomMenu : MonoBehaviour
     }
     private void AdjustCards()
     {
-        //float x = gridContainerElement.resolvedStyle.width / (4 + 5 * gap);
-        //foreach (var card in gridContainerElement.Children())
-        //{
-        //    card.style.width = x;
-        //    card.style.height = x * 1.5f;
-        //    card.style.marginRight = x * gap;
-        //    card.style.marginBottom = x * gap;
-        //}
-        //gridContainerElement.style.paddingLeft = x * gap;
-
         float containerWidth = gridContainerElement.resolvedStyle.width;
-        float minCardWidth = 400f; // whatever minimum you want for a card
-        float gapValue = 15f; // absolute pixel gap
+        float minCardWidth = 400f;
+        float gapValue = 25f;
 
         int columns = Mathf.FloorToInt((containerWidth + gapValue) / (minCardWidth + gapValue));
-        columns = Mathf.Max(columns, 1); // avoid zero
+        columns = Mathf.Max(columns, 1);
 
         float cardWidth = (containerWidth - (columns + 1) * gapValue) / columns;
 

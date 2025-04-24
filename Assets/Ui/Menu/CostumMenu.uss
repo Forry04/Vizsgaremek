@@ -21,3 +21,19 @@
     flex-direction: row;
     justify-content: space-between;
 }
+
+.Common{
+    background-color: rgb(131,168,151);
+}
+
+.Rare{
+    background-color: rgb(48, 118, 184);
+}
+
+.Epic{
+    background-color: rgb(96, 74, 148);
+}
+
+.Legendary{
+    background-color: rgb(184, 179, 46);
+}

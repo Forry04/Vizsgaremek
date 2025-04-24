@@ -22,8 +22,4 @@ public class GameSettings
     public int width = 0;
     public int height = 0;
     public FullScreenMode displaymode = FullScreenMode.ExclusiveFullScreen;
-
-    public string CustomSearch = "GG";
-    public string CustomRarity = "All";
-
 }
