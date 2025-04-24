@@ -20989,7 +20989,7 @@ GameObject:
   - component: {fileID: 1263080620}
   - component: {fileID: 1263080619}
   m_Layer: 5
-  m_Name: gg
+  m_Name: CostumeMenu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -21027,7 +21027,7 @@ MonoBehaviour:
   m_PanelSettings: {fileID: 11400000, guid: 7039cfb243587554d8d5b177bb1d9d16, type: 2}
   m_ParentUI: {fileID: 0}
   sourceAsset: {fileID: 9197481963319205126, guid: c3fc4a082ff6b1143ae7d2cc2234eb27, type: 3}
-  m_SortingOrder: 0
+  m_SortingOrder: 1
 --- !u!4 &1263080621
 Transform:
   m_ObjectHideFlags: 0
@@ -35835,7 +35835,7 @@ GameObject:
   - component: {fileID: 2099407683}
   - component: {fileID: 2099407684}
   m_Layer: 5
-  m_Name: NewSettingsMenu
+  m_Name: SettingsMenu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -35871,7 +35871,7 @@ MonoBehaviour:
   m_PanelSettings: {fileID: 11400000, guid: 7039cfb243587554d8d5b177bb1d9d16, type: 2}
   m_ParentUI: {fileID: 0}
   sourceAsset: {fileID: 9197481963319205126, guid: 570e4e2e0acecd94682d2dc729ca21ef, type: 3}
-  m_SortingOrder: 0
+  m_SortingOrder: 1
 --- !u!114 &2099407684
 MonoBehaviour:
   m_ObjectHideFlags: 0
