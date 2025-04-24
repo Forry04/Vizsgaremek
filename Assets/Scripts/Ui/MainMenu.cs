@@ -12,16 +12,19 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private GameObject loadingMenUiObject;
     [SerializeField] private GameObject SettingsMenUiObject;
     [SerializeField] private GameObject LogInMenuUIObject;
+    [SerializeField] private GameObject customMenuUIObject;
     public AudioManager audioManager => AudioManager.Instance;
 
     private VisualElement mainMenuUi;
     private VisualElement mainContainer;
     private VisualElement joinMenuUi;
+
     private Button hosttButton;
     private Button joinButton;
     private Button setingstButton;
     private Button exitButton;
     private Button logOutButton;
+    private Button customButton;
 
     private ConfirmationPopup confirmationPopup;
 
@@ -37,12 +40,15 @@ public class MainMenu : MonoBehaviour
         setingstButton = mainMenuUi.Q<Button>("settings-button");
         exitButton = mainMenuUi.Q<Button>("exit-button");
         logOutButton = mainMenuUi.Q<Button>("LogOut-button");
-        
+        customButton = mainMenuUi.Q<Button>("Costum-button");
+
         hosttButton.clicked += OnHostClicked;
         joinButton.clicked += OnJoinClicked;
         setingstButton.clicked += OnSettingsClicked;
         exitButton.clicked += OnExitClicked;
         logOutButton.clicked += OnLogOutClicked;
+        customButton.clicked += OnCustomClicked;
+
         confirmationPopup = gameObject.AddComponent<ConfirmationPopup>();
 
         
@@ -53,6 +59,13 @@ public class MainMenu : MonoBehaviour
         StartCoroutine(SetupAudioCallbacks());
        
     }
+
+    private void OnCustomClicked()
+    {
+        gameObject.SetActive(false);
+        customMenuUIObject.SetActive(true);
+    }
+
     private IEnumerator SetupAudioCallbacks()
     {
         while (audioManager == null) yield return null;
