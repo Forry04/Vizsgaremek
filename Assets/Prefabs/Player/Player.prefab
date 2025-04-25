@@ -287,6 +287,7 @@ GameObject:
   - component: {fileID: -2499835459869256277}
   - component: {fileID: 4152306886755625058}
   - component: {fileID: 3543775128385066565}
+  - component: {fileID: -641316743407447616}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -323,7 +324,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1808249678
+  GlobalObjectIdHash: 3790768928
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -585,7 +586,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerNameTag: {fileID: 3468289840380320857}
-  Name: 
+--- !u!114 &-641316743407447616
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4657337878885597230}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 033fdf2d7fc724e4684d4c453a90d874, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  collectionRadius: 2
 --- !u!1 &6617967557542111509
 GameObject:
   m_ObjectHideFlags: 0
@@ -693,8 +706,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isFirstPerson: 0
   man: {fileID: 5535390064454776958}
-  mouseSensitivity: 18
-  joystickSensitivity: 250
   distanceFromPlayer: 5
   offset: {x: 0, y: 2, z: 0}
   rotationSmoothTime: 0.1

@@ -140,7 +140,8 @@ PlayerSettings:
   visionOSBundleVersion: 1.0
   tvOSBundleVersion: 1.0
   bundleVersion: 0.1
-  preloadedAssets: []
+  preloadedAssets:
+  - {fileID: 11400000, guid: 79272113d386ce640875dbb2b3bd646b, type: 2}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -161,7 +162,7 @@ PlayerSettings:
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
-    Standalone: com.DefaultCompany.Szakdolgozat
+    Standalone: com.DefaultCompany.Arachnid-Descent
   buildNumber:
     Standalone: 0
     VisionOS: 0
@@ -302,7 +303,7 @@ PlayerSettings:
       m_Height: 256
       m_Kind: 0
     - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: 08c24e013b4a9d547aa6fd8d9a1bc1f3, type: 3}
+      m_Icon: {fileID: 2800000, guid: ba85b3591d4e169448f259b12ceee69c, type: 3}
       m_Width: 128
       m_Height: 128
       m_Kind: 0
@@ -312,19 +313,26 @@ PlayerSettings:
       m_Height: 64
       m_Kind: 0
     - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: 2638f318e60ab6243ad280758d75b9a4, type: 3}
+      m_Icon: {fileID: 2800000, guid: f2109850339629a48aefcb979bf41b3a, type: 3}
       m_Width: 48
       m_Height: 48
       m_Kind: 0
     - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: 9f6fcaad4420eb24da5e97a01da53c09, type: 3}
+      m_Icon: {fileID: 2800000, guid: 97e200559c4c92547b2cc3c80708bf6e, type: 3}
       m_Width: 32
       m_Height: 32
       m_Kind: 0
     - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: d54882000ffb4084dbad9e9f3eeb4702, type: 3}
+      m_Icon: {fileID: 2800000, guid: 8c814e8d49ef3bb448e099d5a7ca1fe0, type: 3}
       m_Width: 16
       m_Height: 16
+      m_Kind: 0
+  - m_BuildTarget: 
+    m_Icons:
+    - serializedVersion: 2
+      m_Icon: {fileID: 2800000, guid: f1bdcb549f1ac0542a1e31925525eb04, type: 3}
+      m_Width: 128
+      m_Height: 128
       m_Kind: 0
   m_BuildTargetPlatformIcons: []
   m_BuildTargetBatching:
