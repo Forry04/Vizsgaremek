@@ -227,14 +227,14 @@ public class PlayerInputHandler : NetworkBehaviour
         if (mouse != null && mouse.delta.ReadValue().magnitude > 0)
         {
             LookDevice = true;
-            Debug.Log("Mouse detected!");
+      
         }
 
         var gamepad = Gamepad.current;
         if (gamepad != null && gamepad.rightStick.ReadValue().magnitude > 0)
         {
             LookDevice = false;
-            Debug.Log("Gamepad detected!");
+            
         }
 
     }
