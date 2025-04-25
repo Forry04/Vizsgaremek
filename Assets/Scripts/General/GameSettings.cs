@@ -23,4 +23,5 @@ public class GameSettings
     public int height = 0;
     public FullScreenMode displaymode = FullScreenMode.ExclusiveFullScreen;
 
+    public Material CurrentSkin;
 }

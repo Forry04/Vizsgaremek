@@ -1,0 +1,18 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Scenes/card.uss?fileID=7433441132597879392&amp;guid=49733cc5342b8ad41afb3b66ce364e5b&amp;type=3#card" />
+    <Style src="project://database/Assets/Ui/Menu/CostumMenu.uss?fileID=7433441132597879392&amp;guid=9e38bc014d34bf347b64fdc2c0098642&amp;type=3#CostumMenu" />
+    <Style src="project://database/Assets/Ui/Menu/General.uss?fileID=7433441132597879392&amp;guid=f89a2678f5e910b4f9cb48d2186c123a&amp;type=3#General" />
+    <Style src="project://database/Assets/Ui/Gameplay/SettingsMenu.uss?fileID=7433441132597879392&amp;guid=7cc9d6567839f98409a164b0d287466b&amp;type=3#SettingsMenu" />
+    <ui:VisualElement name="container-element" class="card border cardd" style="flex-grow: 1; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; -unity-text-align: lower-left;">
+        <ui:VisualElement style="flex-grow: 0; flex-shrink: 0; width: 100%; height: 8%;">
+            <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="SkinName" style="color: rgb(255, 255, 255); -unity-font-style: bold; font-size: 20px; height: 100%; align-self: center;" />
+        </ui:VisualElement>
+        <ui:VisualElement name="Render-element" style="flex-grow: 1; flex-shrink: 1; width: 100%; height: auto; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px;">
+            <ui:VisualElement name="Locked-element" style="flex-grow: 1; background-color: rgba(63, 57, 57, 0.78); display: none;" />
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 0; flex-shrink: 0; width: 100%; align-self: center; justify-content: center; align-items: center; height: 8%;">
+            <ui:Button text="Equip" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Equip-button" class="button TopButton" style="width: 50%; height: 100%; align-items: stretch; justify-content: flex-start; align-self: center; font-size: 20px; border-left-color: rgb(74, 69, 108); border-right-color: rgb(74, 69, 108); border-top-color: rgb(74, 69, 108); border-bottom-color: rgb(74, 69, 108); border-top-width: 3px; border-right-width: 3px; border-bottom-width: 3px; border-left-width: 3px; display: flex;" />
+            <ui:Button text="Get" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Locked-Button" class="TopButton button" style="border-left-color: rgb(74, 69, 108); border-right-color: rgb(74, 69, 108); border-top-color: rgb(74, 69, 108); border-bottom-color: rgb(74, 69, 108); background-color: rgb(132, 132, 130); width: 50%; height: 100%; border-top-width: 3px; border-right-width: 3px; border-bottom-width: 3px; border-left-width: 3px; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; display: none;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
