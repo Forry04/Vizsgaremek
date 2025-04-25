@@ -23,6 +23,7 @@ public class CustomMenu : MonoBehaviour
     private VisualElement gridContainerElement;
     private VisualElement scrollElemnt;
 
+    
     //searchBarTextField.SetValueWithoutNotify(SettingsManager.CurrentSettings.CustomSearch);
     private Button backButton;
 
@@ -102,15 +103,32 @@ public class CustomMenu : MonoBehaviour
             var cardMaterial = skin.skinMaterial;
             var renderVisualElement = card.Q<VisualElement>("Render-element");
             card.Q<Label>("SkinName").text = skin.skinName;
-            card.Q<Button>("EquipButton").clicked += () => EquipSkin(skin);
             renderVisualElement.style.backgroundImage = new StyleBackground(skin.previewImage);
             card.Q<VisualElement>("container-element").AddToClassList(skin.rarity.ToString());
+
+            //ha nincs meg
+            if (false)
+            {
+                card.Q<VisualElement>("Locked-element").style.display = DisplayStyle.Flex;
+                card.Q<Button>("Equip-button").style.display = DisplayStyle.None;
+                card.Q<Button>("Locked-Button").style.display = DisplayStyle.Flex;
+                card.Q<Button>("Locked-Button").clicked += () => GetSkin();
+            }
+            else
+                card.Q<Button>("Equip-button").clicked += () => EquipSkin(skin);
+
+            
             card.RegisterCallback<MouseEnterEvent>(evt => OnCardHovered(cardMaterial,renderVisualElement));
             card.RegisterCallback<MouseLeaveEvent>(evt => OnCardExited(renderVisualElement, skin.previewImage));
 
             gridContainerElement.Add(card);
         }
         gridContainerElement.schedule.Execute(WaitAndAdjustCards).Every(1);
+    }
+
+    private void GetSkin()
+    {
+        Application.OpenURL("https://www.youtube.com/");
     }
 
     private void OnCardExited(VisualElement targetElement, Sprite previeImage)
