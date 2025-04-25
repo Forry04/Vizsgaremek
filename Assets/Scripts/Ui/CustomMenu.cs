@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Collections.LowLevel.Unsafe;
+using Unity.Netcode;
 using Unity.Services.Relay.Models;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -117,7 +118,8 @@ public class CustomMenu : MonoBehaviour
             else
                 card.Q<Button>("Equip-button").clicked += () => EquipSkin(skin);
 
-            
+
+
             card.RegisterCallback<MouseEnterEvent>(evt => OnCardHovered(cardMaterial,renderVisualElement));
             card.RegisterCallback<MouseLeaveEvent>(evt => OnCardExited(renderVisualElement, skin.previewImage));
 
@@ -176,8 +178,29 @@ public class CustomMenu : MonoBehaviour
 
     private void EquipSkin(Skindata skin)
     {
-        PlayerPrefs.SetInt("CurrentSkin",skin.skinId);
-        if (GameObject.Find("Player"))
-            GameObject.Find("Player").GetComponentInChildren<Renderer>().material = skin.skinMaterial;
-    } 
+        EquipSkinRpc(NetworkManager.Singleton.LocalClientId, skin.skinId);
+        PlayerPrefs.SetInt("CurrentSkin", skin.skinId);
+    }
+   
+    [Rpc(SendTo.Everyone,RequireOwnership = false)]
+    private void EquipSkinRpc(ulong id, int skinId)
+    {
+
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        Skindata skin = skinList.FirstOrDefault(s => s.skinId == skinId);
+
+        foreach (var player in players)
+        {
+            if (!player.TryGetComponent<NetworkObject>(out var PlayerNetworkObJect)) continue;
+            if (PlayerNetworkObJect.OwnerClientId == id)
+            {
+                player.GetComponentInChildren<Renderer>().material = skin.skinMaterial;
+                break;
+            }
+
+        }
+
+    }
+
+    
 }
