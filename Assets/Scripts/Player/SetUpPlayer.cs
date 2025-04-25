@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -29,6 +30,7 @@ public class SetUpPlayer : NetworkBehaviour
         characterController.enabled = true;
 
         SetPlayerNameTagRpc(NetworkManager.Singleton.LocalClientId, PlayerDataManager.Singleton.Name);
+        EquipSkinRpc(NetworkManager.Singleton.LocalClientId, PlayerPrefs.GetInt("CurrentSkin"));
 
         base.OnNetworkSpawn();
     }
@@ -49,4 +51,29 @@ public class SetUpPlayer : NetworkBehaviour
         }
 
     }
+    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    public void EquipSkinRpc(ulong id, int skinId)
+    {
+
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        Skindata skin = Resources.LoadAll<Skindata>("Skins").ToList().FirstOrDefault(s => s.skinId == skinId);
+
+        Debug.Log($"Skin ID: {skinId}");
+
+        foreach (var player in players)
+        {
+            if (!player.TryGetComponent<NetworkObject>(out var PlayerNetworkObJect)) continue;
+            Debug.Log($"{PlayerNetworkObJect.OwnerClientId}");
+            if (PlayerNetworkObJect.OwnerClientId == id)
+            {
+                Debug.Log($"Changing skin for {id}");
+                player.GetComponentInChildren<Renderer>().material = skin.skinMaterial;
+
+            }
+
+        }
+
+    }
+
+
 }

@@ -178,29 +178,18 @@ public class CustomMenu : MonoBehaviour
 
     private void EquipSkin(Skindata skin)
     {
-        EquipSkinRpc(NetworkManager.Singleton.LocalClientId, skin.skinId);
         PlayerPrefs.SetInt("CurrentSkin", skin.skinId);
-    }
-   
-    [Rpc(SendTo.Everyone,RequireOwnership = false)]
-    private void EquipSkinRpc(ulong id, int skinId)
-    {
-
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        Skindata skin = skinList.FirstOrDefault(s => s.skinId == skinId);
-
         foreach (var player in players)
         {
             if (!player.TryGetComponent<NetworkObject>(out var PlayerNetworkObJect)) continue;
-            if (PlayerNetworkObJect.OwnerClientId == id)
+            if (PlayerNetworkObJect.OwnerClientId == NetworkManager.Singleton.LocalClientId)
             {
-                player.GetComponentInChildren<Renderer>().material = skin.skinMaterial;
-                break;
+                player.GetComponent<SetUpPlayer>().EquipSkinRpc(NetworkManager.Singleton.LocalClientId, skin.skinId);
             }
-
         }
-
     }
-
+   
+   
     
 }

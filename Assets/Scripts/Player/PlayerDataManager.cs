@@ -15,18 +15,9 @@ public class PlayerDataManager : MonoBehaviour
     {
         lock (_lock)
         {
-            // XOR-based checksum validation
-            double calculatedChecksum = CalculateXorChecksum(Coins, _coinsCheckKey);
-            return Math.Abs(_coinsChecksum - calculatedChecksum) < 0.0001;
+            // Simple checksum validation
+            return _coinsChecksum == _coins;
         }
-    }
-
-    private double CalculateXorChecksum(int coins, double key)
-    {
-        // XOR-based checksum calculation
-        long coinsHash = coins ^ (int)(key * 1000000); // XOR coins with a scaled version of the key
-        double checksum = coinsHash * 0.6180339887;    // Multiply by an irrational number for obfuscation
-        return checksum;
     }
 
     public int Coins
@@ -56,15 +47,13 @@ public class PlayerDataManager : MonoBehaviour
                 }
 
                 _coins = value;
-                _coinsChecksum = CalculateXorChecksum(value, _coinsCheckKey); 
+                _coinsChecksum = value; // Update checksum to match the coins value
             }
         }
     }
 
     private int _coins;
-    private double _coinsChecksum;
-    private double _coinsCheckKey;
-    
+    private int _coinsChecksum;
 
     private void Awake()
     {
@@ -77,24 +66,13 @@ public class PlayerDataManager : MonoBehaviour
 
         Singleton = this;
         DontDestroyOnLoad(gameObject);
-        _coinsCheckKey = GenerateSecureRandomKey();
 
         ScheduleNextCoinsCheck();
     }
 
-    private double GenerateSecureRandomKey()
-    {
-        using (var rng = RandomNumberGenerator.Create())
-        {
-            byte[] bytes = new byte[8];
-            rng.GetBytes(bytes);
-            return BitConverter.ToDouble(bytes, 0);
-        }
-    }
-
     private void ScheduleNextCoinsCheck()
     {
-        float randomInterval = UnityEngine.Random.Range(10f, 40f); // Random interval between 10 and 60 seconds
+        float randomInterval = UnityEngine.Random.Range(10f, 40f); // Random interval between 10 and 40 seconds
         Invoke(nameof(PeriodicCoinsCheck), randomInterval);
     }
 
