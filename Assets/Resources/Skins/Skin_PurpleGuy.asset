@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skinId: 1
   skinName: Purple Guy
-  previewImage: {fileID: 21300000, guid: 26ce5f6df24522544b12e25743af3d73, type: 3}
+  previewImage: {fileID: 21300000, guid: 3decb456d467e694aab1d2df5cbdda89, type: 3}
   rarity: 1
   skinMaterial: {fileID: 2100000, guid: ce5f18765528192499f69997cb7939f1, type: 2}

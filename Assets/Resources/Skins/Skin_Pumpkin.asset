@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skinId: 0
   skinName: Pumpkin
-  previewImage: {fileID: 21300000, guid: 26ce5f6df24522544b12e25743af3d73, type: 3}
+  previewImage: {fileID: 21300000, guid: a325fbd352af2da4e8fea694bed7e254, type: 3}
   rarity: 0
   skinMaterial: {fileID: 2100000, guid: 564cb2eb7da7a614fa64d0d9bb108314, type: 2}
