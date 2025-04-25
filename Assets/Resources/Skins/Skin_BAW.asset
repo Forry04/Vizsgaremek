@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skinId: 4
   skinName: Black and White
-  previewImage: {fileID: 0}
+  previewImage: {fileID: 21300000, guid: 7810b12b36411e744904db0391b541f0, type: 3}
   rarity: 2
   skinMaterial: {fileID: 2100000, guid: 7211d206be215eb4abaf3decbcc76dad, type: 2}
