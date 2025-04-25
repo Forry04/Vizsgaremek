@@ -52,6 +52,12 @@ public class Chat : NetworkBehaviour
                 }
             }
         });
+
+        chatScrollView.RegisterCallback<WheelEvent>(e => {
+            float scrollSpeedMultiplier = 250.0f;
+            chatScrollView.scrollOffset += new Vector2(0, e.delta.y * scrollSpeedMultiplier);
+            e.StopPropagation();
+        }, TrickleDown.TrickleDown);
     }
 
     private void Update()
@@ -109,6 +115,7 @@ public class Chat : NetworkBehaviour
     private void ReceiveChatMessageRpc(string message, Color color)
     {
         Label messageLabel = CreateColoredLabel(message, color);
+        messageLabel.AddToClassList("chat-message");
         chatScrollView.Add(messageLabel);
         chatScrollView.ScrollTo(messageLabel);
         if (!chatContainer.ClassListContains("hidden"))

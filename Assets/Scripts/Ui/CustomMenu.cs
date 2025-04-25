@@ -9,6 +9,7 @@ using Unity.Services.Relay.Models;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static UnityEngine.UI.Scrollbar;
 
 public class CustomMenu : MonoBehaviour
 {
@@ -22,7 +23,7 @@ public class CustomMenu : MonoBehaviour
     private TextField searchBarTextField;
     private DropdownField rarityDropdown;
     private VisualElement gridContainerElement;
-    private VisualElement scrollElemnt;
+    private ScrollView scrollElement;
 
     
     //searchBarTextField.SetValueWithoutNotify(SettingsManager.CurrentSettings.CustomSearch);
@@ -46,6 +47,13 @@ public class CustomMenu : MonoBehaviour
 
         StartCoroutine(DelayedAssignValues());
         backButton.Focus();
+
+        //change scroll speed
+        scrollElement.RegisterCallback<WheelEvent>(e => {
+            float scrollSpeedMultiplier = 250.0f;
+            scrollElement.scrollOffset += new Vector2(0, e.delta.y * scrollSpeedMultiplier);
+            e.StopPropagation();
+        }, TrickleDown.TrickleDown);
     }
     private IEnumerator DelayedAssignValues()
     {
@@ -81,7 +89,7 @@ public class CustomMenu : MonoBehaviour
         rarityDropdown = customMenuUi.Q<DropdownField>("Rarity-dropdown");
         gridContainerElement = customMenuUi.Q<VisualElement>("gridcontainer-element");
         backButton = customMenuUi.Q<Button>("Back-button");
-        scrollElemnt = customMenuUi.Q<VisualElement>("Content-scrollview");
+        scrollElement = customMenuUi.Q<ScrollView>("Content-scrollview");
         rarityDropdown.choices = rarities;
     }
     private void AssignValues()
