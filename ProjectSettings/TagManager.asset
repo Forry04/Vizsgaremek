@@ -16,6 +16,8 @@ TagManager:
   - Player
   - OwnPlayer
   - Collectible
+  - PreviewOnly
+
   - 
   - 
   - 

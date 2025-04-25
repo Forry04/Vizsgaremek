@@ -9,11 +9,11 @@ public class ManageUI : MonoBehaviour
     [SerializeField] private GameObject LoginMenuUiObject;
     private void Start()
     {
+        AudioManager.Instance.Play("TitleMusic");
         if (!string.IsNullOrEmpty(PlayerPrefs.GetString("token")))
             MainMenuUiObject.SetActive(true);
         else
             LoginMenuUiObject.SetActive(true);
-
     }
 
 }
