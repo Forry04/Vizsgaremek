@@ -1,140 +1,113 @@
 using System;
-using System.Collections;
 using System.Security.Cryptography;
-using System.Text;
 using Unity.Netcode;
 using UnityEngine;
 
-/// <summary>
-/// Manages player data, including coins, and provides anti-tampering mechanisms.
-/// </summary>
 public class PlayerDataManager : MonoBehaviour
 {
-    /// <summary>
-    /// Singleton instance of the PlayerDataManager.
-    /// </summary>
     public static PlayerDataManager Singleton { get; private set; }
 
-    /// <summary>
-    /// The name of the player.
-    /// </summary>
-    public string Name  => $"Player {NetworkManager.Singleton.LocalClientId}";
+    public string Name => $"Player {NetworkManager.Singleton.LocalClientId}";
 
-    /// <summary>
-    /// The player's coin count. The value is obfuscated and validated to prevent tampering.
-    /// </summary>
-    public int Coins
+    private readonly object _lock = new(); // Lock object for synchronization
+
+    public bool IsCoinsValid()
     {
-        get => Decrypt(obfuscatedCoins);
-        set
+        lock (_lock)
         {
-            obfuscatedCoins = Encrypt(value);
-            coinsHash = ComputeHash(value);
+            // XOR-based checksum validation
+            double calculatedChecksum = CalculateXorChecksum(Coins, _coinsCheckKey);
+            return Math.Abs(_coinsChecksum - calculatedChecksum) < 0.0001;
         }
     }
 
-    private int obfuscatedCoins;
-    private string coinsHash;
-    private int obfuscationKey;
-    private const float ValidationInterval = 30f;
+    private double CalculateXorChecksum(int coins, double key)
+    {
+        // XOR-based checksum calculation
+        long coinsHash = coins ^ (int)(key * 1000000); // XOR coins with a scaled version of the key
+        double checksum = coinsHash * 0.6180339887;    // Multiply by an irrational number for obfuscation
+        return checksum;
+    }
+
+    public int Coins
+    {
+        get
+        {
+            lock (_lock)
+            {
+                return _coins;
+            }
+        }
+        set
+        {
+            lock (_lock)
+            {
+                if (value < 0)
+                {
+                    Debug.LogError("Coins value cannot be negative.");
+                    return;
+                }
+                if (!IsCoinsValid())
+                {
+                    Debug.LogError("Coins checksum is invalid. Cannot set coins.");
+                    _coins = 0;
+                    _coinsChecksum = 0;
+                    return;
+                }
+
+                _coins = value;
+                _coinsChecksum = CalculateXorChecksum(value, _coinsCheckKey); 
+            }
+        }
+    }
+
+    private int _coins;
+    private double _coinsChecksum;
+    private double _coinsCheckKey;
+    
 
     private void Awake()
     {
-        // Ensure that only one instance of PlayerDataManager exists
+        // Ensure thread-safe singleton
         if (Singleton != null && Singleton != this)
         {
             Destroy(gameObject);
             return;
         }
+
         Singleton = this;
         DontDestroyOnLoad(gameObject);
+        _coinsCheckKey = GenerateSecureRandomKey();
 
-        // Initialize the obfuscation key and coins
-        obfuscationKey = GenerateSecureKey();
+        ScheduleNextCoinsCheck();
     }
 
-    private void Start()
+    private double GenerateSecureRandomKey()
     {
-        StartCoroutine(PeriodicValidation());
-    }
-
-    #region Anti-Coin Tampering Methods
-
-    /// <summary>
-    /// Encrypts the given value using the obfuscation key.
-    /// </summary>
-    /// <param name="value">The value to encrypt.</param>
-    /// <returns>The encrypted value.</returns>
-    private int Encrypt(int value) => value ^ obfuscationKey;
-
-    /// <summary>
-    /// Decrypts the given value using the obfuscation key.
-    /// </summary>
-    /// <param name="value">The value to decrypt.</param>
-    /// <returns>The decrypted value.</returns>
-    private int Decrypt(int value) => value ^ obfuscationKey;
-
-    /// <summary>
-    /// Computes a hash for the given value using SHA-256.
-    /// </summary>
-    /// <param name="value">The value to hash.</param>
-    /// <returns>The computed hash as a Base64 string.</returns>
-    private string ComputeHash(int value)
-    {
-        using (SHA256 sha256 = SHA256.Create())
+        using (var rng = RandomNumberGenerator.Create())
         {
-            byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(value.ToString()));
-            return Convert.ToBase64String(bytes);
+            byte[] bytes = new byte[8];
+            rng.GetBytes(bytes);
+            return BitConverter.ToDouble(bytes, 0);
         }
     }
 
-    /// <summary>
-    /// Validates the integrity of the coins value by comparing its hash.
-    /// </summary>
-    /// <returns>True if the coins value is valid; otherwise, false.</returns>
-    public bool IsCoinsValid() => coinsHash == ComputeHash(Decrypt(obfuscatedCoins));
-
-    /// <summary>
-    /// Periodically validates the coins value to detect tampering.
-    /// </summary>
-    /// <returns>An enumerator for the coroutine.</returns>
-    private IEnumerator PeriodicValidation()
+    private void ScheduleNextCoinsCheck()
     {
-        while (true)
-        {
-            yield return new WaitForSeconds(ValidationInterval);
+        float randomInterval = UnityEngine.Random.Range(10f, 40f); // Random interval between 10 and 60 seconds
+        Invoke(nameof(PeriodicCoinsCheck), randomInterval);
+    }
 
+    private void PeriodicCoinsCheck()
+    {
+        lock (_lock)
+        {
             if (!IsCoinsValid())
             {
-                Debug.LogWarning("Tampering detected! Resetting coins value.");
-                Coins = 0;
-                TriggerAntiCheat();
+                Debug.LogError("Periodic check failed: Coins checksum is invalid!");
             }
         }
-    }
 
-    /// <summary>
-    /// Triggers anti-cheat actions when tampering is detected.
-    /// </summary>
-    private void TriggerAntiCheat()
-    {
-        Debug.LogError("Anti-cheat triggered! Possible tampering detected.");
-        throw new Exception("Anti-cheat triggered! Possible tampering detected.");
+        ScheduleNextCoinsCheck();
     }
-
-    /// <summary>
-    /// Generates a cryptographically secure key for obfuscation.
-    /// </summary>
-    /// <returns>A secure random key.</returns>
-    private int GenerateSecureKey()
-    {
-        using (var rng = new RNGCryptoServiceProvider())
-        {
-            byte[] randomBytes = new byte[4];
-            rng.GetBytes(randomBytes);
-            return BitConverter.ToInt32(randomBytes, 0) & int.MaxValue;
-        }
-    }
-
-    #endregion
 }
