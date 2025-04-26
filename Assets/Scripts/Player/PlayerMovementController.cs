@@ -26,8 +26,10 @@ public class PlayerMovementController : NetworkBehaviour
     private PlayerInputHandler inputHandler;
     private Animator animator;
 
+
     private readonly float raycastHeight = 0.5f;
     private readonly float checkDistance = 1.0f;
+
 
     private readonly Vector3 center_Crouch = new(0,0.6f,0.3f);
     private readonly float radius_Crouch = 0.4f;
@@ -36,7 +38,7 @@ public class PlayerMovementController : NetworkBehaviour
     private readonly Vector3 center_Stand = new(0, 1, 0);
     private readonly float radius_Stand = 0.4f;
     private readonly float height_Stand = 2;
-
+   
     [HideInInspector]
     public bool canMove = true;
     public bool IsCrouching = false;
@@ -48,7 +50,7 @@ public class PlayerMovementController : NetworkBehaviour
         characterController = GetComponent<CharacterController>();
         inputHandler = GetComponent<PlayerInputHandler>();
         animator = GetComponentInChildren<Animator>();
-
+       
         // Lock cursor
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -59,6 +61,7 @@ public class PlayerMovementController : NetworkBehaviour
         if (!IsOwner) return;
         HandleMovement();
     }
+
 
     void HandleMovement()
     {
