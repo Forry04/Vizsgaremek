@@ -6,7 +6,6 @@ public class Sound
 {
     public AudioMixerGroup outputGroup;
     public string name;
-    public string type;
     public bool loop;
     public AudioClip clip;
 

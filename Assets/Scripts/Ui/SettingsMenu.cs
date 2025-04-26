@@ -297,13 +297,13 @@ public class SettingsMenu : MonoBehaviour
     private void OnMusicChanged(float newValue)
     {
         settingsmanager.CurrentSettings.musicVolume = newValue;
-        if (!settingsmanager.CurrentSettings.MuteAll)audioManager.SetMusicVolume(settingsmanager.CurrentSettings.musicVolume*newValue);
+        if (!settingsmanager.CurrentSettings.MuteAll)audioManager.SetMusicVolume(settingsmanager.CurrentSettings.masterVolume*newValue);
     }
 
     private void OnSEChanged(float newValue) 
     {
         settingsmanager.CurrentSettings.sfxVolume = newValue;
-        if (!settingsmanager.CurrentSettings.MuteAll) audioManager.SetSEVolume(settingsmanager.CurrentSettings.sfxVolume*newValue);
+        if (!settingsmanager.CurrentSettings.MuteAll) audioManager.SetSEVolume(settingsmanager.CurrentSettings.masterVolume*newValue);
     }
 
     private void OnMasterVolumeChanged(float newValue)

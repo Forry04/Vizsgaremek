@@ -44,15 +44,6 @@ public class PreviewManager : MonoBehaviour
 
         setframe = true;
 
-        GameObject lightGO = new GameObject("PreviewLight");
-        Light light = lightGO.AddComponent<Light>();
-        light.type = LightType.Spot;
-        light.intensity = 0.5f;
-        light.transform.rotation = Quaternion.Euler(50, -30, 0);
-        light.shadows = LightShadows.None;
-
-        light.cullingMask = previewCamera.cullingMask;
-        lightGO.transform.SetParent(previewCamera.transform, false);
     }
 
     private void SetFrames()

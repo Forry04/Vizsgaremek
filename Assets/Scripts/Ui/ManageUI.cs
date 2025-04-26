@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
@@ -7,9 +8,9 @@ public class ManageUI : MonoBehaviour
 {
     [SerializeField] private GameObject MainMenuUiObject;
     [SerializeField] private GameObject LoginMenuUiObject;
+
     private void Start()
     {
-        AudioManager.Instance.Play("TitleMusic");
         if (!string.IsNullOrEmpty(PlayerPrefs.GetString("token")))
             MainMenuUiObject.SetActive(true);
         else

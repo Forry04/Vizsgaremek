@@ -2,6 +2,7 @@ using UnityEngine.Audio;
 using UnityEngine;
 using System;
 using System.Collections;
+using System.Linq;
 
 public class AudioManager : MonoBehaviour
 {
@@ -85,39 +86,47 @@ public class AudioManager : MonoBehaviour
         s.source.volume = startVolume;
     }
 
-    public IEnumerator CrossfadeCoroutine(string fromName, string toName)
+    public IEnumerator CrossfadeCoroutine(string toName)
     {
-        Sound from = Array.Find(sounds, s => s.name == fromName);
-        Sound to = Array.Find(sounds, s => s.name == toName);
+        Sound from = sounds.FirstOrDefault(s =>
+       s.source != null &&
+       s.source.isPlaying &&
+       s.source.outputAudioMixerGroup != null &&
+       s.source.outputAudioMixerGroup.name == "Music");
 
+        Sound to = Array.Find(sounds, s => s.name == toName);
         if (from == null || to == null) yield break;
 
+        // Fade out the current music (Ensure it's completely stopped)
+        yield return StartCoroutine(FadeOutCoroutine(from.name));
+        // Prepare and play the new sound
+        to.source.volume = 0f; // Start the new music muted
+        to.source.Play();
+
+        // Fade in the new music
         float t = 0f;
         float duration = fadeOutDuration;
-
         float fromStartVolume = from.source.volume;
         float toTargetVolume = to.volume;
-
-        // Start the fade-in sound
-        to.source.volume = 0f;
-        to.source.Play();
 
         while (t < duration)
         {
             t += Time.deltaTime;
             float normalized = t / duration;
 
-            from.source.volume = Mathf.MoveTowards(from.source.volume, 0f, fromStartVolume * Time.deltaTime / duration);
-            to.source.volume = Mathf.MoveTowards(to.source.volume, toTargetVolume, toTargetVolume * Time.deltaTime / duration);
+            from.source.volume = Mathf.Lerp(fromStartVolume, 0f, normalized);
+            to.source.volume = Mathf.Lerp(0f, toTargetVolume, normalized);
 
             yield return null;
         }
 
-        // Make sure final values are exact
+        // Ensure the volumes are exactly what we want
         from.source.volume = 0f;
         from.source.Stop();
 
         to.source.volume = toTargetVolume;
+
+        Debug.Log("Crossfade complete from " + from.name + " to " + to.name);
     }
 
 }

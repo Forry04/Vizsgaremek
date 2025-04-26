@@ -15,6 +15,7 @@ public class CustomMenu : MonoBehaviour
 {
     public VisualTreeAsset skinCardTemplate;
     [SerializeField] private GameObject BackToMenuUiObject;
+    public AudioManager audiomanager => AudioManager.Instance;
 
     public SettingsManager SettingsManager;
     public PreviewManager PreviewManager;
@@ -44,6 +45,14 @@ public class CustomMenu : MonoBehaviour
         });
         searchBarTextField.RegisterValueChangedCallback(evt => OnSearchBarChanged(evt.newValue));
         rarityDropdown.RegisterValueChangedCallback(evt => OnRarityChanged(evt.newValue));
+
+
+        backButton.RegisterCallback<MouseEnterEvent>(evt => {
+            audiomanager.Play("ButtonHover");
+        });
+        backButton.RegisterCallback<FocusEvent>(evt => {
+            audiomanager.Play("ButtonHover");
+        });
 
         StartCoroutine(DelayedAssignValues());
         backButton.Focus();
@@ -131,9 +140,23 @@ public class CustomMenu : MonoBehaviour
             card.RegisterCallback<MouseEnterEvent>(evt => OnCardHovered(cardMaterial,renderVisualElement));
             card.RegisterCallback<MouseLeaveEvent>(evt => OnCardExited(renderVisualElement, skin.previewImage));
 
+            card.RegisterCallback<FocusInEvent>(evt => OnCardFocused(cardMaterial, renderVisualElement));
+            card.RegisterCallback<FocusOutEvent>(evt => OnCardExitedFocuse(renderVisualElement, skin.previewImage));
             gridContainerElement.Add(card);
         }
         gridContainerElement.schedule.Execute(WaitAndAdjustCards).Every(1);
+    }
+
+    private void OnCardExitedFocuse(VisualElement targetElement, Sprite previeImage)
+    {
+        targetElement.style.backgroundImage = new StyleBackground(previeImage);
+        PreviewManager.ClosePreview();
+    }
+
+    private void OnCardFocused(Material cardMaterial, VisualElement renderVisualElement)
+    {
+        PreviewManager.ShowPreview(cardMaterial, renderVisualElement);
+        audiomanager.Play("ElementHover");
     }
 
     private void GetSkin()
@@ -150,6 +173,7 @@ public class CustomMenu : MonoBehaviour
     private void OnCardHovered(Material material, VisualElement targetElement)
     {
         PreviewManager.ShowPreview(material,targetElement);
+        audiomanager.Play("ElementHover");
     }
 
     private void WaitAndAdjustCards()
