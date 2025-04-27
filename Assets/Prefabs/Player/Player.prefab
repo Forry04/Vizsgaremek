@@ -290,6 +290,7 @@ GameObject:
   - component: {fileID: -641316743407447616}
   - component: {fileID: -1047773652484503640}
   - component: {fileID: 6470669704693600325}
+  - component: {fileID: 3863940539088265524}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -347,9 +348,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d2a62791e4fe404db6004f436afb121, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkingSpeed: 10
-  runningSpeed: 18
-  sneakingSpeed: 5
+  walkingSpeed: 3
+  runningSpeed: 5
+  sneakingSpeed: 3
   jumpSpeed: 8
   gravity: 20
   canMove: 1
@@ -710,6 +711,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2571636508c7b942a63e9ffa6050d6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!136 &3863940539088265524
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4657337878885597230}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 1
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &6617967557542111509
 GameObject:
   m_ObjectHideFlags: 0
@@ -872,9 +896,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -3196511607817033700, guid: bfd7e2afbf9216d4abc8e0ebd026e7e9, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: bfd7e2afbf9216d4abc8e0ebd026e7e9, type: 3}
       propertyPath: m_Name
       value: Character4
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: bfd7e2afbf9216d4abc8e0ebd026e7e9, type: 3}
+      propertyPath: m_TagString
+      value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 2621493037507402764, guid: bfd7e2afbf9216d4abc8e0ebd026e7e9, type: 3}
       propertyPath: m_Layer

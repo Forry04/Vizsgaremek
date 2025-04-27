@@ -38,7 +38,10 @@ public class PlayerMovementController : NetworkBehaviour
     private readonly Vector3 center_Stand = new(0, 1, 0);
     private readonly float radius_Stand = 0.4f;
     private readonly float height_Stand = 2;
-   
+    
+
+    private CapsuleCollider capsuleCollider;
+
     [HideInInspector]
     public bool canMove = true;
     public bool IsCrouching = false;
@@ -50,7 +53,8 @@ public class PlayerMovementController : NetworkBehaviour
         characterController = GetComponent<CharacterController>();
         inputHandler = GetComponent<PlayerInputHandler>();
         animator = GetComponentInChildren<Animator>();
-       
+        capsuleCollider = GetComponent<CapsuleCollider>();
+
         // Lock cursor
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -153,12 +157,18 @@ public class PlayerMovementController : NetworkBehaviour
             characterController.center = center_Crouch;
             characterController.radius = radius_Crouch;
             characterController.height = height_Crouch;
+            capsuleCollider.center = center_Crouch;
+            capsuleCollider.radius = radius_Crouch;
+            capsuleCollider.height = height_Crouch;
         }
         else
         {
             characterController.center = center_Stand;
             characterController.radius = radius_Stand;
             characterController.height = height_Stand;
+            capsuleCollider.center = center_Stand;
+            capsuleCollider.radius = radius_Stand;
+            capsuleCollider.height = height_Stand;
         }
     }
 }
