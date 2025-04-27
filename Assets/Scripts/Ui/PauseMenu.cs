@@ -125,6 +125,14 @@ public class PauseMenu : MonoBehaviour
 
     private void OnStartClicked()
     {
+        if (NetworkManager.Singleton.IsHost) // Ensure only the host can start the game
+        {
+            ReadyStartSystem.Singleton.StartGame();
+        }
+        else
+        {
+            Debug.LogWarning("Only the host can start the game!");
+        }
     }
 
     private void OnExitClicked()

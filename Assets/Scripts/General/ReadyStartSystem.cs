@@ -32,6 +32,20 @@ public class ReadyStartSystem : NetworkBehaviour
        
         base.OnNetworkSpawn();
     }
+    public void StartGame()
+    {
+        if (!PlayerReadyList.All(k => k.isReady))
+        {
+            Chat.Singleton.SendAnnouncement("Not all players are ready!", Color.red);
+            return;
+
+        }
+        Chat.Singleton.SendAnnouncement("Game Starting!", Color.green);
+        NetworkManager.Singleton.SceneManager.LoadScene("GameScene", UnityEngine.SceneManagement.LoadSceneMode.Single);
+
+
+
+    }
 
     public override void OnDestroy()
     {

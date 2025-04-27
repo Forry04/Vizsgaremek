@@ -18,6 +18,7 @@ public class SetUpPlayer : NetworkBehaviour
         characterController = GetComponent<CharacterController>();
         characterController.enabled = false;
         playerNameText = playerNameTag.GetComponentInChildren<TextMeshProUGUI>();
+       
     }
 
     public override void OnNetworkSpawn()
@@ -31,6 +32,15 @@ public class SetUpPlayer : NetworkBehaviour
 
         SetPlayerNameTagRpc(NetworkManager.Singleton.LocalClientId, PlayerDataManager.Singleton.Name);
         EquipSkinRpc(NetworkManager.Singleton.LocalClientId, PlayerPrefs.GetInt("CurrentSkin"));
+        if (IsOwner)
+        {
+            playerNameTag.SetActive(false);
+        }
+        else
+        {
+            playerNameTag.SetActive(true);
+
+        }
 
         base.OnNetworkSpawn();
     }

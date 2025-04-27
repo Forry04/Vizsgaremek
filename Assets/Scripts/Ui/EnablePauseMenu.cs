@@ -13,6 +13,7 @@ public class EnablePauseMenu : MonoBehaviour
     private void Awake()
     {
         Singleton = this;
+        DontDestroyOnLoad(gameObject);
     }
 
 

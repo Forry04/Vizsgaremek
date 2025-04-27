@@ -37,6 +37,7 @@ public class EnemyController : MonoBehaviour
     private float chaseStartTime;
     private float detectionCooldownTimer = 0f;
     private bool moveToLastKnownLocation = false;
+    private bool isReversing;
 
     private void Start()
     {
@@ -199,7 +200,20 @@ public class EnemyController : MonoBehaviour
 
         if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
         {
-            currentPatrolIndex = (currentPatrolIndex + 1) % patrolPoints.Count;
+            // Check if we need to reverse the patrol direction
+            if (!isReversing && currentPatrolIndex == patrolPoints.Count - 1)
+            {
+                isReversing = true; // Start reversing
+            }
+            else if (isReversing && currentPatrolIndex == 0)
+            {
+                isReversing = false; // Start moving forward
+            }
+
+            // Update the patrol index based on the current direction
+            currentPatrolIndex += isReversing ? -1 : 1;
+
+            // Set the next destination
             agent.SetDestination(patrolPoints[currentPatrolIndex].position);
         }
     }

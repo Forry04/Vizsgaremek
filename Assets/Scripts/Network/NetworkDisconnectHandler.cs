@@ -9,7 +9,9 @@ public class NetworkDisconnectHandler : MonoBehaviour
     private void OnEnable()
     {
         NetworkManager.Singleton.OnClientDisconnectCallback += HandleClientDisconnect;
+
        
+
     }
 
     private void OnDisable()
