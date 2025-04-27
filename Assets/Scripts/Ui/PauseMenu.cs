@@ -161,6 +161,8 @@ public class PauseMenu : MonoBehaviour
                 UnityEngine.Cursor.lockState = CursorLockMode.None;
                 UnityEngine.Cursor.visible = true;
 
+                
+                SceneTransitionManager.Instance.TransitionToMenu();
                 UnityEngine.SceneManagement.SceneManager.LoadScene("Menu", UnityEngine.SceneManagement.LoadSceneMode.Single);
             },
             onCancel: () =>
