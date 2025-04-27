@@ -125,6 +125,14 @@ public class PauseMenu : MonoBehaviour
 
     private void OnStartClicked()
     {
+        if (NetworkManager.Singleton.IsHost) // Ensure only the host can start the game
+        {
+            ReadyStartSystem.Singleton.StartGame();
+        }
+        else
+        {
+            Debug.LogWarning("Only the host can start the game!");
+        }
     }
 
     private void OnExitClicked()
@@ -153,6 +161,8 @@ public class PauseMenu : MonoBehaviour
                 UnityEngine.Cursor.lockState = CursorLockMode.None;
                 UnityEngine.Cursor.visible = true;
 
+                
+                SceneTransitionManager.Instance.TransitionToMenu();
                 UnityEngine.SceneManagement.SceneManager.LoadScene("Menu", UnityEngine.SceneManagement.LoadSceneMode.Single);
             },
             onCancel: () =>

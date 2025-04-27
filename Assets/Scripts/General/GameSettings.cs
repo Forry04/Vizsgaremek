@@ -17,7 +17,6 @@ public class GameSettings
     public bool invertYAxis = false;
 
     public float gamepadVibrationIntensity = 1.0f;
-    public bool spatialVibration = true;
 
     public int width = 0;
     public int height = 0;

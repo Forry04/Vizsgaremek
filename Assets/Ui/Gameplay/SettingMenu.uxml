@@ -27,7 +27,6 @@
                     <ui:Toggle label="Invert Y Axis" name="axis_y-toggle" class="ContentElement" />
                     <ui:Label tabindex="-1" text="Gamepad Vibration" parse-escape-sequences="true" display-tooltip-when-elided="true" style="font-size: 25px; -unity-font-style: bold; border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255); border-bottom-width: 2px; margin-bottom: 10px;" />
                     <ui:Slider label="Intensity" high-value="100" name="vibrationIntensity-slider" class="ContentElement" />
-                    <ui:Toggle label="Spatial Vibration" name="spatialvibration-toggle" class="ContentElement" />
                 </ui:VisualElement>
                 <ui:VisualElement name="GraphicsContent-element" class="hidden" style="flex-grow: 1; display: none;">
                     <ui:DropdownField label="Resolution" name="resolution-dropdown" class="ContentElement" style="margin-left: 0;" />

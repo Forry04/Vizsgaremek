@@ -13,12 +13,13 @@ public class Collect : MonoBehaviour
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, collectionRadius);
 
         foreach (var hitCollider in hitColliders)
-        {   
+        { 
+
             if (hitCollider.CompareTag(collectibleTag))
             {
                 if (hitCollider.TryGetComponent<ICollectible>(out ICollectible collectible))
                 {
-                    collectible.Collect(PlayerDataManager.Singleton);
+                    collectible.Collect();
                 }
             }
         }

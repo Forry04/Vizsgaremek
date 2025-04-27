@@ -1,0 +1,5 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement style="flex-grow: 1; justify-content: center; align-items: center; background-image: url(&quot;project://database/Assets/Img/Background/Background2.png?fileID=2800000&amp;guid=157d3ad6847cf2748be3f0f0836b1216&amp;type=3#Background2&quot;); background-color: rgba(0, 0, 0, 0);">
+        <ui:Label tabindex="-1" text="Congratulations!&#10;You won!&#10;Returning to Main Menu!" parse-escape-sequences="true" display-tooltip-when-elided="true" style="font-size: 78px; align-self: center; align-items: center; justify-content: center; -unity-text-align: upper-center; color: rgb(255, 255, 255);" />
+    </ui:VisualElement>
+</ui:UXML>

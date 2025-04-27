@@ -24,8 +24,11 @@ public class Chat : NetworkBehaviour
     private bool isChatOpen = false;
     private bool ignoreNextReturn = false;
 
-    private void Awake() => Singleton = this;
-
+    private void Awake()
+    {
+        Singleton = this;
+    }
+    
     private void Start()
     {
         chatUi = chatUiObject.GetComponent<UIDocument>().rootVisualElement;
@@ -33,6 +36,7 @@ public class Chat : NetworkBehaviour
         tempContainer = chatUi.Q<VisualElement>("temp-container");
         chatScrollView = chatUi.Q<ScrollView>("chat-window");
         chatInputField = chatUi.Q<TextField>("chat-input");
+
 
         chatInputField.RegisterCallback<KeyDownEvent>((evt) =>
         {
@@ -58,6 +62,11 @@ public class Chat : NetworkBehaviour
             chatScrollView.scrollOffset += new Vector2(0, e.delta.y * scrollSpeedMultiplier);
             e.StopPropagation();
         }, TrickleDown.TrickleDown);
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        DontDestroyOnLoad(this);
     }
 
     private void Update()

@@ -26,17 +26,18 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private float detectedSpeedModifier = 1.2f;
 
     private NavMeshAgent agent;
-    private GameObject player;
+    public GameObject player;
     private float detectionRange;
     private bool detected = false;
     private float targetSwitchLockoutTimer = 0f;
-    private bool isChasing = false;
+    public bool isChasing = false;
     private Vector3 lastKnownLocation;
     private bool isSearching = false;
     private int currentPatrolIndex = 0;
     private float chaseStartTime;
     private float detectionCooldownTimer = 0f;
     private bool moveToLastKnownLocation = false;
+    private bool isReversing;
 
     private void Start()
     {
@@ -88,10 +89,12 @@ public class EnemyController : MonoBehaviour
         Collider[] hits = Physics.OverlapSphere(detectionOriginPoint.position, detectionRange);
         foreach (var hit in hits)
         {
+            
             if (hit.CompareTag("Player"))
             {
                 Vector3 directionToPlayer = (hit.transform.position - detectionOriginPoint.position).normalized;
                 float angleToPlayer = Vector3.Angle(detectionOriginPoint.forward, directionToPlayer);
+
 
                 if (angleToPlayer < detectionAngle / 2)
                 {
@@ -199,7 +202,20 @@ public class EnemyController : MonoBehaviour
 
         if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
         {
-            currentPatrolIndex = (currentPatrolIndex + 1) % patrolPoints.Count;
+            // Check if we need to reverse the patrol direction
+            if (!isReversing && currentPatrolIndex == patrolPoints.Count - 1)
+            {
+                isReversing = true; // Start reversing
+            }
+            else if (isReversing && currentPatrolIndex == 0)
+            {
+                isReversing = false; // Start moving forward
+            }
+
+            // Update the patrol index based on the current direction
+            currentPatrolIndex += isReversing ? -1 : 1;
+
+            // Set the next destination
             agent.SetDestination(patrolPoints[currentPatrolIndex].position);
         }
     }
@@ -244,58 +260,61 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    // Debug
-    //private void OnDrawGizmos()
-    //{
-    //    // Draw the destination point for the enemy
-    //    if (agent != null && agent.hasPath)
-    //    {
-    //        Gizmos.color = Color.magenta;
-    //        Gizmos.DrawSphere(agent.destination, 0.5f);
-    //    }
+  
 
-    //    if (detectionOriginPoint != null)
-    //    {
-    //        // Draw the normal detection range
-    //        UnityEditor.Handles.color = Color.red;
-    //        UnityEditor.Handles.DrawWireDisc(detectionOriginPoint.position, Vector3.up, detectionRange);
+#if UNITY_EDITOR
+    private void OnDrawGizmos()
+    {
+        // Draw the destination point for the enemy
+        if (agent != null && agent.hasPath)
+        {
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawSphere(agent.destination, 0.5f);
+        }
 
-    //        // Draw the proxy detection range
-    //        UnityEditor.Handles.color = Color.yellow;
-    //        UnityEditor.Handles.DrawWireDisc(transform.position, Vector3.up, proxyDetectionRange);
+        if (detectionOriginPoint != null)
+        {
+            // Draw the normal detection range
+            UnityEditor.Handles.color = Color.red;
+            UnityEditor.Handles.DrawWireDisc(detectionOriginPoint.position, Vector3.up, detectionRange);
 
-    //        Vector3 startAngle = Quaternion.AngleAxis(detectionAngle / 2, Vector3.up) * detectionOriginPoint.forward;
-    //        Vector3 endAngle = Quaternion.AngleAxis(-detectionAngle / 2, Vector3.up) * detectionOriginPoint.forward;
-    //        Gizmos.color = Color.blue;
-    //        Gizmos.DrawRay(detectionOriginPoint.position, startAngle * detectionRange);
-    //        Gizmos.DrawRay(detectionOriginPoint.position, endAngle * detectionRange);
+            // Draw the proxy detection range
+            UnityEditor.Handles.color = Color.yellow;
+            UnityEditor.Handles.DrawWireDisc(transform.position, Vector3.up, proxyDetectionRange);
 
-    //        Collider[] hits = Physics.OverlapSphere(detectionOriginPoint.position, detectionRange);
-    //        foreach (var hit in hits)
-    //        {
-    //            if (hit.CompareTag("Player"))
-    //            {
-    //                Vector3 directionToPlayer = (hit.transform.position - detectionOriginPoint.position).normalized;
-    //                float angleToPlayer = Vector3.Angle(detectionOriginPoint.forward, directionToPlayer);
+            Vector3 startAngle = Quaternion.AngleAxis(detectionAngle / 2, Vector3.up) * detectionOriginPoint.forward;
+            Vector3 endAngle = Quaternion.AngleAxis(-detectionAngle / 2, Vector3.up) * detectionOriginPoint.forward;
+            Gizmos.color = Color.blue;
+            Gizmos.DrawRay(detectionOriginPoint.position, startAngle * detectionRange);
+            Gizmos.DrawRay(detectionOriginPoint.position, endAngle * detectionRange);
 
-    //                if (angleToPlayer < detectionAngle / 2)
-    //                {
-    //                    RaycastHit raycastHit;
-    //                    Gizmos.color = Color.green;
-    //                    Gizmos.DrawRay(detectionOriginPoint.position, directionToPlayer * detectionRange);
-    //                    if (Physics.Raycast(detectionOriginPoint.position, directionToPlayer, out raycastHit, detectionRange))
-    //                    {
-    //                        Gizmos.color = Color.red;
-    //                        Gizmos.DrawLine(detectionOriginPoint.position, raycastHit.point);
-    //                        if (raycastHit.collider.gameObject == player)
-    //                        {
-    //                            Gizmos.color = Color.yellow;
-    //                            Gizmos.DrawSphere(player.transform.position + Vector3.up * 2, 0.5f);
-    //                        }
-    //                    }
-    //                }
-    //            }
-    //        }
-    //    }
-    //}
+            Collider[] hits = Physics.OverlapSphere(detectionOriginPoint.position, detectionRange);
+            foreach (var hit in hits)
+            {
+                if (hit.CompareTag("Player"))
+                {
+                    Vector3 directionToPlayer = (hit.transform.position - detectionOriginPoint.position).normalized;
+                    float angleToPlayer = Vector3.Angle(detectionOriginPoint.forward, directionToPlayer);
+
+                    if (angleToPlayer < detectionAngle / 2)
+                    {
+                        RaycastHit raycastHit;
+                        Gizmos.color = Color.green;
+                        Gizmos.DrawRay(detectionOriginPoint.position, directionToPlayer * detectionRange);
+                        if (Physics.Raycast(detectionOriginPoint.position, directionToPlayer, out raycastHit, detectionRange))
+                        {
+                            Gizmos.color = Color.red;
+                            Gizmos.DrawLine(detectionOriginPoint.position, raycastHit.point);
+                            if (raycastHit.collider.gameObject == player)
+                            {
+                                Gizmos.color = Color.yellow;
+                                Gizmos.DrawSphere(player.transform.position + Vector3.up * 2, 0.5f);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+#endif
 }
