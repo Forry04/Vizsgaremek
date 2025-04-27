@@ -115,8 +115,8 @@ public class CustomMenu : MonoBehaviour
             renderVisualElement.style.backgroundImage = new StyleBackground(skin.previewImage);
             card.Q<VisualElement>("container-element").AddToClassList(skin.rarity.ToString());
 
-            //ha nincs meg
-            if (false)
+            
+            if (!skin.isUnlocked)
             {
                 card.Q<VisualElement>("Locked-element").style.display = DisplayStyle.Flex;
                 card.Q<Button>("Equip-button").style.display = DisplayStyle.None;
