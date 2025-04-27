@@ -50,7 +50,6 @@ public class SettingsMenu : MonoBehaviour
     private Toggle MuteAllToggle;
     private Toggle invertXToggle;
     private Toggle invertYToggle;
-    private Toggle SpatialVibrationToggle;
 
     List<Button> Buttons;
     List<Slider> Sliders;
@@ -115,7 +114,6 @@ public class SettingsMenu : MonoBehaviour
         MuteAllToggle.RegisterValueChangedCallback(evt => OnMuteAllChanged(evt.newValue));
         invertXToggle.RegisterValueChangedCallback(evt => OnInvertXChanged(evt.newValue));
         invertYToggle.RegisterValueChangedCallback(evt => OnInvertYChanged(evt.newValue));
-        SpatialVibrationToggle.RegisterValueChangedCallback(evt => OnSpatialVibrationChanged(evt.newValue));
         
         soundContent.style.display = DisplayStyle.Flex;
         controlsContent.style.display = DisplayStyle.None;
@@ -137,11 +135,6 @@ public class SettingsMenu : MonoBehaviour
 
         //settingsMenuUi.MarkDirtyRepaint();
         soundButton.Focus();
-    }
-
-    private void OnSpatialVibrationChanged(bool newValue)
-    {
-        settingsmanager.CurrentSettings.spatialVibration = newValue;
     }
 
     private void OnInvertYChanged(bool newValue)
@@ -204,12 +197,11 @@ public class SettingsMenu : MonoBehaviour
         }
 
         //Controls
-        MouseSlider.value = settingsmanager.CurrentSettings.mouseSensitivity;
-        GamePadSlider.value = settingsmanager.CurrentSettings.gamepadSensitivity;
-        invertXToggle.value = settingsmanager.CurrentSettings.invertXAxis;
-        invertYToggle.value = settingsmanager.CurrentSettings.invertYAxis;
-        VibrationIntensitylider.value = settingsmanager.CurrentSettings.gamepadVibrationIntensity;
-        SpatialVibrationToggle.value = settingsmanager.CurrentSettings.spatialVibration;
+        MouseSlider.SetValueWithoutNotify(settingsmanager.CurrentSettings.mouseSensitivity); 
+        GamePadSlider.SetValueWithoutNotify(settingsmanager.CurrentSettings.gamepadSensitivity);
+        invertXToggle.SetValueWithoutNotify(settingsmanager.CurrentSettings.invertXAxis);
+        invertYToggle.SetValueWithoutNotify(settingsmanager.CurrentSettings.invertYAxis);
+        VibrationIntensitylider.SetValueWithoutNotify(settingsmanager.CurrentSettings.gamepadVibrationIntensity);
     }
     private void SetDropDownLists()
     {
@@ -280,7 +272,6 @@ public class SettingsMenu : MonoBehaviour
         MuteAllToggle = settingsMenuUi.Q<Toggle>("MuteAll-toggle");
         invertXToggle = settingsMenuUi.Q<Toggle>("axis_x-toggle");
         invertYToggle = settingsMenuUi.Q<Toggle>("axis_y-toggle");
-        SpatialVibrationToggle = settingsMenuUi.Q<Toggle>("spatialvibration-toggle");
     }
 
     private void SetSliderIntervals()

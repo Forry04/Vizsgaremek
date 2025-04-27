@@ -30,9 +30,9 @@ public class SettingsManager : MonoBehaviour
         audioManager = AudioManager.Instance;
 
         //Apply Audio after instances
-        if (CurrentSettings.MuteAll) audioManager.SetMasterVolume(0, 0);     
-        else audioManager.SetMasterVolume(CurrentSettings.musicVolume*CurrentSettings.masterVolume,
-                CurrentSettings.sfxVolume*CurrentSettings.masterVolume);
+        //if (CurrentSettings.MuteAll) audioManager.SetMasterVolume(0, 0);     
+        //else audioManager.SetMasterVolume(CurrentSettings.musicVolume*CurrentSettings.masterVolume,
+        //        CurrentSettings.sfxVolume*CurrentSettings.masterVolume);
     }
 
     public void LoadSettings()

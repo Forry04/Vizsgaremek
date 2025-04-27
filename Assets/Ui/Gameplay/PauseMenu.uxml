@@ -4,7 +4,7 @@
     <ui:VisualElement name="main" class="main-container">
         <ui:Button text="Continue&#10;" parse-escape-sequences="true" display-tooltip-when-elided="true" name="resume-button" class="button pm-button" />
         <ui:Button text="Settings&#10;" parse-escape-sequences="true" display-tooltip-when-elided="true" name="setting-button" class="button pm-button" />
-        <ui:Button text="Customization&#10;" parse-escape-sequences="true" display-tooltip-when-elided="true" name="custom-button" class="pm-button button" />
+        <ui:Button text="Customs" parse-escape-sequences="true" display-tooltip-when-elided="true" name="custom-button" class="pm-button button" />
         <ui:Button text="Ready" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ready-button" class="button pm-button" />
         <ui:Button text="Start&#10;" parse-escape-sequences="true" display-tooltip-when-elided="true" name="start-button" class="button pm-button" />
         <ui:Button text="Back to main menu" parse-escape-sequences="true" display-tooltip-when-elided="true" name="back-button" class="pm-button button" />
