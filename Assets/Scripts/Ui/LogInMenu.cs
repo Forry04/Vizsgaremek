@@ -91,6 +91,7 @@ public class LogInMenu : MonoBehaviour
                     // Navigate to the main menu
                     MainMenuUiObject.SetActive(true);
                     gameObject.SetActive(false);
+                     await  GetComponentInParent<ManageUI>().GetUserName(responseData.token);
                 }
                 else
                 {

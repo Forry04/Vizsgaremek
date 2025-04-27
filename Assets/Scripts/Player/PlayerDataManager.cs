@@ -8,7 +8,7 @@ public class PlayerDataManager : MonoBehaviour
     static public readonly string BaseApiUrl = "http://localhost:3000/api";
     public static PlayerDataManager Singleton { get; private set; }
 
-    public string Name => $"Player {NetworkManager.Singleton.LocalClientId}";
+    public string Name => $"{PlayerPrefs.GetString("username")}";
 
     private readonly object _lock = new(); // Lock object for synchronization
 

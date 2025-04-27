@@ -2,13 +2,16 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Cryptography;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class ManageUI : MonoBehaviour
 {
     [SerializeField] private GameObject MainMenuUiObject;
     [SerializeField] private GameObject LoginMenuUiObject;
+
     private void Start()
     {
         if (!string.IsNullOrEmpty(PlayerPrefs.GetString("token")))
@@ -36,10 +39,7 @@ public class ManageUI : MonoBehaviour
         {
             try
             {
-                // Add the token to the Authorization header
-                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
-
-                // Send a GET request to validate the token
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 HttpResponseMessage response = await client.GetAsync($"{PlayerDataManager.BaseApiUrl}/auth/check-token");
 
                 if (response.IsSuccessStatusCode)
@@ -47,10 +47,11 @@ public class ManageUI : MonoBehaviour
                     string responseBody = await response.Content.ReadAsStringAsync();
                     Debug.Log("Token is valid: " + responseBody);
 
-                    // Token is valid, show the main menu
                     MainMenuUiObject.SetActive(true);
                     GameManager.Singleton.gameObject.GetComponent<LoadSkins>().Loadskins();
-                    
+
+                    // Fetch the username
+                    await GetUserName(token);
                 }
                 else
                 {
@@ -64,5 +65,48 @@ public class ManageUI : MonoBehaviour
                 LoginMenuUiObject.SetActive(true);
             }
         }
+    }
+
+    public async Task GetUserName(string token)
+    {
+        using (HttpClient client = new HttpClient())
+        {
+            try
+            {
+                // Add the Authorization header with the Bearer token
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                // Send the GET request
+                HttpResponseMessage response = await client.GetAsync($"{PlayerDataManager.BaseApiUrl}/user/details");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    Debug.Log("Raw JSON Response: " + responseBody);
+
+                    // Parse the response to extract the username and balance
+                    var userProfile = JsonUtility.FromJson<UserProfile>(responseBody);
+                    Debug.Log($"Welcome, {userProfile.username}! Your balance is {userProfile.balance}.");
+                    PlayerPrefs.SetString("username", userProfile.username);
+                }
+                else
+                {
+                    Debug.LogError("Failed to fetch user profile: " + response.StatusCode);
+                    string errorResponse = await response.Content.ReadAsStringAsync();
+                    Debug.LogError("Error details: " + errorResponse);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError("Error occurred while fetching user profile: " + ex.Message);
+            }
+        }
+    }
+
+    [Serializable]
+    private class UserProfile
+    {
+        public string username;
+        public int balance;
     }
 }

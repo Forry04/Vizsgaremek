@@ -236,7 +236,7 @@ MonoBehaviour:
   sounds:
   - outputGroup: {fileID: 4527861138810770564, guid: 378bdc7f7ad51ee45ab2abb39513cbfd, type: 2}
     name: TitleMusic
-    type: gg
+    type: 
     loop: 1
     clip: {fileID: 8300000, guid: fa9a9fdcc031b014ebca499621027a1f, type: 3}
     volume: 1
@@ -244,7 +244,7 @@ MonoBehaviour:
     source: {fileID: 0}
   - outputGroup: {fileID: -5244866809146095151, guid: 378bdc7f7ad51ee45ab2abb39513cbfd, type: 2}
     name: ButtonHover
-    type: gg
+    type: 
     loop: 0
     clip: {fileID: 8300000, guid: f36a1e5558e3d6a4ca1e90aaf0b961a8, type: 3}
     volume: 1
@@ -252,7 +252,7 @@ MonoBehaviour:
     source: {fileID: 0}
   - outputGroup: {fileID: -5244866809146095151, guid: 378bdc7f7ad51ee45ab2abb39513cbfd, type: 2}
     name: ElementHover
-    type: gg
+    type: 
     loop: 0
     clip: {fileID: 8300000, guid: e7c5115b9a104e843ac9e886f06bdc54, type: 3}
     volume: 1
@@ -509,6 +509,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MainMenuUiObject: {fileID: 41360919}
   LoginMenuUiObject: {fileID: 814278978}
+--- !u!1 &809788431 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8539877122688464958, guid: 9c7535ae083eac6459eab821204a75f2, type: 3}
+  m_PrefabInstance: {fileID: 1830026894}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &809788435
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 809788431}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e4699e821c86f04290fa2884cb3e654, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &814278978
 GameObject:
   m_ObjectHideFlags: 0
@@ -571,6 +588,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MainMenuUiObject: {fileID: 41360919}
+  loginUrl: http://localhost:3000/api/auth/login
 --- !u!1001 &823090264
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1533,7 +1551,10 @@ PrefabInstance:
     - {fileID: 0}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8539877122688464958, guid: 9c7535ae083eac6459eab821204a75f2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 809788435}
   m_SourcePrefab: {fileID: 100100000, guid: 9c7535ae083eac6459eab821204a75f2, type: 3}
 --- !u!1001 &1851735870
 PrefabInstance:
