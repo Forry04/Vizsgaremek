@@ -26,8 +26,6 @@ public class CustomMenu : MonoBehaviour
     private VisualElement gridContainerElement;
     private ScrollView scrollElement;
 
-    
-    //searchBarTextField.SetValueWithoutNotify(SettingsManager.CurrentSettings.CustomSearch);
     private Button backButton;
 
     List<string> rarities = new() { "All", "Common", "Rare", "Epic", "Legendary" };

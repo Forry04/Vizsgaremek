@@ -879,6 +879,51 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 0, z: 0}
   m_TimeToStationary: 0.5
+--- !u!1 &921371872
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 921371874}
+  - component: {fileID: 921371873}
+  m_Layer: 0
+  m_Name: settings,amager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &921371873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 921371872}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8474422780e845b449693ce6ec603cd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioManager: {fileID: 0}
+--- !u!4 &921371874
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 921371872}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 80.041176, y: -32.922813, z: 43.841454}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &981487195 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -3324137115458323221, guid: d7e92416ac20dfe41af62499371e0b5e, type: 3}
@@ -1388,7 +1433,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stepDistance: 1
   stepHeight: 1
-  stepSpeed: 5
+  stepSpeed: 1
   velocityMultiplier: 0.4
   cycleSpeed: 1
   cycleLimit: 1
@@ -1687,6 +1732,7 @@ GameObject:
   - component: {fileID: 1914984690}
   - component: {fileID: 1914984689}
   - component: {fileID: 1914984688}
+  - component: {fileID: 1914984692}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Player
@@ -1780,6 +1826,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1914984692
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1914984687}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66ae6745d3ebf954f863e4c6c7b0b77f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &1942508555 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8471292701375208415, guid: d7e92416ac20dfe41af62499371e0b5e, type: 3}
@@ -1820,6 +1878,10 @@ PrefabInstance:
       objectReference: {fileID: 2558876448461872144}
     - target: {fileID: 6650627005251180986, guid: 1c862c3d18b6c0e49b2740d130a90434, type: 3}
       propertyPath: m_Name
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 6650627005251180986, guid: 1c862c3d18b6c0e49b2740d130a90434, type: 3}
+      propertyPath: m_TagString
       value: Enemy
       objectReference: {fileID: 0}
     - target: {fileID: 7029998070187259749, guid: 1c862c3d18b6c0e49b2740d130a90434, type: 3}
@@ -1989,4 +2051,3 @@ SceneRoots:
   - {fileID: 1914984691}
   - {fileID: 867342626}
   - {fileID: 1723714236}
-  - {fileID: 77029613}

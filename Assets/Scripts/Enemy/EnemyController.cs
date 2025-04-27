@@ -26,11 +26,11 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private float detectedSpeedModifier = 1.2f;
 
     private NavMeshAgent agent;
-    private GameObject player;
+    public GameObject player;
     private float detectionRange;
     private bool detected = false;
     private float targetSwitchLockoutTimer = 0f;
-    private bool isChasing = false;
+    public bool isChasing = false;
     private Vector3 lastKnownLocation;
     private bool isSearching = false;
     private int currentPatrolIndex = 0;
