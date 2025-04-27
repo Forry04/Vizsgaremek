@@ -260,6 +260,8 @@ public class EnemyController : MonoBehaviour
         }
     }
 
+  
+
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {

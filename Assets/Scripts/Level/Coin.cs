@@ -1,13 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class Coin : MonoBehaviour, ICollectible
+public class Coin : NetworkBehaviour, ICollectible
 {
-
-    public void Collect(PlayerDataManager manager)
+    public bool colllected = false;
+    public void Collect()
     {
-        manager.Coins++;
-        Destroy(gameObject);
+        CollectServerRpc();
+        colllected = true;
+        gameObject.SetActive(false);
     }
+
+    [Rpc(SendTo.Everyone,RequireOwnership =false)]
+    public void CollectServerRpc()
+    {
+        PlayerDataManager.Singleton.Coins ++;
+    }
+
+
+
+
 }
