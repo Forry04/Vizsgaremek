@@ -61,6 +61,7 @@ public class CustomMenu : MonoBehaviour
             scrollElement.scrollOffset += new Vector2(0, e.delta.y * scrollSpeedMultiplier);
             e.StopPropagation();
         }, TrickleDown.TrickleDown);
+        GameManager.Singleton.gameObject.GetComponent<LoadSkins>().Loadskins();
     }
     private IEnumerator DelayedAssignValues()
     {
