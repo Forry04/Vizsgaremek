@@ -52,7 +52,7 @@ public class CoinsManager : NetworkBehaviour
 
     private async void ChangeCoins(int amount)
     {
-        string apiUrl = "http://localhost:3000/api/user/change-balance"; // Replace with your API URL
+        string apiUrl = "https://api.arachnid-descent.games/api/user/change-balance"; // Replace with your API URL
         string token = PlayerPrefs.GetString("token"); // Retrieve the token from PlayerPrefs
 
         if (string.IsNullOrEmpty(token))

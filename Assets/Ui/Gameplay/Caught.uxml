@@ -1,0 +1,5 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Img/Background/Background2.png?fileID=2800000&amp;guid=157d3ad6847cf2748be3f0f0836b1216&amp;type=3#Background2&quot;); align-items: center; justify-content: center; align-self: auto;">
+        <ui:Label tabindex="-1" text="You got caught!&#10;Respawning!" parse-escape-sequences="true" display-tooltip-when-elided="true" style="font-size: 72px; color: rgb(255, 250, 255); -unity-text-align: upper-center;" />
+    </ui:VisualElement>
+</ui:UXML>

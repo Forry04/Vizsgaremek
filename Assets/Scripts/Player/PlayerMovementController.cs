@@ -48,6 +48,8 @@ public class PlayerMovementController : NetworkBehaviour
     public bool StandUp = false;
     public bool Jump = false;
 
+   
+
     void Start()
     {
         characterController = GetComponent<CharacterController>();
