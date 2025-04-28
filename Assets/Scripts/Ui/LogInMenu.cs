@@ -26,7 +26,7 @@ public class LogInMenu : MonoBehaviour
     public AudioManager AudioManager => AudioManager.Instance;
 
     [SerializeField] private GameObject MainMenuUiObject;
-    public string loginUrl = $"{PlayerDataManager.BaseApiUrl}/auth/login"; // Replace with your API endpoint
+    string loginUrl = $"https://api.arachnid-descent.games/api/auth/login"; // Replace with your API endpoint
 
     List<Button> Buttons;
 
