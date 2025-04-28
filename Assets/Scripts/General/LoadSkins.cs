@@ -20,7 +20,7 @@ public class LoadSkins : MonoBehaviour
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", PlayerPrefs.GetString("token"));
 
                 // Send the GET request
-                HttpResponseMessage response = await client.GetAsync($"{PlayerDataManager.BaseApiUrl}/user/skins");
+                HttpResponseMessage response = await client.GetAsync($"https://api.arachnid-descent.games/api/user/skins");
 
                 if (response.IsSuccessStatusCode)
                 {

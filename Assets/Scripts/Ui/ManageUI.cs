@@ -40,7 +40,7 @@ public class ManageUI : MonoBehaviour
             try
             {
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                HttpResponseMessage response = await client.GetAsync($"{PlayerDataManager.BaseApiUrl}/auth/check-token");
+                HttpResponseMessage response = await client.GetAsync($"https://api.arachnid-descent.games/api/auth/check-token");
 
                 if (response.IsSuccessStatusCode)
                 {

@@ -159,7 +159,7 @@ public class CustomMenu : MonoBehaviour
 
     private void GetSkin()
     {
-        Application.OpenURL("https://www.youtube.com/");
+        Application.OpenURL("https://arachnid-descent.games/");
     }
 
     private void OnCardExited(VisualElement targetElement, Sprite previeImage)

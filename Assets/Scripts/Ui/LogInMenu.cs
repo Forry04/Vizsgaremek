@@ -26,7 +26,7 @@ public class LogInMenu : MonoBehaviour
     public AudioManager AudioManager => AudioManager.Instance;
 
     [SerializeField] private GameObject MainMenuUiObject;
-    [SerializeField] private string loginUrl = $"{PlayerDataManager.BaseApiUrl}/auth/login"; // Replace with your API endpoint
+    public string loginUrl = $"{PlayerDataManager.BaseApiUrl}/auth/login"; // Replace with your API endpoint
 
     List<Button> Buttons;
 
@@ -115,12 +115,12 @@ public class LogInMenu : MonoBehaviour
 
     private void OnAccountClicked()
     {
-        Application.OpenURL("https://www.youtube.com/");
+        Application.OpenURL("https://arachnid-descent.games/register.html");
     }
 
     private void OnResetPassClicked()
     {
-        Application.OpenURL("https://www.youtube.com/");
+        Application.OpenURL("https://arachnid-descent.games/forgot-password.html");
     }
 
     private void AssignButtonSounds()
