@@ -16,5 +16,6 @@ public class Skindata : ScriptableObject
     public Sprite previewImage;
     public Rarity rarity;
     public Material skinMaterial;
+    public bool isUnlocked;
 
 }

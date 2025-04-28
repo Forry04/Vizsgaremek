@@ -1,6 +1,12 @@
+using Newtonsoft.Json;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UIElements;
 
 public class LogInMenu : MonoBehaviour
@@ -20,8 +26,10 @@ public class LogInMenu : MonoBehaviour
     public AudioManager AudioManager => AudioManager.Instance;
 
     [SerializeField] private GameObject MainMenuUiObject;
+    [SerializeField] private string loginUrl = "http://localhost:3000/api/auth/login"; // Replace with your API endpoint
 
     List<Button> Buttons;
+
     private void OnEnable()
     {
         logInMenuUI = gameObject.GetComponent<UIDocument>().rootVisualElement;
@@ -39,26 +47,70 @@ public class LogInMenu : MonoBehaviour
 
         Buttons = GetComponent<UIDocument>().rootVisualElement.Query<Button>().ToList();
 
-  
-
         loginButton.clicked += OnLoginClicked;
         accountButton.clicked += OnAccountClicked;
         resetPassButton.clicked += OnResetPassClicked;
         AssignButtonSounds();
 
         userNameTextField.Focus();
-
     }
 
-    private void OnLoginClicked()
+    private async void OnLoginClicked()
     {
-        if (userNameTextField.text == "admin" && passwordTextField.text == "admin")
+        string email = userNameTextField.text.Trim().ToLower();
+        string password = passwordTextField.text.Trim();
+
+        await LoginAsync(email, password);
+    }
+
+    private async Task LoginAsync(string email, string password)
+    {
+        var loginData = new
         {
-            PlayerPrefs.SetString("token","jah");
-            MainMenuUiObject.SetActive(true);
-            gameObject.SetActive(false);
+            email = email,
+            password = password
+        };
+
+        using (HttpClient client = new HttpClient())
+        {
+            try
+            {
+                string json = JsonConvert.SerializeObject(loginData);
+                StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+                HttpResponseMessage response = await client.PostAsync(loginUrl, content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    Debug.Log("Login successful: " + responseBody);
+
+                    // Parse the response (e.g., extract the token)
+                    var responseData = JsonConvert.DeserializeObject<LoginResponse>(responseBody);
+                    PlayerPrefs.SetString("token", responseData.token);
+
+                    // Navigate to the main menu
+                    MainMenuUiObject.SetActive(true);
+                    gameObject.SetActive(false);
+                     await  GetComponentInParent<ManageUI>().GetUserName(responseData.token);
+                }
+                else
+                {
+                    Debug.LogError("Login failed: " + response.StatusCode);
+                    string errorResponse = await response.Content.ReadAsStringAsync();
+                    Debug.LogError("Error details: " + errorResponse);
+
+                    // Display error message
+                    errorLabel.text = "*Invalid username or password";
+                    errorLabel.visible = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError("Error occurred: " + ex.Message);
+                errorLabel.text = "*Error logging in";
+                errorLabel.visible = true;
+            }
         }
-        else errorLabel.visible = true;      
     }
 
     private void OnAccountClicked()
@@ -77,13 +129,11 @@ public class LogInMenu : MonoBehaviour
         {
             button.RegisterCallback<MouseEnterEvent>(evt =>
             {
-
                 AudioManager.Play("ButtonHover");
             });
 
             button.RegisterCallback<FocusEvent>(evt =>
             {
-
                 AudioManager.Play("ButtonHover");
             });
 
@@ -94,5 +144,16 @@ public class LogInMenu : MonoBehaviour
         }
     }
 
+    [Serializable]
+    private class LoginResponse
+    {
+        public string token;
+    }
+}
 
+// Define a class to deserialize the API response
+[Serializable]
+internal class LoginResponse
+{
+    public string token;
 }
