@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class PlayerDataManager : MonoBehaviour
 {
-    static public readonly string BaseApiUrl = "http://localhost:3000/api";
+    static public readonly string BaseApiUrl = "https://api.arachnid-descent.games/api";
     public static PlayerDataManager Singleton { get; private set; }
 
     public string Name => $"{PlayerPrefs.GetString("username")}";

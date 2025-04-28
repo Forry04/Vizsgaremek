@@ -26,7 +26,7 @@ public class LogInMenu : MonoBehaviour
     public AudioManager AudioManager => AudioManager.Instance;
 
     [SerializeField] private GameObject MainMenuUiObject;
-    [SerializeField] private string loginUrl = "http://localhost:3000/api/auth/login"; // Replace with your API endpoint
+    [SerializeField] private string loginUrl = $"{PlayerDataManager.BaseApiUrl}/auth/login"; // Replace with your API endpoint
 
     List<Button> Buttons;
 
