@@ -92,6 +92,7 @@ public class LogInMenu : MonoBehaviour
                     MainMenuUiObject.SetActive(true);
                     gameObject.SetActive(false);
                      await  GetComponentInParent<ManageUI>().GetUserName(responseData.token);
+                    GameManager.Singleton.gameObject.GetComponent<LoadSkins>().Loadskins();
                 }
                 else
                 {
